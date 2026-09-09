@@ -1,0 +1,155 @@
+\section{Experiments}
+\label{sec:experiments}
+
+We ask four questions. Is the validity--usable gap real, and how large
+(\S\ref{sec:exp:gap})? \emph{Why} do valid plans fail --- causally, or on
+actionability (\S\ref{sec:exp:why})? Is the closing of the gap attributable to the
+causal term specifically (\S\ref{sec:exp:ablation})? And what does \cac{} pay for
+it, and does the advantage survive changes to the setup
+(\S\ref{sec:exp:cost}--\ref{sec:exp:robust})?
+
+\paragraph{Baselines.} Against \cac{} we run four references, all querying the same
+opaque box. \textbf{Random} samples admissible perturbations and keeps those that
+flip. \textbf{Wachter} \citep{wachter2017counterfactual} minimises distance to a
+flipping point. \textbf{DiCE} \citep{mothilal2020dice} returns diverse flipping
+points. \textbf{Oracle} returns the lowest-cost \emph{admissible} action that
+flips the box, found by direct search; it defines the \emph{Cost/Oracle}
+denominator and serves as a strong actionable-but-not-causal reference --- it is
+the cost floor a method would hit if causal validity were free. All methods are
+given $k=5$ suggestions per applicant and audited by
+Eq.~\eqref{eq:usable}.
+
+\subsection{The gap is real, and largest where structure is densest}
+\label{sec:exp:gap}
+Table~\ref{tab:main_results} is the headline. Every method clears validity almost
+everywhere --- the column is a wall of $1.00$s, with only Wachter and Random
+dipping on HELOC --- and the \Usable{} column then fans out. The spread is
+dataset-dependent, and honestly so. On \textbf{Adult} the gap is small: the box's
+decision leans on \texttt{hours\_per\_week} and \texttt{education}, features that
+are cleanly actionable and causally shallow, so every method lands near
+$1.00$ usable and \cac{}'s discipline buys little. The gap opens exactly where the
+features are densely causal. On \textbf{HELOC}, DiCE is $1.00$ valid but $0.50$
+usable and Wachter $0.85$ valid but $0.13$ usable; even the cost-optimal Oracle
+reaches only $0.66$. On \textbf{German}, Wachter falls from $1.00$ valid to $0.45$
+usable. \cac{} is $1.00$ usable on all four. Figure~\ref{fig:usable_gap} draws the
+faint-to-solid drop; Figure~\ref{fig:funnel} traces it audit by audit.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.86\linewidth]{results/results_recourse_funnel}
+  \caption{The recourse funnel. Starting from every rejected applicant, each stage
+  keeps only the plans that survive one more audit --- valid, then also causal,
+  then also actionable. The baselines leak at the causal and actionability stages;
+  \cac{} does not, because it is built to pass them.}
+  \label{fig:funnel}
+\end{figure}
+
+\subsection{Why valid plans fail}
+\label{sec:exp:why}
+The two middle audits explain the fan-out.
+Table~\ref{tab:faithfulness} isolates \emph{causal} failure over the plans that
+flip the box: it reads each proposal as the intervention it implies, propagates it,
+and re-queries $f$. On HELOC only $27\%$ of Wachter's valid plans and $36\%$ of
+DiCE's are causally valid; their flip survives propagation just over half the
+time, and the mean loss in target probability is \emph{positive} ($+0.111$ for
+Wachter, $+0.090$ for DiCE), meaning the consequences of the advice actively push
+the applicant back across the line. On German the same story holds ($42\%$, $47\%$
+causal valid). \cac{} sits at $1.00$ with a zero propagation gap by construction:
+the plan it proposed and the record it was scored on are the same object.
+
+Table~\ref{tab:feasibility} isolates \emph{actionability}, on what each method
+\emph{asks for}. It is where Wachter truly collapses: on HELOC only $8\%$ of its
+valid plans are actionable --- $84\%$ move a feature against its only admissible
+direction and it spends $5.6$ actions on average, far past the three-action
+budget. DiCE is far better ($86\%$ actionable on HELOC) but still trips the
+immutability rule on a tenth of plans. \cac{} and Oracle are $1.00$ actionable
+everywhere by construction. The two tables together show the failures are
+genuinely distinct: DiCE's problem on HELOC is mostly causal, Wachter's is both
+causal and gross inactionability, and no single-audit evaluation would have caught
+either.
+
+\subsection{The causal term is what closes the gap}
+\label{sec:exp:ablation}
+Table~\ref{tab:ablation} and Figure~\ref{fig:ablation} remove one objective term
+at a time and re-audit. The result is clean: dropping the cost, feasibility,
+validity, or plausibility term leaves \cac{} at $1.00$ usable on every dataset ---
+each term moves its own axis (removing cost roughly doubles effort on German,
+$0.009\!\to\!0.094$; removing plausibility more than doubles the plausibility
+distance on Adult, $2.40\!\to\!5.04$) without breaking usability. Only removing the
+\emph{causal treatment} --- scoring the identical population as a point rather than
+as an intervention, the sole way to strip causal validity from a method that
+represents it structurally --- breaks it: usable falls to $0.68$ on HELOC, $0.85$
+on Adult, $0.94$ on German, the propagation gap jumps from zero, and the flip
+survives only $60$--$79\%$ of the time. The gap is the causal term's doing.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.80\linewidth]{results/results_ablation}
+  \caption{Objective ablation (Table~\ref{tab:ablation}). Removing any of the
+  cost, feasibility, validity, or plausibility terms keeps \cac{} fully usable;
+  removing the causal (intervention-through-SCM) treatment is the only change that
+  reopens the gap.}
+  \label{fig:ablation}
+\end{figure}
+
+\subsection{What causal validity costs}
+\label{sec:exp:cost}
+\cac{} is not free, and we report the price without flattering it
+(Figure~\ref{fig:cost}). On Adult, \cac{}'s effort of $0.181$ is the
+\emph{highest} of any method --- above DiCE's $0.075$ and Random's $0.044$ ---
+because insisting a plan survive its consequences rules out the cheap flips the
+others take; in exchange its produced records are the most plausible ($2.40$
+versus DiCE's $3.95$, lower is better). Elsewhere the premium is modest or absent:
+\cac{} is $0.031$ on HELOC and $0.009$ on German while being the only method that
+is fully usable there. Against the cost-optimal Oracle flip on the same record,
+\cac{}'s median effort ratio runs from $1.24\times$ (diabetes) to $5.87\times$
+(German). That multiplier is the cost of causal validity and plausibility over a
+bare flip --- and the Oracle rows are the rejoinder to any suspicion that one
+could simply minimise cost: Oracle is $1.00$ actionable and cost-optimal, yet only
+$0.66$ usable on HELOC and $0.87$ on Adult, because it too scores the point it
+names.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.80\linewidth]{results/results_cost_of_validity}
+  \caption{The cost of validity. \cac{} buys usable, causally-sound recourse at a
+  modest and dataset-dependent increase in effort, and returns the most plausible
+  post-recourse records. On Adult it is the most expensive method; on HELOC and
+  German it is among the cheapest while being the only fully-usable one.}
+  \label{fig:cost}
+\end{figure}
+
+\subsection{One applicant, five methods}
+Table~\ref{tab:case-study} grounds the aggregate in a single case:
+Adult test record~9, chosen as the easy case where \emph{every} method is usable
+($86$ of $100$ applicants fall here). All five tell the applicant to work more
+hours; they differ only in how many (\cac{} $+10$, Oracle $+5$, DiCE $+19$,
+Wachter and Random $+3$) and thus in effort. This is the honest picture on Adult:
+when the decisive feature is cleanly actionable and causally shallow, everyone
+agrees, and \cac{}'s value is insurance rather than rescue. The appendix
+(Table~\ref{tab:qualitative-cases}) prints the harder curated cases --- including
+HELOC and German applicants where only \cac{} produces a usable plan --- action by
+action.
+
+\subsection{The advantage survives changes to the setup}
+\label{sec:exp:robust}
+Four robustness studies re-audit \cac{} under a moved goalpost.
+\textbf{Budget} (Table~\ref{tab:robustness_budget}): with a one-action budget
+\cac{} still reaches $0.95$ usable on Adult and $0.85$ on HELOC, and $1.00$ once
+two actions are allowed --- three is comfortable headroom, not a crutch.
+\textbf{Routes asked for} (Table~\ref{tab:robustness_k}): \cac{} is $1.00$ usable
+at $k=1$ on every dataset, so its lead does not come from being handed more
+attempts; DiCE needs $k=5$ to catch up on the easy datasets and still caps at
+$0.55$ usable on HELOC even at $k=10$.
+\textbf{Model transfer} (Table~\ref{tab:robustness_model}): \cac{}'s plans,
+re-scored against the secondary MLP and against bootstrap refits of the deployed
+box, stay usable for $0.85$--$1.00$ of applicants, while the baselines erode
+sharply --- Wachter's HELOC recourse drops to $0.00$ usable under every audit box.
+\textbf{Graph misspecification} (Table~\ref{tab:robustness_scm}): when \cac{}
+searches with a deliberately corrupted graph but is scored against the true one,
+single-edge errors (missing, spurious, or reversed) leave causal validity at
+$0.98$--$1.00$; only erasing the structure entirely reopens the gap ($0.95$ on
+Adult, $0.65$ on HELOC), which is exactly the \emph{-- SCM} ablation row. \cac{}
+degrades gracefully with the quality of the causal knowledge it is given, rather
+than depending on the graph being perfect --- the appropriate behaviour given the
+imperfect German and HELOC graphs of \S\ref{sec:scm}.

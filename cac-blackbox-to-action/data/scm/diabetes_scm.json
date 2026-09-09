@@ -1,0 +1,75 @@
+{
+  "dataset": "diabetes",
+  "target": "no_diabetes",
+  "nodes": ["Age", "DiabetesPedigreeFunction", "Pregnancies", "BMI",
+            "SkinThickness", "Insulin", "BloodPressure", "Glucose",
+            "no_diabetes"],
+  "edges": [
+    {"from": "Age", "to": "Pregnancies", "type": "direct"},
+    {"from": "Age", "to": "BMI", "type": "direct"},
+    {"from": "Age", "to": "BloodPressure", "type": "direct"},
+    {"from": "Age", "to": "Glucose", "type": "direct"},
+    {"from": "Age", "to": "no_diabetes", "type": "direct"},
+
+    {"from": "DiabetesPedigreeFunction", "to": "BMI", "type": "direct"},
+    {"from": "DiabetesPedigreeFunction", "to": "Insulin", "type": "direct"},
+    {"from": "DiabetesPedigreeFunction", "to": "Glucose", "type": "direct"},
+
+    {"from": "Pregnancies", "to": "BMI", "type": "direct"},
+
+    {"from": "BMI", "to": "SkinThickness", "type": "direct"},
+    {"from": "BMI", "to": "Insulin", "type": "direct"},
+    {"from": "BMI", "to": "BloodPressure", "type": "direct"},
+    {"from": "BMI", "to": "Glucose", "type": "direct"},
+    {"from": "BMI", "to": "no_diabetes", "type": "direct"},
+
+    {"from": "Insulin", "to": "Glucose", "type": "direct"},
+
+    {"from": "BloodPressure", "to": "no_diabetes", "type": "direct"},
+    {"from": "Glucose", "to": "no_diabetes", "type": "direct"}
+  ],
+  "non_manipulable": ["Age", "Pregnancies", "DiabetesPedigreeFunction",
+                      "SkinThickness", "Insulin"],
+  "sensitive": ["Age", "Pregnancies", "DiabetesPedigreeFunction"],
+  "interventional_costs": {
+    "Age": "infinite",
+    "Pregnancies": "infinite",
+    "DiabetesPedigreeFunction": "infinite",
+    "SkinThickness": "infinite",
+    "Insulin": "infinite",
+    "BMI": "high",
+    "Glucose": "medium",
+    "BloodPressure": "low",
+    "no_diabetes": "low"
+  },
+  "references": [
+    "Smith et al. 1988 Using the ADAP learning algorithm to forecast the onset of diabetes mellitus",
+    "American Diabetes Association 2023 Standards of Care in Diabetes, S3 Prevention or Delay of Diabetes",
+    "Knowler et al. 2002 Reduction in the incidence of type 2 diabetes with lifestyle intervention or metformin (DPP)",
+    "Karimi et al. 2021 Algorithmic Recourse: from Counterfactual Explanations to Interventions"
+  ],
+  "provenance": {
+    "base": "none — instruction.md 6 specifies SCMs for adult and german only, and describes the heloc one as following its data dictionary",
+    "additions": ["Age -> {Pregnancies, BMI, BloodPressure, Glucose}",
+                  "DiabetesPedigreeFunction -> {BMI, Insulin, Glucose}",
+                  "Pregnancies -> BMI",
+                  "BMI -> {SkinThickness, Insulin, BloodPressure, Glucose, no_diabetes}",
+                  "Insulin -> Glucose"],
+    "reason": "This graph is a construction of this project, not a transcription of a published SCM, and the paper reports it as such. It encodes three uncontroversial facts about the domain -- adiposity drives the fold and serum readings, age and family history are exogenous, and the two-hour glucose value is the last thing measured -- and nothing finer. It should be read as the qualitative structure a clinician would sketch, not as an identified model, and experiment 04's misspecification arm applies to it with more force than to the two credit graphs.",
+    "revisions": [
+      "Revision 1, against the source file as shipped: added DiabetesPedigreeFunction -> BMI (the data reject BMI independent of family history, both marginally and given Age and Pregnancies) and SkinThickness -> no_diabetes (the fold appeared not to be screened off by BMI); dropped Pregnancies -> Glucose and DiabetesPedigreeFunction -> no_diabetes, neither of which survived conditioning on BMI and Insulin. The substantive claim in the two dropped cases is mediation, not absence.",
+      "Revision 2, after de-leaking the source: SkinThickness -> no_diabetes and Insulin -> no_diabetes were both removed. The dependence that had justified the first was an artefact -- the copy of Pima this project was given had SkinThickness filled with class-conditional medians (27 and 32) and Insulin with class-conditional means (102.5 and 169.5), so those two columns literally contained the label on 655 of 768 rows. With the fill values restored to missing and imputed unconditionally, the fold tests independent of onset given BMI (q=0.70) and serum insulin tests independent given glucose (q=0.26), which is what the physiology says: both are downstream readings, and what they carry about onset they carry through adiposity and the glucose response. The first revision was fitting the redistributor's imputation, not the domain."
+    ]
+  },
+  "notes": [
+    "SkinThickness and Insulin are the causal-validity test cases and the reason this dataset is here. Both are *measurements* -- a triceps fold and a two-hour serum concentration -- so 'reduce your serum insulin by 40 uU/ml' is not an action, it is a description of an outcome. A point-based method has no way to tell the difference and will propose exactly that; CAC cannot, because they are not in its intervention set. They still move in every CAC plan that touches BMI, as consequences.",
+    "SkinThickness is a leaf and Insulin's only child is Glucose: once adiposity and the glucose response are known, neither reading carries further information about onset (q=0.70 and q=0.26 after de-leaking). So a baseline that flips the black box by editing them has bought nothing at all -- not an expensive improvement, not a small one -- while looking, on the model's own output, exactly as successful as a real plan. That is the cleanest separation in this project between a variable a model uses and a variable a person can act on.",
+    "Insulin -> Glucose is a reduced form. The physiological driver of both is insulin resistance, which is unobserved in this dataset; with BMI as their common parent, the residual association between the two readings is carried by this edge. It is the weakest edge in the graph and the one experiment 04 should perturb first.",
+    "BloodPressure -> no_diabetes is asserted on the literature (hypertension is a listed risk factor for incident type 2 diabetes, ADA Standards of Care S3) and is *not* supported by this cohort: conditioned on age, BMI, insulin and glucose the test returns q=0.22 with an effect of 0.005. It is kept because 614 training rows cannot resolve an effect that size and because dropping it would leave one of only three actionable features with no path to the outcome -- but it is reported as unsupported in results/scm_ci_tests.csv and in Table scm_edge_tests_diabetes, and any claim resting on the blood-pressure lever alone should be read with that in mind.",
+    "The three actionable features are BMI (high), Glucose (medium) and BloodPressure (low), which is also the order of clinical difficulty: sustained weight loss is the intervention the DPP trial found hardest to maintain, glycaemic control sits between diet and medication, and diastolic pressure responds to cheap first-line treatment within weeks.",
+    "Age is both sensitive and non-manipulable, and is a parent of four features, so any *legitimate* plan leaves all four of its direct effects to be explained by the levers actually pulled. Nothing an applicant does can change it, which is why the sensitive side-effect penalty is structurally zero on this dataset, as it is on heloc.",
+    "The label is no_diabetes = 1 - Outcome so that 1 is the favourable class; the SCM's target node is therefore named no_diabetes, and every edge into it should be read as 'raises the chance of avoiding onset' with the sign carried by the fitted equation, not by the graph.",
+    "This is a recourse benchmark. Nothing derived from this graph is clinical guidance.",
+    "no_diabetes is a sink."
+  ]
+}

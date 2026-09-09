@@ -1,0 +1,31 @@
+graph LR
+    Age["Age<br/>(immutable, sensitive)"]:::immutable
+    DiabetesPedigreeFunction["DiabetesPedigreeFunction<br/>(immutable, sensitive)"]:::immutable
+    Pregnancies["Pregnancies<br/>(immutable, sensitive)"]:::immutable
+    BMI["BMI"]:::plain
+    SkinThickness["SkinThickness<br/>(immutable)"]:::immutable
+    Insulin["Insulin<br/>(immutable)"]:::immutable
+    BloodPressure["BloodPressure"]:::plain
+    Glucose["Glucose"]:::plain
+    no_diabetes["no_diabetes<br/>(target)"]:::target
+    Age --> Pregnancies
+    Age --> BMI
+    Age --> BloodPressure
+    Age --> Glucose
+    Age --> no_diabetes
+    DiabetesPedigreeFunction --> BMI
+    DiabetesPedigreeFunction --> Insulin
+    DiabetesPedigreeFunction --> Glucose
+    Pregnancies --> BMI
+    BMI --> SkinThickness
+    BMI --> Insulin
+    BMI --> BloodPressure
+    BMI --> Glucose
+    BMI --> no_diabetes
+    Insulin --> Glucose
+    BloodPressure --> no_diabetes
+    Glucose --> no_diabetes
+    classDef plain fill:#eef2f7,stroke:#4a5b6c,color:#111;
+    classDef immutable fill:#f6d5d5,stroke:#a13333,color:#111;
+    classDef sensitive fill:#fdebc8,stroke:#a5741b,color:#111;
+    classDef target fill:#d5e8d4,stroke:#2f6b32,color:#111;

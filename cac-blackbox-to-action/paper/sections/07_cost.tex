@@ -1,0 +1,42 @@
+\section{The cost of an action}
+\label{sec:cost}
+
+Actionability and effort are two questions about the same plan --- \emph{may} a
+person take this action, and \emph{how hard} is it --- and \S\ref{sec:desiderata}
+uses both: the first gates $\Action$, the second is the \emph{cost} quality
+measure. We answer them with one hand-crafted model per dataset
+(Table~\ref{tab:cost-model-adult} shows Adult; the rest are in
+Appendix~\ref{app:cost}).
+
+\paragraph{What is permitted.} Each feature carries an admissibility rule: whether
+it is mutable at all, the only direction it may move (income may rise, age may not
+fall, a past diagnosis is fixed), and the bounds it must stay within. Protected
+attributes (\texttt{gender}, \texttt{sex}, \texttt{age}) and structurally fixed
+ones are marked immutable. An action that touches an immutable or protected
+feature, or pushes one the wrong way, is inadmissible --- it fails $\Action$ and,
+equivalently, is priced at \texttt{INFINITE\_COST} in the search.
+
+\paragraph{How hard it is.} For each mutable feature we specify an effort function
+of the amount moved --- \texttt{constant} for a lump change, a \texttt{ladder} for
+ordinal steps (each education level costs more than the last), a \texttt{switch}
+for unordered categories, or a \texttt{piecewise} rate that rises as the move
+grows (the first ten hours a week are cheap, the next twenty dear). Each is scaled
+by a weight read from the SCM's qualitative effort label for that feature
+(\texttt{medium}, \texttt{high}, \texttt{very\_high}, \dots), so the graph's sense
+of what is hard and the numeric cost stay consistent. The cost of a multi-feature
+action is the sum over its interventions.
+
+\subsection{The budget}
+\label{sec:budget}
+Raw effort is not comparable across datasets, so we normalise. The
+\emph{budget} for a dataset is the summed cost of its
+$\text{MAX\_ACTIONS}=3$ most expensive admissible single actions --- the effort of
+the hardest plan the rules still allow --- and every plan's cost is reported as a
+fraction of it, so any permitted plan lands in $[0,1]$. For Adult the budget is
+$11.22$. This normalisation is what lets Table~\ref{tab:main_results} put effort
+on one scale across four very different problems; it also sets the search ceiling
+and the audit's ``too many actions'' rule, which is why the budget-sensitivity
+study (\S\ref{sec:experiments}) varies all three together. Two ratio views appear
+in the results --- cost against the cheapest \emph{oracle} flip on the same record
+(Table~\ref{tab:main_results}) and against \cac{}'s own full objective
+(Table~\ref{tab:ablation}); the README notes both definitions.

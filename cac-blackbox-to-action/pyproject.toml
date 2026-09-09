@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cac-blackbox-to-action"
+version = "0.1.0"
+description = "Causal Actionable Counterfactuals: from black-box scores to affordable, causally valid recourse"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::FutureWarning",
+    "ignore::UserWarning",
+]
+markers = [
+    "slow: end-to-end checks that train models or run full searches",
+]
+
+[tool.black]
+line-length = 92
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 92
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ARG", "PL"]
+ignore = ["PLR0913", "PLR0915", "PLR0912", "PLR2004", "E501"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/__init__.py"]

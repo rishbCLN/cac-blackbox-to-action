@@ -1,0 +1,57 @@
+\section{Problem setup}
+\label{sec:problem}
+
+\paragraph{The black box.} A trained classifier $f:\mathcal{X}\to[0,1]$ maps an
+instance $x=(x_1,\dots,x_d)$ to a score, the estimated probability of the
+favourable outcome (loan granted, credit line extended, low diabetes risk). A
+threshold $\tau$ turns the score into a decision
+$\hat y(x)=\mathbb{1}[f(x)\ge\tau]$. We treat $f$ as \emph{sacred}: the only
+things any method --- ours included --- may ask of it are $f(x)$ and the induced
+$\hat y(x)$. No gradients, no trees, no feature importances. This is both a
+faithfulness requirement (real deployed models are often unavailable for
+inspection) and a discipline that keeps the comparison honest, since the
+baselines that can peek would otherwise be solving a different problem.
+
+Fix an applicant $x^{0}$ who was rejected, $f(x^{0})<\tau$. Recourse is advice
+that moves them to the favourable side.
+
+\paragraph{Two things called ``a counterfactual.''} The literature and this paper
+use the word for two different objects, and the gap between them is the whole
+story.
+\begin{itemize}
+  \item A \emph{counterfactual point} $x'$ is an instance with
+    $f(x')\ge\tau$. This is what distance-minimising methods return: a
+    destination.
+  \item An \emph{action} $a=\{(j,v_j):j\in S\}$, $S\subseteq\{1,\dots,d\}$,
+    $|S|\le K$, is a set of interventions $\dopart{X_S=v_S}$ the applicant
+    performs on features they control. This is a route.
+\end{itemize}
+A point is not a route. Setting $x'_j$ for the features a method chose to change
+does not leave the other features where the method left them, because features
+cause one another.
+
+\paragraph{The world an action produces.} We equip each dataset with a structural
+causal model $\mathcal{M}$ (\S\ref{sec:scm}): a directed acyclic graph over the
+features and, for each feature, a structural equation
+$X_j := g_j\big(\mathrm{pa}(j),U_j\big)$ from its parents and an exogenous term.
+Given the applicant $x^{0}$ and an action $a$, the record that actually results is
+obtained by the standard abduction--action--prediction steps
+\citep{pearl2009causality}: infer the exogenous terms consistent with $x^{0}$,
+apply $\dopart{X_S=v_S}$, and recompute every descendant of $S$ through its
+structural equation. Write the result
+\begin{equation}
+  x^{a} \;=\; \mathcal{M}\big(x^{0};\,\dopart{X_S=v_S}\big).
+  \label{eq:propagate}
+\end{equation}
+Features that are not descendants of $S$ keep their values; descendants move to
+whatever the equations imply. It is $x^{a}$, not the named point, that the world
+presents to the black box after the applicant acts.
+
+\paragraph{The mismatch, stated plainly.} A point-based method reports success
+when $f(x')\ge\tau$. But the applicant, acting on the changes in $x'$, arrives at
+$x^{a}$, and the decision they actually receive is $\hat y(x^{a})$. When
+$f(x')\ge\tau$ but $f(x^{a})<\tau$, the advice flipped the model on paper and
+failed the person in fact. Section~\ref{sec:desiderata} turns this mismatch, and
+the separate question of whether $a$ is something a person could even do, into
+measurable audits; Section~\ref{sec:method} builds a method that scores $x^{a}$
+directly and so cannot fall into the gap.

@@ -1,0 +1,44 @@
+\section{Structural causal models}
+\label{sec:scm}
+
+Causal validity is only as meaningful as the causal model behind it. For each
+dataset we hand-craft a directed acyclic graph over the features from domain
+knowledge --- education raises income, age drives credit history, glucose and BMI
+move together --- and fit a \emph{functional} causal model: every non-root feature
+is regressed on its parents and its fitted residual is retained as the exogenous
+term, so the model can run the abduction--action--prediction of
+Eq.~\eqref{eq:propagate} on any record. The graphs and fitted equations live in
+\texttt{models/fcm\_*.joblib}; Figure~\ref{fig:scm_adult} draws the Adult graph.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.72\linewidth]{scm_adult}
+  \caption{The Adult structural causal model: 10 nodes, 25 edges, 7 of the
+  features actionable. Arrows are asserted causal influences; the target node is
+  reachable from the actionable set, which is what recourse requires.}
+  \label{fig:scm_adult}
+\end{figure}
+
+\paragraph{These graphs are approximations, and we test them.} A hand-drawn graph
+is a modelling choice, not ground truth, and honesty about how far the data back
+it is part of the contribution. We run two tests
+(Table~\ref{tab:scm_validation}). An \emph{edge test} asks whether each asserted
+arrow is still detectable given the child's other parents; an
+\emph{independence test} asks whether each arrow the graph \emph{omits} is
+consistent with the data. Both use Benjamini--Hochberg-corrected $q\le0.05$ and a
+minimum partial $R^2$ of $0.01$ on 5{,}000 training rows.
+
+The picture is mixed and we report it in full. All four graphs are acyclic with
+the target reachable from the actionable set --- the structural precondition
+\cac{} needs. The diabetes graph is the cleanest (16 of 17 edges supported, all 27
+implied independencies upheld); Adult is solid (17 of 25 edges, one outright
+unsupported). HELOC and especially German are weaker: German supports only 18 of
+37 asserted edges and upholds 88 of 138 independencies, because credit features
+are densely inter-correlated and a parsimonious graph inevitably omits real
+dependences among them. We keep these graphs rather than densifying them to chase
+the tests, and we treat the gap as a limitation --- one the robustness study meets
+head-on by re-scoring \cac{} under deliberately perturbed and even fully
+disconnected graphs (\S\ref{sec:experiments}). The per-edge results are in
+Appendix~\ref{app:scm}. The Adult graph as used is a 10-node, 25-edge superset of
+the smaller graph sketched in the specification; this, and the imperfect German
+and HELOC graphs, are recorded among the README deviations.

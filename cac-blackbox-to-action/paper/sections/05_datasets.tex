@@ -1,0 +1,44 @@
+\section{Datasets and black boxes}
+\label{sec:datasets}
+
+We study four public tabular decision problems, chosen because each is a setting
+where a rejected person would genuinely want recourse and where the features carry
+real causal structure.
+
+\begin{itemize}
+  \item \textbf{Adult} \citep{kohavi1996adult,dua2019uci}: predict whether income
+    exceeds \$50K. We cap the data at $\text{MAX\_ROWS}=20{,}000$ rows for
+    tractability and hold out 20\% ($n=4000$) for testing. The favourable outcome
+    is high income; \texttt{gender} is protected and \texttt{age} immutable.
+  \item \textbf{German Credit} \citep{dua2019uci}: 1{,}000 applicants, test
+    $n=200$; predict good versus bad credit risk. The favourable outcome is good
+    credit; \texttt{age} and \texttt{sex} are protected.
+  \item \textbf{HELOC} \citep{fico2018heloc}: home-equity line-of-credit
+    applications, test $n=1975$; predict whether repayment risk is acceptable. The
+    features are dense, monotone credit-bureau aggregates, which makes the causal
+    structure both important and hard to get exactly right (\S\ref{sec:scm}).
+  \item \textbf{Pima diabetes} \citep{smith1988diabetes}: 768 records, test
+    $n=154$; predict diabetes onset. Because recourse should move a person toward
+    the \emph{healthy} outcome, we invert the label so the favourable class is
+    \emph{no diabetes} ($\texttt{no\_diabetes}=1-\texttt{Outcome}$).
+    \texttt{Glucose}, \texttt{BMI}, and \texttt{BloodPressure} are actionable;
+    \texttt{Age}, \texttt{Pregnancies}, and \texttt{DiabetesPedigreeFunction} are
+    not. This fourth dataset is an addition beyond the three the specification
+    named; it is listed among the deviations in the README.
+\end{itemize}
+
+\paragraph{The black box.} For every dataset the primary black box is an XGBoost
+classifier \citep{chen2016xgboost} and the secondary is a multilayer perceptron,
+each trained on the 80\% training split with \texttt{random\_state}$=42$ and a
+decision threshold of $0.5$. Table~\ref{tab:blackbox_performance} reports held-out
+performance; the primary XGBoost model clears its pre-registered AUC target on all
+four datasets (Adult 0.918, Diabetes 0.849, HELOC 0.788, German 0.785). Neither
+model is inspected by any recourse method: the whole study treats $f$ through
+\texttt{predict} and \texttt{predict\_proba} alone (\S\ref{sec:problem}).
+
+\paragraph{The query set.} Recourse is only meaningful for someone who was
+rejected, so for each dataset the \emph{query set} is the test records the primary
+black box rejects, capped at $\text{N\_QUERY\_INSTANCES}=100$: Adult and HELOC
+hit the cap at 100, German has 51, diabetes 43. Every method is asked for up to
+$k=\text{N\_COUNTERFACTUALS}=5$ suggestions per query record, and every table in
+\S\ref{sec:experiments} is computed on this shared set.

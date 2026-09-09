@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "cac-demo",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "streamlit", "run",
+                      "cac-blackbox-to-action/app/app.py",
+                      "--server.port", "8533", "--server.headless", "true"],
+      "port": 8533
+    }
+  ]
+}

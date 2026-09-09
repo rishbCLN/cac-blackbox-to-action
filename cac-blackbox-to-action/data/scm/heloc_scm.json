@@ -1,0 +1,84 @@
+{
+  "dataset": "heloc",
+  "target": "RiskPerformance",
+  "nodes": ["MSinceOldestTradeOpen", "NumInqLast6M", "NumTradesOpeninLast12M",
+            "NumTotalTrades", "AverageMInFile", "NumSatisfactoryTrades",
+            "MaxDelqEver", "PercentTradesNeverDelq", "NumRevolvingTradesWBalance",
+            "NetFractionRevolvingBurden", "PercentTradesWBalance",
+            "ExternalRiskEstimate", "RiskPerformance"],
+  "edges": [
+    {"from": "MSinceOldestTradeOpen", "to": "AverageMInFile", "type": "direct"},
+    {"from": "MSinceOldestTradeOpen", "to": "NumTotalTrades", "type": "direct"},
+    {"from": "MSinceOldestTradeOpen", "to": "RiskPerformance", "type": "direct"},
+
+    {"from": "NumInqLast6M", "to": "NumTradesOpeninLast12M", "type": "direct"},
+    {"from": "NumInqLast6M", "to": "ExternalRiskEstimate", "type": "direct"},
+    {"from": "NumInqLast6M", "to": "RiskPerformance", "type": "direct"},
+
+    {"from": "NumTradesOpeninLast12M", "to": "NumTotalTrades", "type": "direct"},
+    {"from": "NumTradesOpeninLast12M", "to": "AverageMInFile", "type": "direct"},
+    {"from": "NumTradesOpeninLast12M", "to": "RiskPerformance", "type": "direct"},
+
+    {"from": "NumTotalTrades", "to": "NumSatisfactoryTrades", "type": "direct"},
+    {"from": "NumTotalTrades", "to": "NumRevolvingTradesWBalance", "type": "direct"},
+    {"from": "NumTotalTrades", "to": "PercentTradesNeverDelq", "type": "direct"},
+    {"from": "NumTotalTrades", "to": "PercentTradesWBalance", "type": "direct"},
+
+    {"from": "MaxDelqEver", "to": "PercentTradesNeverDelq", "type": "direct"},
+    {"from": "MaxDelqEver", "to": "ExternalRiskEstimate", "type": "direct"},
+    {"from": "MaxDelqEver", "to": "RiskPerformance", "type": "direct"},
+
+    {"from": "NumSatisfactoryTrades", "to": "PercentTradesNeverDelq", "type": "direct"},
+    {"from": "NumSatisfactoryTrades", "to": "RiskPerformance", "type": "direct"},
+
+    {"from": "NumRevolvingTradesWBalance", "to": "NetFractionRevolvingBurden", "type": "direct"},
+    {"from": "NumRevolvingTradesWBalance", "to": "PercentTradesWBalance", "type": "direct"},
+
+    {"from": "AverageMInFile", "to": "ExternalRiskEstimate", "type": "direct"},
+    {"from": "AverageMInFile", "to": "RiskPerformance", "type": "direct"},
+    {"from": "PercentTradesNeverDelq", "to": "ExternalRiskEstimate", "type": "direct"},
+    {"from": "PercentTradesNeverDelq", "to": "RiskPerformance", "type": "direct"},
+    {"from": "NetFractionRevolvingBurden", "to": "ExternalRiskEstimate", "type": "direct"},
+    {"from": "NetFractionRevolvingBurden", "to": "RiskPerformance", "type": "direct"},
+    {"from": "PercentTradesWBalance", "to": "RiskPerformance", "type": "direct"},
+
+    {"from": "ExternalRiskEstimate", "to": "RiskPerformance", "type": "direct"}
+  ],
+  "non_manipulable": ["ExternalRiskEstimate", "AverageMInFile", "MaxDelqEver",
+                      "PercentTradesWBalance"],
+  "sensitive": [],
+  "interventional_costs": {
+    "ExternalRiskEstimate": "infinite",
+    "AverageMInFile": "infinite",
+    "MaxDelqEver": "infinite",
+    "PercentTradesWBalance": "infinite",
+    "MSinceOldestTradeOpen": "very_high",
+    "PercentTradesNeverDelq": "high",
+    "NumSatisfactoryTrades": "medium",
+    "NumTotalTrades": "medium",
+    "NumRevolvingTradesWBalance": "medium",
+    "NetFractionRevolvingBurden": "medium",
+    "NumTradesOpeninLast12M": "low",
+    "NumInqLast6M": "low",
+    "RiskPerformance": "low"
+  },
+  "references": [
+    "FICO 2018 Explainable Machine Learning Challenge, HELOC data dictionary",
+    "Chen et al. 2018 An Interpretable Model with Globally Consistent Explanations for Credit Risk",
+    "Kuroki & Pearl 2014",
+    "Karimi et al. 2021 Algorithmic Recourse: from Counterfactual Explanations to Interventions"
+  ],
+  "provenance": {
+    "base": "instruction.md 6.2: built from the FICO HELOC data dictionary, as instructed",
+    "additions": [],
+    "reason": "The HELOC SCM has no literal specification in the instruction; the structure below follows the bureau-file arithmetic described in the FICO data dictionary."
+  },
+  "notes": [
+    "ExternalRiskEstimate is a consolidated bureau score computed *from* the other variables, so it is a child of them and can never be an intervention target. Methods that propose 'raise your risk score by 10 points' are proposing a change to an output, which is exactly the failure mode this project measures.",
+    "The three deterministic aggregates are the causal-validity test cases: PercentTradesNeverDelq is a function of NumSatisfactoryTrades/NumTotalTrades and MaxDelqEver, PercentTradesWBalance of NumRevolvingTradesWBalance/NumTotalTrades, and AverageMInFile of MSinceOldestTradeOpen and NumTradesOpeninLast12M.",
+    "Opening an account is a single act with three simultaneous consequences (NumTotalTrades up, NumTradesOpeninLast12M up, AverageMInFile down); a method that reports only one of them understates the true cost of its own advice.",
+    "MSinceOldestTradeOpen can only be increased by waiting, hence very_high rather than infinite: it is reachable, just not this month.",
+    "HELOC ships no demographic columns, so the sensitive set is genuinely empty; the fairness analysis for this dataset is therefore reported as not applicable rather than as passing.",
+    "RiskPerformance is a sink."
+  ]
+}

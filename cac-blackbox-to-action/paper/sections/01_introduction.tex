@@ -1,0 +1,86 @@
+\section{Introduction}
+\label{sec:intro}
+
+When an automated system denies someone a loan, a credit line, or a job, the
+person is owed more than a score: they are owed an explanation they can
+\emph{act} on. The dominant formalisation of such an explanation is the
+\emph{counterfactual} of \citet{wachter2017counterfactual} --- the nearest input
+$x'$ that the model would classify differently --- and a large literature now
+generates these efficiently and diversely
+\citep{mothilal2020dice,vanlooveren2021interpretable,verma2020counterfactual}.
+Almost all of it optimises, and reports, a single property: \emph{validity}, that
+$x'$ flips the model.
+
+Validity is necessary. It is very far from sufficient. A counterfactual is a
+piece of advice, and advice can flip a model while describing a world that could
+never come about. We see all three of the following in the plans real methods
+produce on standard data (\S\ref{sec:experiments}). A method tells an applicant
+to acquire \$28{,}377 in capital gains --- valid, and useless. Another offers
+additional capital \emph{losses} as a route to a higher income, exploiting a
+correlation the model learned but no person can act on. A third flips the
+decision by having the applicant work \emph{fewer} hours. Each is a valid
+counterfactual under the standard definition. None is recourse.
+
+These failures are not noise; they are two distinct, systematic gaps that
+validity cannot see. The first is \emph{causal}: features cause one another, so
+intervening on one moves others, and the record that actually results after a
+person acts is not the record the method scored
+\citep{karimi2021recourse,pearl2009causality}. Advice that ignores this is scored
+in a world that acting on it destroys. The second is \emph{actionability}: a plan
+may ask a person to change something immutable, protected, or only movable in one
+direction \citep{ustun2019actionable,poyiadzi2020face}. Both gaps have been
+studied in isolation; what has been missing is a single evaluation that holds a
+plan to all of it at once, and a method built to pass.
+
+\paragraph{The usable gap.} We separate three things a plan needs and treat them
+as independent audits. A plan is \Valid{} if it flips the black box; \Causal{} if
+it still flips the box once the structural causal model propagates the changes
+into their consequences; and \Action{} if a person could actually carry it out.
+We call a plan \Usable{} only when all three hold. The three are not nested: a
+plan can be actionable yet causally invalid, or causally valid yet ask the
+impossible. Measuring them separately is the point --- it turns ``does it flip the
+model'' into ``is this advice you could follow and would it work,'' and it
+reveals a gap the field has been reporting past. Figure~\ref{fig:usable_gap}
+shows it: on our four datasets every method clears the validity bar, and the
+\Usable{} rate nonetheless ranges from \mbox{13\%} to \mbox{100\%}.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.86\linewidth]{results/results_usable_gap}
+  \caption{The validity--usable gap. Faint bars: the share of rejected applicants
+  a method gives a \emph{valid} plan (it flips the black box). Solid bars: the
+  share it gives a \Usable{} plan (valid \emph{and} causally sound \emph{and}
+  actionable). Every method clears validity; only \cac{} closes the gap on all
+  four datasets. Numbers in Table~\ref{tab:main_results}.}
+  \label{fig:usable_gap}
+\end{figure}
+
+\paragraph{Causal Actionable Counterfactuals.} We then close it. \cac{} searches
+for an \emph{action} --- a small set of interventions $\dopart{X_S = v_S}$ --- and
+scores each candidate not on the point it names but on the record its structural
+causal model says the action would \emph{produce}, with every downstream feature
+recomputed. Causal validity thereby becomes a property of the representation
+rather than a penalty that can be traded away: \cac{} cannot propose a world its
+own model disowns. Around that core it jointly minimises the effort of the
+actions, their feasibility under an explicit actionability model, and the
+plausibility of the resulting record, with a population search because the black
+box is opaque and half the search space is a discrete subset choice.
+
+\paragraph{Contributions.}
+\begin{itemize}
+  \item \textbf{A three-audit evaluation of recourse} (\S\ref{sec:desiderata})
+    that separates validity, causal validity, and actionability, and scores
+    methods on their conjunction, \Usable{} --- exposing a gap that
+    validity-only evaluation hides (Figure~\ref{fig:usable_gap},
+    Table~\ref{tab:main_results}).
+  \item \textbf{The \cac{} method} (\S\ref{sec:method}): a gradient-free search
+    over interventions, scored through a structural causal model, that is
+    causally valid by construction and jointly optimises cost, feasibility, and
+    plausibility.
+  \item \textbf{A reproducible study on four public datasets}
+    (\S\ref{sec:experiments}) showing the gap is real and large, that \cac{}
+    closes it to 100\% usable recourse everywhere, that an ablation attributes
+    the closing to the causal term, and that the cost of doing so is modest and
+    honestly reported. Every dataset is public, every model runs locally, and the
+    whole pipeline rebuilds from one command.
+\end{itemize}

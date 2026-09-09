@@ -1,0 +1,95 @@
+{
+  "dataset": "german",
+  "target": "credit_risk",
+  "nodes": ["age", "sex", "num_dependents", "credit_history", "existing_credits",
+            "employment_since", "job", "savings_status", "checking_status",
+            "property_magnitude", "housing", "purpose", "credit_amount",
+            "duration", "installment_rate", "credit_risk"],
+  "edges": [
+    {"from": "age", "to": "job", "type": "direct"},
+    {"from": "age", "to": "employment_since", "type": "direct"},
+    {"from": "age", "to": "num_dependents", "type": "direct"},
+    {"from": "age", "to": "credit_history", "type": "direct"},
+    {"from": "age", "to": "property_magnitude", "type": "direct"},
+    {"from": "age", "to": "credit_risk", "type": "direct"},
+
+    {"from": "sex", "to": "job", "type": "direct"},
+    {"from": "sex", "to": "employment_since", "type": "direct"},
+    {"from": "sex", "to": "savings_status", "type": "direct"},
+    {"from": "sex", "to": "credit_risk", "type": "direct"},
+
+    {"from": "num_dependents", "to": "savings_status", "type": "direct"},
+    {"from": "num_dependents", "to": "checking_status", "type": "direct"},
+
+    {"from": "job", "to": "savings_status", "type": "direct"},
+    {"from": "job", "to": "checking_status", "type": "direct"},
+    {"from": "job", "to": "credit_amount", "type": "direct"},
+
+    {"from": "employment_since", "to": "savings_status", "type": "direct"},
+    {"from": "employment_since", "to": "checking_status", "type": "direct"},
+    {"from": "employment_since", "to": "credit_history", "type": "direct"},
+    {"from": "employment_since", "to": "credit_risk", "type": "direct"},
+
+    {"from": "savings_status", "to": "property_magnitude", "type": "direct"},
+    {"from": "savings_status", "to": "credit_risk", "type": "direct"},
+    {"from": "checking_status", "to": "credit_risk", "type": "direct"},
+
+    {"from": "property_magnitude", "to": "housing", "type": "direct"},
+    {"from": "property_magnitude", "to": "credit_risk", "type": "direct"},
+    {"from": "housing", "to": "credit_risk", "type": "direct"},
+
+    {"from": "credit_history", "to": "existing_credits", "type": "direct"},
+    {"from": "credit_history", "to": "credit_risk", "type": "direct"},
+    {"from": "existing_credits", "to": "credit_risk", "type": "direct"},
+
+    {"from": "purpose", "to": "credit_amount", "type": "direct"},
+    {"from": "purpose", "to": "duration", "type": "direct"},
+    {"from": "purpose", "to": "credit_risk", "type": "direct"},
+
+    {"from": "credit_amount", "to": "duration", "type": "direct"},
+    {"from": "credit_amount", "to": "installment_rate", "type": "direct"},
+    {"from": "credit_amount", "to": "credit_risk", "type": "direct"},
+
+    {"from": "duration", "to": "installment_rate", "type": "direct"},
+    {"from": "duration", "to": "credit_risk", "type": "direct"},
+    {"from": "installment_rate", "to": "credit_risk", "type": "direct"}
+  ],
+  "non_manipulable": ["age", "sex", "num_dependents", "credit_history"],
+  "sensitive": ["sex", "age", "num_dependents"],
+  "interventional_costs": {
+    "age": "infinite",
+    "sex": "infinite",
+    "num_dependents": "infinite",
+    "credit_history": "infinite",
+    "job": "high",
+    "employment_since": "high",
+    "property_magnitude": "high",
+    "housing": "high",
+    "existing_credits": "medium",
+    "savings_status": "medium",
+    "checking_status": "medium",
+    "purpose": "low",
+    "credit_amount": "low",
+    "duration": "low",
+    "installment_rate": "low",
+    "credit_risk": "low"
+  },
+  "references": [
+    "Hofmann 1994 Statlog (German Credit Data), UCI ML Repository",
+    "Kuroki & Pearl 2014",
+    "Jung et al. 2021 Algorithmic Recourse under Imperfect Causal Knowledge",
+    "Karimi et al. 2021 Algorithmic Recourse: from Counterfactual Explanations to Interventions"
+  ],
+  "provenance": {
+    "base": "instruction.md 6.2: constructed from domain knowledge in the same style as 6.1",
+    "additions": [],
+    "reason": "The German SCM has no literal specification in the instruction; it follows the loan-application semantics documented in german.doc and the same reference papers."
+  },
+  "notes": [
+    "installment_rate is the instalment as a band of disposable income and is therefore mechanically determined by credit_amount and duration: any method that changes the loan terms without re-deriving it produces a causally impossible profile. This is the central causal-validity test case for this dataset.",
+    "purpose, credit_amount and duration are application-form variables: an applicant can genuinely change them at zero real-world cost by asking for a different loan, which makes them the cheapest legitimate recourse levers.",
+    "credit_history is a factual record of the past, so it is non-manipulable even though it is not a protected attribute.",
+    "age -> credit_risk and sex -> credit_risk are drawn because German scorecards do use them; keeping the edges lets the fairness analysis measure the direct effect instead of hiding it.",
+    "credit_risk is a sink."
+  ]
+}

@@ -1,0 +1,42 @@
+# Exact versions this pipeline was built and verified against
+# (Python 3.14 / Windows 11).  Install with:  pip install -r requirements.txt
+#
+# --- core scientific stack -------------------------------------------------
+numpy==2.4.0
+pandas==2.3.3
+scipy==1.17.1
+scikit-learn==1.8.0
+joblib==1.5.3
+
+# --- black-box models -----------------------------------------------------
+xgboost==3.4.1
+
+# --- causal tooling -------------------------------------------------------
+networkx==3.6.1
+dowhy==0.8                # SCM refutation / independence tests (optional at runtime)
+statsmodels==0.15.0
+
+# --- counterfactual baselines --------------------------------------------
+dice-ml==0.12             # Mothilal et al. 2020 (optional at runtime)
+
+# --- configuration & logging ---------------------------------------------
+pydantic==2.12.5
+pydantic-settings==2.13.1
+python-dotenv==1.2.1
+tqdm==4.67.3
+
+# --- free dataset access (no paid API, no key required) -------------------
+ucimlrepo==0.0.7
+kagglehub==1.0.2          # only used when Kaggle credentials already exist
+
+# --- figures --------------------------------------------------------------
+matplotlib==3.10.8
+seaborn==0.13.2
+
+# --- notebooks & demo app (optional) -------------------------------------
+nbformat==5.11.1
+streamlit==1.63.0
+
+# --- tests ----------------------------------------------------------------
+pytest==9.0.2
+pytest-cov==7.0.0

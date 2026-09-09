@@ -1,0 +1,47 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Counterfactual explanations.} \citet{wachter2017counterfactual}
+framed a counterfactual as the closest input that changes the decision, found by
+minimising a distance-to-target objective. The idea was extended to produce
+\emph{diverse} sets \citep{mothilal2020dice}, to stay on the data manifold with
+prototypes \citep{vanlooveren2021interpretable} or density-weighted paths
+\citep{poyiadzi2020face}, and to trade objectives explicitly with multi-objective
+search \citep{dandl2020multi}. Surveys catalogue dozens of such methods
+\citep{verma2020counterfactual,karimi2022survey} and benchmarks compare them
+\citep{pawelczyk2021carla,klaise2021alibi}. The near-universal headline metric is
+validity, sometimes with proximity and diversity; the question of whether the
+named point could be \emph{reached} is largely left aside, and the assumptions
+that licence reading a point as advice --- above all that its features can be set
+independently of one another --- typically go unstated \citep{barocas2020hidden}.
+
+\paragraph{Actionable recourse.} \citet{ustun2019actionable} made mutability
+first-class: some features cannot be changed, others only in one direction, and
+recourse must live in the actionable subspace. This is an essential correction,
+and we adopt it wholesale as one of our three audits. It is, however, a constraint
+on the \emph{named} change; on its own it still treats the world as a set of
+independently-settable dials.
+
+\paragraph{Causal recourse.} \citet{karimi2021recourse} argued that recourse is
+about \emph{interventions}, not points: because features are causally linked, one
+should optimise over actions $\dopart{X_S = v_S}$ and read off consequences
+through a structural causal model \citep{pearl2009causality}, and they show a
+minimal-cost intervention can differ sharply from the nearest counterfactual.
+\citet{karimi2020imperfect} extend this to imperfect causal knowledge. Our method
+sits squarely in this line --- it is the mechanism by which \cac{} is causally
+valid by construction. Our contribution relative to it is (i) an \emph{evaluation}
+that scores existing point-based methods on causal validity and actionability
+together, quantifying how far short they fall, and (ii) a single search that adds
+an explicit human-effort cost, an actionability guard, and a plausibility term
+around the causal core, rather than causal validity alone.
+
+\paragraph{Robustness.} A separate concern is whether recourse survives model
+change \citep{upadhyay2021robust}; we touch it only as one axis of our robustness
+study (\S\ref{sec:experiments}), where we re-audit \cac{} under a perturbed SCM, a
+swapped black box, a tighter budget, and a different plausibility neighbourhood.
+
+\paragraph{Position.} The pieces --- validity, actionability, causal consequence
+--- exist. What has been missing, and what we supply, is (a) an evaluation that
+insists on \emph{all three at once} and reports their conjunction, and (b) a
+method that treats causal validity as a property of the search space rather than a
+soft penalty, so it cannot be traded away for a lower distance.

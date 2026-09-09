@@ -1,0 +1,47 @@
+\section{Discussion and conclusion}
+\label{sec:conclusion}
+
+A counterfactual explanation is advice, and advice is only worth giving if it can
+be followed and would work. The field has largely measured whether advice flips
+the model. We argued that this conflates three separate things --- flipping the
+model, surviving the causal consequences of the change, and being something a
+person could actually do --- and that only their conjunction, \Usable{}, is what a
+rejected applicant needs. Measuring the three separately exposes a gap that
+validity-only evaluation cannot see: across four public datasets every method
+clears validity, yet usable recourse ranges from $13\%$ to $100\%$, and the gap
+opens precisely where the features are densely causal. \cac{} closes it by
+treating causal validity as structural --- it searches for interventions and
+scores them through a structural causal model, so it can only ever propose a world
+its own model endorses --- and an ablation shows the causal term is specifically
+what closes it, at a modest and honestly-reported cost in effort.
+
+\paragraph{Limitations.} We are candid about four. \emph{The causal models are
+hand-crafted and imperfect}: the diabetes graph is well supported by the data, but
+the German and HELOC graphs leave many real dependences unmodelled
+(\S\ref{sec:scm}), and \cac{}'s guarantees are relative to the graph it is given
+--- mitigated, not erased, by the graceful degradation we measured under graph
+perturbation. \emph{\cac{}'s exact objective is a reconstruction}, since the source
+specification was truncated inside its pseudocode (\S\ref{sec:method}); we
+preserved the property that carries the claims and flagged the reconstruction in
+the README. \emph{The human-feasibility audit is a model, not people}: we encode
+mutability and effort from domain knowledge and ship a user-study protocol
+(Appendix and \texttt{user\_study/}) to test those assumptions with real
+respondents, but we do not run it here. \emph{Recourse is single-shot}: we do not
+model the applicant taking one action, being re-scored, and acting again.
+
+\paragraph{Reproducibility.} Every dataset is public and fetched from Kaggle or
+\texttt{ucimlrepo}; every model trains locally; no result depends on a paid
+service or a network call at evaluation time. The pipeline is deterministic
+(\texttt{random\_state}$=42$) and rebuilds end to end --- data, models, SCMs, cost
+models, all methods, every table and figure in this paper, and the demo --- from a
+single \texttt{make all}, with \texttt{make paper} producing this PDF.
+
+\paragraph{Outlook.} The ingredients of good recourse --- validity, causal
+consequence, actionability --- were already in the literature separately. The step
+that mattered was refusing to trade them off: auditing all three at once, and
+building a method whose search space cannot contain a causally impossible plan.
+The result is recourse that survives its own consequences. We hope the three-audit
+evaluation, more than the method, is what the field takes forward: it is cheap to
+adopt, it applies to any recourse method, and it turns ``does it flip the box'' back
+into the question that matters --- ``could this person follow your advice, and
+would it work.''

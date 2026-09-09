@@ -1,0 +1,72 @@
+\section{What makes recourse usable}
+\label{sec:desiderata}
+
+We hold every plan --- whether a point $x'$ from a baseline or an action $a$ from
+\cac{} --- to three audits. Each is a yes/no property; a plan is \Usable{} exactly
+when it passes all three. To audit a baseline that returns a point, we read the
+point as the action ``set the features it changed to the values it named'' and
+propagate it through Eq.~\eqref{eq:propagate} like any other action, so every
+method is judged on the world its advice produces.
+
+\paragraph{1. Validity ($\Valid$).} The plan flips the black box \emph{as named}:
+\begin{equation}
+  \Valid(x') \;=\; \mathbb{1}\big[f(x')\ge\tau\big].
+\end{equation}
+This is the field's usual metric, and the necessary floor. For \cac{} the named
+point is $x^{a}$ itself, so \cac{} passes validity iff it passes the next audit.
+
+\paragraph{2. Causal validity ($\Causal$).} The plan still flips the box once its
+changes are propagated into their consequences:
+\begin{equation}
+  \Causal(a) \;=\; \mathbb{1}\big[f(x^{a})\ge\tau\big],
+  \qquad x^{a}=\mathcal{M}\big(x^{0};\dopart{X_S=v_S}\big).
+\end{equation}
+A point-based plan can pass \Valid{} and fail \Causal{}: it named a destination
+that the causal dynamics never deliver. This is the audit the field skips.
+
+\paragraph{3. Actionability ($\Action$).} A person could carry the plan out. Using
+the per-dataset actionability model of \S\ref{sec:cost}, every acted-on feature
+$j\in S$ must be mutable, must move in an admissible direction (income may rise,
+age may not be lowered, a diagnosis is fixed), and must stay within its plausible
+bounds; and the plan must touch no protected attribute:
+\begin{equation}
+  \Action(a) \;=\; \prod_{j\in S}\;
+    \mathbb{1}\big[\text{$j$ mutable}\big]\,
+    \mathbb{1}\big[\text{direction of $v_j$ admissible}\big]\,
+    \mathbb{1}\big[v_j\in[\ell_j,u_j]\big]\,
+    \mathbb{1}\big[\text{$j$ not protected}\big].
+\end{equation}
+A plan can be causally valid yet fail here (it works, but asks the impossible),
+or actionable yet causally invalid (a person could do it, but it would not
+land).
+
+\paragraph{The conjunction.} A plan is usable iff it survives all three:
+\begin{equation}
+  \Usable(a) \;=\; \Valid(x^{a})\;\wedge\;\Causal(a)\;\wedge\;\Action(a).
+  \label{eq:usable}
+\end{equation}
+The three are logically independent --- each of the three ``valid but not usable''
+plans quoted in \S\ref{sec:intro} fails a different one --- so their conjunction
+is a genuinely stricter bar than any single audit, and it is the bar the paper
+reports.
+
+\paragraph{Crediting a method.} A method may offer several ranked suggestions per
+applicant (we take up to five). We credit it with usable recourse for an applicant
+if \emph{any} of its suggestions is usable, mirroring how a person would use the
+tool: they need one plan they can follow, not five. A method's \Usable{} rate in
+Table~\ref{tab:main_results} is the fraction of rejected applicants for whom it
+clears this bar. Per-suggestion audit records are retained for the appendix and
+the ablation.
+
+\paragraph{Two quality measures (not gates).} Among usable plans, two more
+properties decide which advice is \emph{better}, and we report them without
+letting them gate usability.
+\emph{Effort} (cost, \S\ref{sec:cost}) is the normalised human difficulty of the
+actions; lower is kinder.
+\emph{Plausibility} is the distance from $x^{a}$ to the favourable-class data,
+measured as the mean distance to its $k$ nearest favourable neighbours and
+normalised by the dataset's median such distance; lower means the resulting record
+looks like a real accepted applicant rather than an adversarial artefact. These
+let us ask not just whether a method gives usable recourse but whether the recourse
+is cheap and realistic --- the subject of the cost-of-validity analysis in
+\S\ref{sec:experiments}.

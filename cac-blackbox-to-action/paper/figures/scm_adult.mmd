@@ -1,0 +1,40 @@
+graph LR
+    age["age<br/>(immutable, sensitive)"]:::immutable
+    gender["gender<br/>(immutable, sensitive)"]:::immutable
+    education["education"]:::plain
+    marital_status["marital_status<br/>(sensitive)"]:::sensitive
+    occupation["occupation"]:::plain
+    workclass["workclass"]:::plain
+    capital_gain["capital_gain"]:::plain
+    hours_per_week["hours_per_week"]:::plain
+    capital_loss["capital_loss"]:::plain
+    income["income<br/>(target)"]:::target
+    age --> education
+    age --> occupation
+    age --> hours_per_week
+    age --> marital_status
+    age --> workclass
+    age --> capital_gain
+    age --> capital_loss
+    education --> occupation
+    education --> income
+    education --> hours_per_week
+    education --> workclass
+    education --> capital_gain
+    occupation --> income
+    occupation --> hours_per_week
+    occupation --> capital_gain
+    hours_per_week --> income
+    marital_status --> income
+    gender --> occupation
+    gender --> hours_per_week
+    gender --> income
+    workclass --> hours_per_week
+    workclass --> income
+    capital_gain --> income
+    capital_gain --> capital_loss
+    capital_loss --> income
+    classDef plain fill:#eef2f7,stroke:#4a5b6c,color:#111;
+    classDef immutable fill:#f6d5d5,stroke:#a13333,color:#111;
+    classDef sensitive fill:#fdebc8,stroke:#a5741b,color:#111;
+    classDef target fill:#d5e8d4,stroke:#2f6b32,color:#111;

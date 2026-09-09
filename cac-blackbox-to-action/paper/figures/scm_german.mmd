@@ -1,0 +1,58 @@
+graph LR
+    age["age<br/>(immutable, sensitive)"]:::immutable
+    sex["sex<br/>(immutable, sensitive)"]:::immutable
+    purpose["purpose"]:::plain
+    num_dependents["num_dependents<br/>(immutable, sensitive)"]:::immutable
+    job["job"]:::plain
+    employment_since["employment_since"]:::plain
+    credit_amount["credit_amount"]:::plain
+    savings_status["savings_status"]:::plain
+    checking_status["checking_status"]:::plain
+    credit_history["credit_history<br/>(immutable)"]:::immutable
+    duration["duration"]:::plain
+    property_magnitude["property_magnitude"]:::plain
+    existing_credits["existing_credits"]:::plain
+    installment_rate["installment_rate"]:::plain
+    housing["housing"]:::plain
+    credit_risk["credit_risk<br/>(target)"]:::target
+    age --> job
+    age --> employment_since
+    age --> num_dependents
+    age --> credit_history
+    age --> property_magnitude
+    age --> credit_risk
+    sex --> job
+    sex --> employment_since
+    sex --> savings_status
+    sex --> credit_risk
+    num_dependents --> savings_status
+    num_dependents --> checking_status
+    credit_history --> existing_credits
+    credit_history --> credit_risk
+    existing_credits --> credit_risk
+    employment_since --> savings_status
+    employment_since --> checking_status
+    employment_since --> credit_history
+    employment_since --> credit_risk
+    job --> savings_status
+    job --> checking_status
+    job --> credit_amount
+    savings_status --> property_magnitude
+    savings_status --> credit_risk
+    checking_status --> credit_risk
+    property_magnitude --> housing
+    property_magnitude --> credit_risk
+    housing --> credit_risk
+    purpose --> credit_amount
+    purpose --> duration
+    purpose --> credit_risk
+    credit_amount --> duration
+    credit_amount --> installment_rate
+    credit_amount --> credit_risk
+    duration --> installment_rate
+    duration --> credit_risk
+    installment_rate --> credit_risk
+    classDef plain fill:#eef2f7,stroke:#4a5b6c,color:#111;
+    classDef immutable fill:#f6d5d5,stroke:#a13333,color:#111;
+    classDef sensitive fill:#fdebc8,stroke:#a5741b,color:#111;
+    classDef target fill:#d5e8d4,stroke:#2f6b32,color:#111;

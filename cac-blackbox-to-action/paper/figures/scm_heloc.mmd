@@ -1,0 +1,46 @@
+graph LR
+    MSinceOldestTradeOpen["MSinceOldestTradeOpen"]:::plain
+    NumInqLast6M["NumInqLast6M"]:::plain
+    MaxDelqEver["MaxDelqEver<br/>(immutable)"]:::immutable
+    NumTradesOpeninLast12M["NumTradesOpeninLast12M"]:::plain
+    NumTotalTrades["NumTotalTrades"]:::plain
+    AverageMInFile["AverageMInFile<br/>(immutable)"]:::immutable
+    NumSatisfactoryTrades["NumSatisfactoryTrades"]:::plain
+    NumRevolvingTradesWBalance["NumRevolvingTradesWBalance"]:::plain
+    PercentTradesNeverDelq["PercentTradesNeverDelq"]:::plain
+    NetFractionRevolvingBurden["NetFractionRevolvingBurden"]:::plain
+    PercentTradesWBalance["PercentTradesWBalance<br/>(immutable)"]:::immutable
+    ExternalRiskEstimate["ExternalRiskEstimate<br/>(immutable)"]:::immutable
+    RiskPerformance["RiskPerformance<br/>(target)"]:::target
+    MSinceOldestTradeOpen --> AverageMInFile
+    MSinceOldestTradeOpen --> NumTotalTrades
+    MSinceOldestTradeOpen --> RiskPerformance
+    NumInqLast6M --> NumTradesOpeninLast12M
+    NumInqLast6M --> ExternalRiskEstimate
+    NumInqLast6M --> RiskPerformance
+    NumTradesOpeninLast12M --> NumTotalTrades
+    NumTradesOpeninLast12M --> AverageMInFile
+    NumTradesOpeninLast12M --> RiskPerformance
+    NumTotalTrades --> NumSatisfactoryTrades
+    NumTotalTrades --> NumRevolvingTradesWBalance
+    NumTotalTrades --> PercentTradesNeverDelq
+    NumTotalTrades --> PercentTradesWBalance
+    AverageMInFile --> ExternalRiskEstimate
+    AverageMInFile --> RiskPerformance
+    NumSatisfactoryTrades --> PercentTradesNeverDelq
+    NumSatisfactoryTrades --> RiskPerformance
+    MaxDelqEver --> PercentTradesNeverDelq
+    MaxDelqEver --> ExternalRiskEstimate
+    MaxDelqEver --> RiskPerformance
+    PercentTradesNeverDelq --> ExternalRiskEstimate
+    PercentTradesNeverDelq --> RiskPerformance
+    NumRevolvingTradesWBalance --> NetFractionRevolvingBurden
+    NumRevolvingTradesWBalance --> PercentTradesWBalance
+    NetFractionRevolvingBurden --> ExternalRiskEstimate
+    NetFractionRevolvingBurden --> RiskPerformance
+    PercentTradesWBalance --> RiskPerformance
+    ExternalRiskEstimate --> RiskPerformance
+    classDef plain fill:#eef2f7,stroke:#4a5b6c,color:#111;
+    classDef immutable fill:#f6d5d5,stroke:#a13333,color:#111;
+    classDef sensitive fill:#fdebc8,stroke:#a5741b,color:#111;
+    classDef target fill:#d5e8d4,stroke:#2f6b32,color:#111;
