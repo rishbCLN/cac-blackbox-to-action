@@ -15,19 +15,18 @@ scores them through a structural causal model, so it can only ever propose a wor
 its own model endorses --- and an ablation shows the causal term is specifically
 what closes it, at a modest and honestly-reported cost in effort.
 
-\paragraph{Limitations.} We are candid about four. \emph{The causal models are
+\paragraph{Limitations.} We are candid about three. \emph{The causal models are
 hand-crafted and imperfect}: the diabetes graph is well supported by the data, but
 the German and HELOC graphs leave many real dependences unmodelled
 (\S\ref{sec:scm}), and \cac{}'s guarantees are relative to the graph it is given
 --- mitigated, not erased, by the graceful degradation we measured under graph
-perturbation. \emph{\cac{}'s exact objective is a reconstruction}, since the source
-specification was truncated inside its pseudocode (\S\ref{sec:method}); we
-preserved the property that carries the claims and flagged the reconstruction in
-the README. \emph{The human-feasibility audit is a model, not people}: we encode
-mutability and effort from domain knowledge and ship a user-study protocol
-(Appendix and \texttt{user\_study/}) to test those assumptions with real
-respondents, but we do not run it here. \emph{Recourse is single-shot}: we do not
-model the applicant taking one action, being re-scored, and acting again.
+perturbation (\S\ref{sec:exp:robust}), and by the model-transfer study showing the
+advantage does not depend on scoring against the same box \cac{} searched.
+\emph{The human-feasibility audit is a model, not people}: we encode mutability
+and effort from domain knowledge and ship a user-study protocol (Appendix and
+\texttt{user\_study/}) to test those assumptions with real respondents, but we do
+not run it here. \emph{Recourse is single-shot}: we do not model the applicant
+taking one action, being re-scored, and acting again.
 
 \paragraph{Reproducibility.} Every dataset is public and fetched from Kaggle or
 \texttt{ucimlrepo}; every model trains locally; no result depends on a paid

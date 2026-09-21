@@ -71,13 +71,16 @@ untouched by anything downstream of training.
 
 CAC searches over **actions** — sets of at most three interventions
 `do(X_S = v_S)` on features the applicant controls — using a gradient-free
-elitist population search (the black box is opaque, the subset choice is discrete,
-the causal model is piecewise-constant, so gradients are unavailable). Each
-candidate is scored on the record its structural causal model *produces*, jointly
-minimising four terms: validity, effort (cost), feasibility, and plausibility
-(weights `1.0 / 0.6 / 0.3 / 0.2`). Because scoring runs through the causal model,
-causal validity is structural — a property of the search space — rather than a
-soft penalty that can be traded away. See `paper/sections/08_method.tex` and
+elitist population search. The search is gradient-free by necessity: the black box
+is opaque (only `predict`/`predict_proba`), the choice of which features to act on
+is a discrete subset selection with no derivative, and the causal model is
+piecewise-constant wherever a parent is categorical, so a finite-difference
+gradient through it is zero almost everywhere. Each candidate is scored on the
+record its structural causal model *produces*, jointly minimising four terms:
+validity, effort (cost), feasibility, and plausibility (weights
+`1.0 / 0.6 / 0.3 / 0.2`). Because scoring runs through the causal model, causal
+validity is structural — a property of the search space — rather than a soft
+penalty that can be traded away. See `paper/sections/08_method.tex` and
 `src/methods/cac.py`.
 
 ## Datasets and black boxes
@@ -87,35 +90,40 @@ set. The primary black box is XGBoost, the secondary an MLP; both expose only
 `predict` / `predict_proba` — no method inspects trees, gradients, or feature
 importances. Held-out performance is in `paper/tables/blackbox_performance.tex`.
 
-## Optional LLM explanations
+## Statistical validity
 
-An optional feature can phrase a plan in natural language via an LLM. It is
-**off by default** (`config.USE_LLM = False`) and the pipeline is fully runnable
-without it. To enable it, set `USE_LLM=true` and inject a key in a local `.env`
-(`CAC_LLM_API_KEY=...`); the key is loaded from `.env` and never hard-coded. No
-part of the reported results depends on it.
+Every headline number is an average over one query set produced by a stochastic
+search, so `experiments/06_significance.py` repeats the whole comparison across
+five seeds (`SIGNIFICANCE_SEEDS = 42, 0, 1, 2, 3`) and reports each rate as a mean
+with a 95% Student-*t* interval over seeds. CAC is compared to each baseline on the
+same records with an **exact McNemar test** on the paired usable/not-usable
+outcomes, the effect sized with a paired bootstrap, and the family of baselines
+per dataset corrected with **Holm's step-down** rule. The tables are
+`paper/tables/significance.tex` (rates ± CI) and
+`paper/tables/significance_tests.tex` (paired tests). The run is resumable — it
+appends per-seed rows to `results/significance_runs.csv` and skips cells already
+on disk — so it can be run dataset by dataset.
 
 ---
 
-## Deviations from the specification
+## Design decisions and scope
 
-This project was built from a specification that was **truncated mid-sentence**,
-and some choices depart from it. In the interest of honest reproducibility, every
-deviation is listed here.
+Some choices are worth stating explicitly, either because a reader might expect a
+different default or because they bound what the results claim.
 
-1. **CAC's exact algorithm is a reconstruction.** The specification was cut off
-   inside the subsection giving CAC's pseudocode (§8.4). The objective
-   (four named terms and their weights) and the intervention-through-SCM scoring
-   are faithful to the surviving text; the specific search operators (elitist
-   population, crossover, Gaussian jitter, set mutation, legalisation) are a
-   reconstruction consistent with it. Flagged in `paper/sections/08_method.tex`.
-2. **A fourth dataset.** The spec named three datasets (Adult, German, HELOC); we
-   add the **Pima diabetes** set. Its label is inverted so the favourable class is
-   *no diabetes* (`no_diabetes = 1 - Outcome`), and a zero-imputation step that
-   would have leaked was removed.
-3. **The Adult SCM is a superset.** The graph used (10 nodes, 25 edges) is larger
-   than the smaller graph sketched in the spec's §6.1, to make the target
-   reachable from the actionable set with realistic mediators.
+1. **The search operators are a design choice, not a tuned optimum.** The
+   objective (four terms, their weights, and intervention-through-SCM scoring) is
+   the substance; the specific operators (elitist population, crossover, Gaussian
+   jitter, set mutation, legalisation) are the standard toolkit for a mixed
+   discrete–continuous space, and none of the claims depend on the search finding
+   a global optimum — only on the representation, which makes a causally
+   impossible plan un-scoreable. Rationale in `paper/sections/08_method.tex`.
+2. **Four datasets, including Pima diabetes.** The diabetes label is inverted so
+   the favourable class is *no diabetes* (`no_diabetes = 1 - Outcome`), and a
+   class-conditional imputation that would have leaked the label into `Insulin`
+   and `SkinThickness` is removed before the split (`src/data/load_diabetes.py`).
+3. **The Adult SCM has 10 nodes and 25 edges**, chosen so the target is reachable
+   from the actionable set through realistic mediators.
 4. **The German and HELOC graphs are imperfect, and reported as such.** Credit
    features are densely inter-correlated; a parsimonious hand-drawn graph omits
    real dependences (German supports 18/37 asserted edges, HELOC 18/28). We keep
@@ -123,32 +131,26 @@ deviation is listed here.
    in full (`paper/tables/scm_validation.tex`, appendix), and show under graph
    perturbation that CAC degrades gracefully rather than depending on a perfect
    graph.
-5. **Per-record vs per-suggestion granularity.** Headline rates credit a method on
-   a record if *any* of its `k=5` suggestions is usable (a person needs one plan
-   they can follow). Per-suggestion audits are retained for the appendix and
-   ablation.
+5. **Per-record, not per-suggestion, headline rates.** A method is credited on a
+   record if *any* of its `k=5` suggestions is usable (a person needs one plan they
+   can follow). Per-suggestion audits are retained for the appendix and ablation.
 6. **Two cost-ratio definitions.** Cost is reported both against the cheapest
    *oracle* flip on the same record (`Cost/Oracle`, main table) and against CAC's
    own full objective (`Cost/CAC`, ablation). Both appear because they answer
    different questions; captions state which is which.
-7. **CAC's budget comes from the cost model, not a config constant.** The
-   normalising budget is the summed cost of a dataset's three most expensive
-   admissible actions (§7.2), computed per dataset, rather than a fixed number.
-8. **`LevelEncoder` vs `LabelEncoder`.** Ordinal features use a custom
-   level-aware encoder that preserves order and admissible direction, not
-   scikit-learn's `LabelEncoder`.
-9. **Two-box representation.** The pipeline keeps a raw feature view and an
+7. **The budget is derived, not hard-coded.** The normalising budget is the summed
+   cost of a dataset's three most expensive admissible actions (§7.2), computed per
+   dataset.
+8. **`LevelEncoder`, not `LabelEncoder`.** Ordinal features use a custom
+   level-aware encoder that preserves order and admissible direction.
+9. **Two-space representation.** The pipeline keeps a raw feature view and an
    encoded view with explicit `encoded_bounds`, so the SCM and the cost model can
-   each work in the space that is natural to them.
-10. **Streamlit for the demo.** The spec did not name an app framework; the
-    interactive demo is built with Streamlit.
+   each work in the space natural to them.
+10. **Streamlit for the demo.** The interactive explorer over the stored results
+    is built with Streamlit.
 11. **Notebooks shipped unexecuted.** No Jupyter kernel is installed in the build
     environment, so the four notebooks ship with empty outputs; their code is
     smoke-tested as scripts. Run them locally to populate outputs.
-12. **Regenerated summary tables.** `blackbox_performance` and
-    `scm_validation_summary` are regenerated for all four datasets from
-    `models/metrics.json` and the SCM validator respectively (an earlier run had
-    left them diabetes-only). Deterministic; no retraining.
 
 ## User study
 

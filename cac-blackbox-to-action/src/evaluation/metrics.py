@@ -66,7 +66,6 @@ BASE_COLUMNS: tuple[str, ...] = (
 EXTRA_COLUMNS: tuple[str, ...] = (
     "n_generations", "objective", "term_validity", "term_cost",
     "term_feasibility", "term_plausibility", "proven_optimal", "n_evaluated",
-    "n_restarts", "n_sampled",
 )
 
 

@@ -98,12 +98,10 @@ class Config(BaseSettings):
     KNN_K: int = 5
     #: Seeds used to retrain the black box for faithfulness/robustness checks.
     ROBUSTNESS_SEEDS: tuple[int, ...] = (0, 1, 2)
-
-    # ------------------------------------------------------------------- LLM
-    USE_LLM: bool = False
-    LLM_PROVIDER: Literal["openai", "anthropic", "local"] = "anthropic"
-    LLM_MODEL: str = "claude-opus-5"
-    LLM_API_KEY: str = ""  # injected via .env, never hard-coded
+    #: Seeds handed to the stochastic searches for the significance study (§9.6).
+    #: The first is the canonical run every other table uses, so a single-seed
+    #: result is a strict subset of the multi-seed one.
+    SIGNIFICANCE_SEEDS: tuple[int, ...] = (42, 0, 1, 2, 3)
 
     # --------------------------------------------------------------- logging
     LOG_LEVEL: str = "INFO"

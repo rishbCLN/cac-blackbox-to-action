@@ -23,8 +23,9 @@ real causal structure.
     \emph{no diabetes} ($\texttt{no\_diabetes}=1-\texttt{Outcome}$).
     \texttt{Glucose}, \texttt{BMI}, and \texttt{BloodPressure} are actionable;
     \texttt{Age}, \texttt{Pregnancies}, and \texttt{DiabetesPedigreeFunction} are
-    not. This fourth dataset is an addition beyond the three the specification
-    named; it is listed among the deviations in the README.
+    not. We include it as the one \emph{health} setting alongside the three credit
+    and income problems, to check that the usable gap is not a peculiarity of
+    financial data.
 \end{itemize}
 
 \paragraph{The black box.} For every dataset the primary black box is an XGBoost
@@ -42,3 +43,5 @@ black box rejects, capped at $\text{N\_QUERY\_INSTANCES}=100$: Adult and HELOC
 hit the cap at 100, German has 51, diabetes 43. Every method is asked for up to
 $k=\text{N\_COUNTERFACTUALS}=5$ suggestions per query record, and every table in
 \S\ref{sec:experiments} is computed on this shared set.
+
+\input{tables/blackbox_performance}

@@ -221,11 +221,10 @@ class OracleMethod(CounterfactualMethod):
     # ------------------------------------------------------------------ output
     def _build(self, x: np.ndarray, x_cf: np.ndarray, y_original: int,
                y_target: int, proba_target: float) -> Counterfactual:
-        """The base record, plus the three numbers only the oracle can report."""
+        """The base record, plus the two numbers only the oracle can report."""
         cf = super()._build(x, x_cf, y_original, y_target, proba_target)
         return cf.with_extras(proven_optimal=bool(self._proven),
-                              n_evaluated=int(self._n_evals),
-                              grid_points=int(self.GRID_POINTS))
+                              n_evaluated=int(self._n_evals))
 
 
 __all__ = ["OracleMethod"]

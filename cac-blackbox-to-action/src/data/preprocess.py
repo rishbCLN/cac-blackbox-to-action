@@ -371,7 +371,14 @@ def load_dataset(dataset: str) -> DatasetBundle:
 
 
 def get_dataset(dataset: str, force: bool = False) -> DatasetBundle:
-    """Cached accessor: build on first use, read from disk afterwards."""
+    """Build ``dataset`` if the processed files are missing, else read them back.
+
+    A thin alias for :func:`build_dataset`, which reuses the on-disk cache in
+    ``data/processed/`` when it exists and only re-fits on ``force=True``.  Unlike
+    :func:`~src.scm.define_scm.get_scm` and its siblings there is no in-process
+    memoisation here: each call re-reads from disk, which is cheap next to the fit
+    it avoids and keeps the bundle free of cross-call shared state.
+    """
     return build_dataset(dataset, force=force)
 
 

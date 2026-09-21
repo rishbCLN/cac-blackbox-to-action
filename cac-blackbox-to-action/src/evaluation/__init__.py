@@ -43,6 +43,17 @@ _MODULES = {
         "blocked_features",
         "headline",
     ),
+    "significance": (
+        "CI",
+        "McNemarResult",
+        "PairedResult",
+        "aggregate_seeds",
+        "bootstrap_diff",
+        "holm_bonferroni",
+        "mcnemar",
+        "mean_ci",
+        "paired_wilcoxon",
+    ),
 }
 
 #: ``summarise`` lives in all three modules and means something different in each,

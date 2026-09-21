@@ -39,6 +39,9 @@ dependences among them. We keep these graphs rather than densifying them to chas
 the tests, and we treat the gap as a limitation --- one the robustness study meets
 head-on by re-scoring \cac{} under deliberately perturbed and even fully
 disconnected graphs (\S\ref{sec:experiments}). The per-edge results are in
-Appendix~\ref{app:scm}. The Adult graph as used is a 10-node, 25-edge superset of
-the smaller graph sketched in the specification; this, and the imperfect German
-and HELOC graphs, are recorded among the README deviations.
+Appendix~\ref{app:scm}. The imperfect German and HELOC graphs are the honest
+price of hand-crafting structure over densely-correlated credit features, and the
+robustness study measures what that imperfection costs rather than assuming it
+away.
+
+\input{tables/scm_validation}

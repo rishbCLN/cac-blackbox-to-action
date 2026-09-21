@@ -81,13 +81,27 @@ $k$ best distinct survivors are returned as the applicant's ranked suggestions.
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{A note on reconstruction}
-The specification we built from was truncated inside the subsection that gave
-\cac{}'s pseudocode, so the objective of Eq.~\eqref{eq:objective} and the search of
-Algorithm~\ref{alg:cac} are a faithful reconstruction consistent with the parts of
-the specification that survived --- the four named terms, their weights, the
-action budget, and the intervention-through-SCM scoring. This is stated plainly
-among the deviations in the README so no reader mistakes the reconstruction for a
-verbatim reproduction. What matters for the claims that follow is the property the
-reconstruction preserves exactly: \cac{} scores interventions through the causal
-model, so it cannot propose a world its own model disowns.
+\subsection{Why a population search, and why these operators}
+The design is dictated by the objective, not chosen for its own sake. Three
+properties of Eq.~\eqref{eq:objective} rule out the obvious alternatives. A
+gradient method is unavailable twice over: the black box exposes only
+$f(x)$ (\S\ref{sec:problem}), so $\nabla_x f$ cannot be taken, and even a
+finite-difference surrogate is defeated by the discrete half of the search --- the
+choice of \emph{which} features to act on is a combinatorial subset selection with
+no derivative, and the SCM is piecewise-constant wherever a parent is categorical,
+so a numerical gradient through it is zero almost everywhere and misleading where
+it is not. An exhaustive search is ruled out by size: with a grid of a dozen
+values per feature and up to three simultaneous interventions, the action space is
+in the tens of thousands per applicant, and each candidate costs one propagation
+through the SCM and one black-box query. A population search is the natural fit ---
+it needs only function values, explores the discrete and continuous coordinates
+jointly, and amortises both costs by evaluating a whole generation in one batched
+pass. The elitist retention and the crossover/jitter/set-mutation operators are
+the standard machinery for a mixed discrete--continuous space
+\citep{deb2002nsga}; the one non-generic choice is dropping over-budget actions
+\emph{at random} rather than by cost (Algorithm~\ref{alg:cac}, legalise), which
+avoids biasing the population toward cheap plans that do not actually flip the
+box. What carries the paper's claims is not the search but the representation:
+\cac{} scores interventions through the causal model, so it cannot propose a world
+its own model disowns, and any optimiser over the same space would inherit that
+guarantee.

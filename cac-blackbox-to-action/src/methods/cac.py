@@ -43,18 +43,28 @@ that no method ignoring the SCM can even observe.
 records in the target class, as a k-NN distance normalised by the median such
 distance.  It keeps the search out of empty regions that happen to flip.
 
-The search is a population, not a gradient descent, for three reasons: the black
-box is opaque (rule #8), so there is no gradient to take; half the search space
-is a subset choice, which has no derivative; and the discrete half of the SCM is
-piecewise constant, so a finite-difference gradient through it is zero almost
-everywhere and misleading where it is not.  ``CAC_LEARNING_RATE`` therefore sets
-the mutation scale on continuous coordinates — the same knob doing the same job.
+The search is a population, not a gradient descent, and the choice is forced by
+the objective rather than a matter of taste.  There is no gradient to take: the
+black box is opaque (rule #8), half the search space is a discrete subset choice
+with no derivative, and the discrete half of the SCM is piecewise constant, so a
+finite-difference gradient through it is zero almost everywhere and misleading
+where it is not.  Exhaustive search is out too — a dozen grid values per feature
+over three simultaneous interventions is tens of thousands of candidates per
+record, each costing a propagation and a query.  A gradient-free population search
+needs only function values, moves in the discrete and continuous coordinates at
+once, and amortises both costs by scoring a whole generation in one batched pass.
+``CAC_LEARNING_RATE`` sets the mutation scale on the continuous coordinates — the
+role a step size plays when there is no gradient to scale.
 
-§8.4's pseudocode did not survive the instruction being truncated mid-sentence,
-so the algorithm above is reconstructed from what the rest of the spec pins
-down: the four ``CAC_LAMBDA_*`` weights, ``MAX_ACTIONS``, ``CAC_POPULATION``,
-``CAC_MAX_ITERS``, ``CAC_LEARNING_RATE``, ``CAC_TARGET_MARGIN``, and rule #8.
-The reconstruction is listed among the deviations in ``README.md``.
+The operators (elitist retention, uniform crossover, Gaussian jitter, set
+mutation, legalisation) are the standard toolkit for a mixed
+discrete--continuous space in the elitist tradition of NSGA-II; the one
+non-generic choice is that :meth:`_legalise` drops an over-budget plan's excess
+actions *at random* rather than by cost, which keeps the population from drifting
+toward cheap plans that do not flip the box.  None of the claims rest on the
+search finding a global optimum — only on the representation: every candidate is
+scored on the record the SCM produces, so a causally impossible plan is never in
+the population to begin with.
 """
 
 from __future__ import annotations

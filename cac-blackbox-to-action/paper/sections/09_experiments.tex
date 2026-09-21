@@ -1,8 +1,9 @@
 \section{Experiments}
 \label{sec:experiments}
 
-We ask four questions. Is the validity--usable gap real, and how large
-(\S\ref{sec:exp:gap})? \emph{Why} do valid plans fail --- causally, or on
+We ask four questions. Is the validity--usable gap real, how large
+(\S\ref{sec:exp:gap}), and does it survive repeated seeds and a significance test
+(\S\ref{sec:exp:significance})? \emph{Why} do valid plans fail --- causally, or on
 actionability (\S\ref{sec:exp:why})? Is the closing of the gap attributable to the
 causal term specifically (\S\ref{sec:exp:ablation})? And what does \cac{} pay for
 it, and does the advantage survive changes to the setup
@@ -34,6 +35,8 @@ reaches only $0.66$. On \textbf{German}, Wachter falls from $1.00$ valid to $0.4
 usable. \cac{} is $1.00$ usable on all four. Figure~\ref{fig:usable_gap} draws the
 faint-to-solid drop; Figure~\ref{fig:funnel} traces it audit by audit.
 
+\input{tables/main_results}
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.86\linewidth]{results/results_recourse_funnel}
@@ -43,6 +46,36 @@ faint-to-solid drop; Figure~\ref{fig:funnel} traces it audit by audit.
   \cac{} does not, because it is built to pass them.}
   \label{fig:funnel}
 \end{figure}
+
+\subsection{The gap is stable across seeds and statistically significant}
+\label{sec:exp:significance}
+A perfect $1.00$ from one \texttt{random\_state} invites the obvious worry that we
+report a lucky draw. Table~\ref{tab:significance} re-runs the entire audit under
+five seeds of every stochastic search (\cac{}, Random, Wachter, and DiCE
+re-initialise; the Oracle is deterministic) and gives each rate as a mean with its
+$95\%$ Student-$t$ interval across seeds. \cac{}'s \Usable{} column is
+$1.000\pm0.000$ on all four datasets: the perfect result carries zero seed
+variance, not a single seed's optimism. The baselines, by contrast, carry real
+spread --- Wachter ranges $\pm0.06$ on German, DiCE $\pm0.05$ on HELOC --- and
+their intervals sit well below $1.00$ wherever the gap was open in
+Table~\ref{tab:main_results}.
+
+Table~\ref{tab:significance_tests} turns the comparison into a test. We pair \cac{}
+against each baseline on the \emph{usable} outcome over every (seed, record) cell
+and apply an exact two-sided McNemar test, Holm-corrected across the four baselines
+of each dataset. The structural fact is the \emph{Base only} column: it is $0$ in
+every one of the sixteen comparisons --- there is no dataset, seed, or record where
+a baseline produces a usable plan and \cac{} does not. The advantage is a strict
+dominance, not an average that hides losses. After correction \cac{} beats Wachter
+and the Oracle on Adult, all four baselines on German and HELOC, and Random,
+Wachter, and DiCE on Diabetes ($p<0.05$ throughout, most $p<10^{-10}$). Two cells
+are honestly not significant, and both are informative: on Adult, Random and DiCE
+are \emph{tied} with \cac{} (zero discordant pairs --- everyone is usable on this
+shallow-causal dataset, exactly the story of \S\ref{sec:exp:gap}), and on Diabetes
+the Oracle differs on only five records ($p=0.06$). Nowhere does a baseline win.
+
+\input{tables/significance}
+\input{tables/significance_tests}
 
 \subsection{Why valid plans fail}
 \label{sec:exp:why}
@@ -68,6 +101,9 @@ genuinely distinct: DiCE's problem on HELOC is mostly causal, Wachter's is both
 causal and gross inactionability, and no single-audit evaluation would have caught
 either.
 
+\input{tables/faithfulness}
+\input{tables/feasibility}
+
 \subsection{The causal term is what closes the gap}
 \label{sec:exp:ablation}
 Table~\ref{tab:ablation} and Figure~\ref{fig:ablation} remove one objective term
@@ -81,6 +117,8 @@ as an intervention, the sole way to strip causal validity from a method that
 represents it structurally --- breaks it: usable falls to $0.68$ on HELOC, $0.85$
 on Adult, $0.94$ on German, the propagation gap jumps from zero, and the flip
 survives only $60$--$79\%$ of the time. The gap is the causal term's doing.
+
+\input{tables/ablation}
 
 \begin{figure}[t]
   \centering
@@ -131,6 +169,8 @@ agrees, and \cac{}'s value is insurance rather than rescue. The appendix
 HELOC and German applicants where only \cac{} produces a usable plan --- action by
 action.
 
+\input{tables/case_study}
+
 \subsection{The advantage survives changes to the setup}
 \label{sec:exp:robust}
 Four robustness studies re-audit \cac{} under a moved goalpost.
@@ -153,3 +193,8 @@ Adult, $0.65$ on HELOC), which is exactly the \emph{-- SCM} ablation row. \cac{}
 degrades gracefully with the quality of the causal knowledge it is given, rather
 than depending on the graph being perfect --- the appropriate behaviour given the
 imperfect German and HELOC graphs of \S\ref{sec:scm}.
+
+\input{tables/robustness_budget}
+\input{tables/robustness_k}
+\input{tables/robustness_model}
+\input{tables/robustness_scm}
