@@ -52,6 +52,31 @@ def load_csv(name: str) -> pd.DataFrame | None:
     return pd.read_csv(path) if path.exists() else None
 
 
+def headline_source(dataset: str, live_fallback: bool = True,
+                    n: int = 40, k: int = 3) -> tuple[pd.DataFrame | None, str]:
+    """The validity/usable table for one dataset, and where it came from.
+
+    Prefers ``results/headline.csv`` (the fast path the experiments wrote); when
+    it is missing and ``live_fallback`` is set, computes a bounded cohort live on
+    the real models instead.  Returns ``(frame, source)`` where ``source`` is
+    ``"results"``, ``"live"`` or ``"none"`` so the caller can label the chart
+    honestly rather than implying a full run happened.
+    """
+    headline = load_csv("headline")
+    if headline is not None and dataset in set(headline["dataset"]):
+        return headline[headline["dataset"] == dataset].copy(), "results"
+    if not live_fallback:
+        return None, "none"
+    try:
+        from app import live as L  # noqa: PLC0415
+
+        methods = tuple(L.live_methods(dataset))
+        frame = L.cohort_headline(dataset, n=n, k=k, methods=methods)
+        return (frame, "live") if frame is not None and not frame.empty else (None, "none")
+    except Exception:  # noqa: BLE001 - the chart is optional, never fatal
+        return None, "none"
+
+
 @st.cache_data(show_spinner=False)
 def per_record(dataset: str) -> pd.DataFrame:
     """Every stored plan for one dataset, one row per (method, record, rank).
@@ -62,6 +87,13 @@ def per_record(dataset: str) -> pd.DataFrame:
     ``faithfulness_per_cf`` --- into the columns the plot layer and the verdict
     badges read.  ``usable`` is the conjunction, computed here so the app and the
     headline table agree by construction rather than by coincidence.
+
+    The ``causal`` column is ``promise_kept`` (the plan flips the box, the flip
+    survives re-running the repaired world through the SCM, *and* the SCM signs
+    off), not the looser ``causal_valid`` (SCM agrees alone).  This is the exact
+    definition :func:`src.evaluation.feasibility.join_audits` leads with, so the
+    per-applicant badges and the paper's ``headline.csv`` count the same plans as
+    usable; reading ``causal_valid`` here overstated the usable rate.
     """
     cf = load_csv("counterfactuals")
     if cf is None:
@@ -74,10 +106,18 @@ def per_record(dataset: str) -> pd.DataFrame:
         cols = keys + [c for c in ("actionable", "blocked_features") if c in feas]
         cf = cf.merge(feas[cols], on=keys, how="left")
     faith = load_csv("faithfulness_per_cf")
-    if faith is not None and "off_features" in faith:
-        cf = cf.merge(faith[keys + ["off_features"]], on=keys, how="left")
+    if faith is not None:
+        extra = [c for c in ("promise_kept", "flip_survives", "off_features")
+                 if c in faith]
+        cf = cf.merge(faith[keys + extra], on=keys, how="left")
 
-    cf = cf.rename(columns={"causal_valid": "causal"})
+    # ``causal`` is the promise the plan makes surviving the SCM (promise_kept),
+    # matching the headline's conjunction; fall back to causal_valid only when the
+    # faithfulness audit is absent.
+    if "promise_kept" in cf:
+        cf["causal"] = cf["promise_kept"]
+    else:
+        cf["causal"] = cf.get("causal_valid")
     if "actionable" not in cf:
         cf["actionable"] = cf.get("feasible")
     for col in ("valid", "causal", "actionable"):
@@ -126,7 +166,7 @@ def gap_figure(headline: pd.DataFrame, dataset: str) -> Any:
     y = np.arange(len(order))[::-1]
 
     fig, ax = figure(1, 1, figsize=(6.6, 0.6 + 0.5 * len(order)))
-    for yi, method in zip(y, order):
+    for yi, method in zip(y, order, strict=False):
         colour = method_colour(method)
         ax.barh(yi, float(block.loc[method, "validity"]), height=0.66,
                 color=colour, alpha=0.25, zorder=2)
@@ -141,6 +181,49 @@ def gap_figure(headline: pd.DataFrame, dataset: str) -> Any:
     ax.set_xlabel("share of applicants  (faint = flips the box · solid = usable recourse)")
     ax.set_title(f"{label_of(dataset)}: the validity–usable gap", loc="left")
     ax.grid(axis="x", alpha=0.3)
+    fig.tight_layout()
+    return fig
+
+
+def funnel_figure(headline: pd.DataFrame, dataset: str) -> Any:
+    """The F/S/A/Usable decomposition per method, for one dataset.
+
+    Four grouped bars per method --- validity, causal validity, actionability,
+    usable --- so a reader sees *which* test each method fails, not just that its
+    usable rate is low.  Uses the same method colours as every other figure, with
+    decreasing opacity across the four stages so 'usable' (the conjunction) reads
+    as the solid endpoint.
+    """
+    block = headline[headline["dataset"] == dataset]
+    order = [m for m in METHODS if m in set(block["method"])]
+    block = block.set_index("method").loc[order]
+
+    stages = [("validity", "flips"), ("causal_validity", "survives SCM"),
+              ("actionability", "doable"), ("usable", "USABLE")]
+    alphas = [0.30, 0.5, 0.7, 1.0]
+    x = np.arange(len(order))
+    width = 0.2
+
+    fig, ax = figure(1, 1, figsize=(1.6 + 1.3 * len(order), 3.6))
+    for si, (col, _lab) in enumerate(stages):
+        offs = x + (si - 1.5) * width
+        for xi, method in zip(offs, order, strict=False):
+            val = float(block.loc[method, col]) if col in block else 0.0
+            ax.bar(xi, val, width=width, color=method_colour(method),
+                   alpha=alphas[si], zorder=3)
+    ax.set_xticks(x)
+    ax.set_xticklabels([label_of(m) for m in order])
+    ax.set_ylim(0, 1.08)
+    ax.set_ylabel("share of applicants")
+    ax.set_title(f"{label_of(dataset)}: where each method drops out", loc="left")
+    ax.grid(axis="y", alpha=0.3)
+    # a tiny legend explaining the four bars via opacity
+    from matplotlib.patches import Patch  # noqa: PLC0415
+
+    handles = [Patch(facecolor=NEUTRAL, alpha=a, label=lab)
+               for a, (_c, lab) in zip(alphas, stages, strict=False)]
+    ax.legend(handles=handles, loc="lower left", fontsize=7, ncol=2,
+              frameon=False)
     fig.tight_layout()
     return fig
 
@@ -201,13 +284,22 @@ def recourse_png(dataset: str, record: int, frame: pd.DataFrame) -> Path | None:
 
 
 def moves_table(row: pd.Series) -> pd.DataFrame:
-    """What a plan asks vs. what the SCM makes follow, as a small table."""
+    """What a plan asks vs. what the SCM makes follow, as a small table.
+
+    Side-effect tokens are stored with an internal ``:immutable``/``:sensitive``
+    tag (e.g. ``ExternalRiskEstimate:immutable``); we split that off so the judge
+    sees a clean feature name plus a readable role, never the raw encoding.
+    """
     asks = _split(row.get("changed_features"))
-    follows = [f for f in _split(row.get("side_effects")) if f not in set(asks)]
-    return pd.DataFrame(
-        [{"feature": f, "move": "asked for"} for f in asks]
-        + [{"feature": f, "move": "follows via the SCM"} for f in follows]
-    )
+    ask_set = set(asks)
+    rows = [{"feature": f, "move": "asked for", "role": ""} for f in asks]
+    for token in _split(row.get("side_effects")):
+        name, _, tag = token.partition(":")
+        if name in ask_set:
+            continue
+        rows.append({"feature": name, "move": "follows via the SCM",
+                     "role": tag or ""})
+    return pd.DataFrame(rows, columns=["feature", "move", "role"])
 
 
 # ------------------------------------------------------------------- utilities

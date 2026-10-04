@@ -1,13 +1,22 @@
-"""Black Box → Actionable Insight — an interactive tour of the recourse gap.
+"""Black Box -> Actionable Insight --- the interactive demo entrypoint.
+
+A multipage Streamlit app that walks a non-expert judge from the problem to the
+evidence in six pages:
+
+    Home       the 30-second hook: one applicant, one failing baseline, CAC holds
+    The Gap    the thesis chart across the whole population
+    Head-to-head   every method's plan for one applicant, audited
+    Live sandbox   the judge drives: type a plan, watch the world react
+    Causal map     the world-model doing the judging
+    Is this real?  significance, robustness and the causal ablation
 
 Run with::
 
-    streamlit run app/app.py
+    streamlit run app/app.py        # or: make app
 
-The app reads only what the experiments already wrote (``make all``); it trains
-nothing and never calls the black box. Pick a dataset to see the validity–usable
-gap, then pick an applicant to see what each method would actually tell them to
-do and which of the three audits each plan survives.
+The app reads what the experiments already wrote (``make all``) and, on the
+sandbox page, *queries* the trained model live (never trains, never mutates it).
+Every page degrades to a friendly banner when its artefacts are missing.
 """
 
 from __future__ import annotations
@@ -17,133 +26,78 @@ from pathlib import Path
 
 import streamlit as st
 
-# The app may be launched from anywhere; put the project root on the path so
-# ``import src`` finds the project package (and not a stray site-packages one).
+# Launchable from anywhere: make the project root win over any stray
+# site-packages ``src`` before the first-party imports run.
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app import components as C  # noqa: E402
-from src.viz import label_of  # noqa: E402
+from app.ui import (  # noqa: E402
+    page_applicant,
+    page_evidence,
+    page_gap,
+    page_home,
+    page_map,
+    page_sandbox,
+    theme,  # noqa: E402
+)
+from app.ui import state as S  # noqa: E402
 
-st.set_page_config(page_title="Black Box → Actionable Insight",
-                   page_icon="🧭", layout="wide")
-
-
-def _sidebar() -> tuple[str, str, int]:
-    """Dataset, applicant-source mode, and the chosen record."""
-    st.sidebar.title("🧭 Recourse explorer")
-    datasets = C.datasets_present()
-    if not datasets:
-        st.sidebar.error("No stored results. Run `make all` first.")
-        st.stop()
-
-    dataset = st.sidebar.selectbox("Dataset", datasets,
-                                   format_func=label_of)
-    frame = C.per_record(dataset)
-    if frame.empty:
-        st.sidebar.error("results/counterfactuals.csv is missing; run experiment 02.")
-        st.stop()
-
-    cases = C.load_csv("qualitative_cases")
-    dcases = cases[cases["dataset"] == dataset] if cases is not None else None
-    mode = st.sidebar.radio(
-        "Choose an applicant by", ["Curated case study", "Any rejected applicant"],
-        help="Curated cases are the ones the paper walks through; or browse the "
-             "whole evaluation set.")
-
-    if mode.startswith("Curated") and dcases is not None and not dcases.empty:
-        case = st.sidebar.selectbox("Case", sorted(dcases["case"].unique()))
-        record = int(dcases[dcases["case"] == case]["record"].iloc[0])
-        st.sidebar.caption(f"applicant #{record}")
-    else:
-        if mode.startswith("Curated"):
-            st.sidebar.info("No curated cases for this dataset; browsing all.")
-        records = C.records_for(frame)
-        record = st.sidebar.select_slider("Applicant #", options=records,
-                                           value=records[0])
-    return dataset, mode, record
+st.set_page_config(page_title="Black Box -> Actionable Insight",
+                   page_icon="\U0001F9ED", layout="wide")
 
 
-def _gap(dataset: str) -> None:
-    headline = C.load_csv("headline")
-    if headline is None or headline.empty:
-        st.info("No headline table yet — run experiment 04 to see the gap chart.")
+def _warm_up(avail: S.Availability) -> None:
+    """Pre-load the default dataset's engine + a CAC plan so the first click is fast.
+
+    One-shot per session, guarded so a missing live engine never blocks the app.
+    """
+    if st.session_state.get("_warmed"):
         return
-    left, right = st.columns([3, 2])
-    with left:
-        st.pyplot(C.gap_figure(headline, dataset), width="stretch")
-    with right:
-        st.markdown("#### How to read this")
-        st.markdown(
-            "- Every method clears a high **validity** bar — they all flip the "
-            "model on paper.\n"
-            "- Only the **usable** bar counts advice that also *survives the "
-            "causal model* and is *something a person could do*.\n"
-            "- The distance between the two bars is the gap. **CAC** is built to "
-            "close it; the baselines are not.")
-        block = headline[headline["dataset"] == dataset].set_index("method")
-        if "cac" in block.index:
-            st.metric("CAC usable recourse", f"{float(block.loc['cac','usable']):.0%}",
-                      help="share of applicants CAC gives a usable plan")
-
-
-def _applicant(dataset: str, mode: str, record: int) -> None:
-    frame = C.per_record(dataset)
-    st.subheader(f"Applicant #{record} — what each method advises")
-
-    png = C.recourse_png(dataset, record, frame)
-    if png is not None and png.exists():
-        st.image(str(png), width="stretch")
-    else:
-        st.warning("Could not render the plan figure for this applicant.")
-
-    st.markdown("#### The verdict, method by method")
-    for method in C.methods_for(dataset, frame):
-        row = C.best_row(frame, method, record)
-        cols = st.columns([1, 4])
-        cols[0].markdown(f"**{label_of(method)}**")
-        cols[1].markdown(C.verdict_markdown(row), unsafe_allow_html=True)
-        if row is not None:
-            table = C.moves_table(row)
-            if not table.empty:
-                with cols[1].expander(
-                        f"plan detail · effort {float(row.get('cost', float('nan'))):.2f}"):
-                    st.dataframe(table, hide_index=True, width="stretch")
-
-    if mode.startswith("Curated"):
-        _narrative(dataset, record)
-
-
-def _narrative(dataset: str, record: int) -> None:
-    """The curated case's own advice/consequences text, if experiment 05 wrote it."""
-    cases = C.load_csv("qualitative_cases")
-    if cases is None:
+    st.session_state["_warmed"] = True
+    dataset = S.current_dataset()
+    if not dataset or dataset not in avail.live:
         return
-    block = cases[(cases["dataset"] == dataset) & (cases["record"] == record)]
-    block = block[block["method"] == "cac"]
-    if block.empty:
-        return
-    row = block.iloc[0]
-    advice, conseq = row.get("advice"), row.get("consequences")
-    if isinstance(advice, str) and advice.strip():
-        st.markdown("#### CAC's plan in words")
-        st.markdown(f"**Do:** {advice}")
-        if isinstance(conseq, str) and conseq.strip() and conseq.lower() != "nan":
-            st.markdown(f"**Which causes:** {conseq}")
+    try:
+        from app import live as L  # noqa: PLC0415
+
+        eng = L.get_engine(dataset)
+        records = L.rejected_records(dataset, 5)
+        if records:
+            L.generate_plans(dataset, "cac", int(records[0]), 3)
+            _ = eng  # touched so the engine is cached
+    except Exception:  # noqa: BLE001 - warm-up is best-effort
+        pass
 
 
 def main() -> None:
-    st.title("Black Box → Actionable Insight")
-    st.caption("Counterfactual explanations that are causally valid, affordable, "
-               "and actually actionable — compared against the methods that are not.")
-    dataset, mode, record = _sidebar()
-    _gap(dataset)
-    st.divider()
-    _applicant(dataset, mode, record)
-    st.divider()
-    st.caption("Read-only demo over stored results — no model is trained or queried "
-               "here. Regenerate the underlying artifacts with `make all`.")
+    avail = S.availability()
+    theme.inject_css(S.demo_mode())
+    S.sidebar(avail)
+
+    if not (avail.any_results or avail.any_live):
+        st.title("Black Box -> Actionable Insight")
+        st.error("No artefacts found. Run `make all` in the project root "
+                 "(`cac-blackbox-to-action/`) to generate results and models, "
+                 "then reload.")
+        return
+
+    _warm_up(avail)
+
+    pages = [
+        st.Page(page_home.render, title="Home", icon="\U0001F3E0", url_path="home",
+                default=True),
+        st.Page(page_gap.render, title="The Gap", icon="\U0001F4CA", url_path="gap"),
+        st.Page(page_applicant.render, title="Head to head", icon="\u2696\uFE0F",
+                url_path="applicant"),
+        st.Page(page_sandbox.render, title="Live sandbox", icon="\U0001F39B\uFE0F",
+                url_path="sandbox"),
+        st.Page(page_map.render, title="Causal map", icon="\U0001F578\uFE0F",
+                url_path="map"),
+        st.Page(page_evidence.render, title="Is this real?", icon="\U0001F52C",
+                url_path="evidence"),
+    ]
+    st.navigation(pages).run()
 
 
 if __name__ == "__main__":
