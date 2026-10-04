@@ -1,0 +1,59 @@
+ dataset  method  usable  paper_definition_usable
+   adult     cac     1.0                      1.0
+   adult    dice     1.0                      1.0
+   adult  oracle     0.8                      0.8
+   adult  random     1.0                      1.0
+   adult wachter     1.0                      1.0
+diabetes     cac     1.0                      1.0
+diabetes    dice     1.0                      1.0
+diabetes  oracle     1.0                      1.0
+diabetes  random     0.5                      0.6
+diabetes wachter     0.6                      0.7
+  german     cac     1.0                      1.0
+  german    dice     0.9                      1.0
+  german  oracle     0.8                      1.0
+  german  random     0.7                      1.0
+  german wachter     0.4                      0.7
+   heloc     cac     1.0                      1.0
+   heloc    dice     0.6                      0.7
+   heloc  oracle     0.8                      0.9
+   heloc  random     0.7                      0.7
+   heloc wachter     0.0                      0.1
+2026-10-04 18:19:59 | INFO    | src.scm.define_scm | SCM adult: 10 nodes, 25 edges, 7 actionable of 9 features
+2026-10-04 18:19:59 | INFO    | src.scm.fcm | Reusing cached FCM fcm_adult.joblib
+2026-10-04 18:20:00 | INFO    | src.model.blackbox | Loaded black box xgb_adult.joblib
+2026-10-04 18:20:03 | INFO    | src.scm.define_scm | SCM german: 16 nodes, 37 edges, 11 actionable of 15 features
+2026-10-04 18:20:03 | INFO    | src.scm.fcm | Reusing cached FCM fcm_german.joblib
+2026-10-04 18:20:03 | INFO    | src.model.blackbox | Loaded black box xgb_german.joblib
+2026-10-04 18:20:04 | INFO    | src.scm.define_scm | SCM heloc: 13 nodes, 28 edges, 8 actionable of 12 features
+2026-10-04 18:20:04 | INFO    | src.scm.fcm | Reusing cached FCM fcm_heloc.joblib
+2026-10-04 18:20:04 | INFO    | src.model.blackbox | Loaded black box xgb_heloc.joblib
+2026-10-04 18:20:05 | INFO    | src.scm.define_scm | SCM diabetes: 9 nodes, 17 edges, 3 actionable of 8 features
+2026-10-04 18:20:05 | INFO    | src.scm.fcm | Reusing cached FCM fcm_diabetes.joblib
+2026-10-04 18:20:06 | INFO    | src.model.blackbox | Loaded black box xgb_diabetes.joblib
+[
+  {
+    "dataset": "adult",
+    "n_cac_suggestions": 50,
+    "max_normalized_declared_replay_gap": 0.0,
+    "rejected_after_replay": 0
+  },
+  {
+    "dataset": "german",
+    "n_cac_suggestions": 50,
+    "max_normalized_declared_replay_gap": 0.0,
+    "rejected_after_replay": 0
+  },
+  {
+    "dataset": "heloc",
+    "n_cac_suggestions": 50,
+    "max_normalized_declared_replay_gap": 0.0,
+    "rejected_after_replay": 0
+  },
+  {
+    "dataset": "diabetes",
+    "n_cac_suggestions": 50,
+    "max_normalized_declared_replay_gap": 0.0,
+    "rejected_after_replay": 0
+  }
+]

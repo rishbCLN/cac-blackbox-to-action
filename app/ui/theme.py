@@ -47,7 +47,11 @@ GLOSSARY: tuple[tuple[str, str], ...] = (
     ("Validity", "The plan flips the model's decision."),
     ("Causal validity", "The flip survives once the world's knock-on effects fill in."),
     ("Actionability", "A real person could carry the plan out (no impossible asks)."),
-    ("Usable", "All three at once: valid AND causal AND actionable."),
+    ("Usable", "The primary endpoint: the flip survives the world's knock-on "
+     "effects AND a real person could carry it out (state fidelity is reported "
+     "separately)."),
+    ("State fidelity", "How closely the plan's proposed state matches the one the "
+     "SCM actually produces --- reported beside the endpoint, not a gate."),
     ("SCM", "Structural causal model --- a graph of what causes what."),
     ("Side effect", "A feature the SCM moves because you changed something upstream."),
     ("Cost / effort", "How hard the plan is, normalised so 1.0 is the allowed maximum."),
@@ -77,18 +81,21 @@ def audit_states(row: Any) -> list[tuple[str, str, bool]]:
     ``valid`` / ``promise_kept`` / ``causal_valid`` / ``actionable``).  Missing
     fields read False.
 
-    The ``causal`` audit is ``promise_kept`` --- the flip survives re-running the
-    repaired world through the SCM --- not the looser ``causal_valid`` (SCM agrees
-    alone), so the chips match the paper's usable conjunction and the stored
-    per-record frames (see :func:`app.components.per_record`).
+    The ``causal`` audit is replayed-action success (``flip_survives``) --- the
+    flip survives re-running the SCM-repaired world through the box --- matching
+    the headline's ``causal_validity``.  State fidelity (``promise_kept``) is a
+    separate quantity reported beside the endpoint, not one of these three chips
+    (Finding 3); see :func:`app.components.per_record`.
     """
     out: list[tuple[str, str, bool]] = []
     for key, name, gloss in AUDIT_META:
         val = _read(row, key)
         if val is None and key == "causal":
-            # live Audit / older rows expose the promise under its own name;
-            # fall back to causal_valid only when promise_kept is absent.
-            val = _read(row, "promise_kept")
+            # live Audit / stored rows expose replayed success as flip_survives;
+            # fall back to the stricter promise_kept, then causal_valid.
+            val = _read(row, "flip_survives")
+            if val is None:
+                val = _read(row, "promise_kept")
             if val is None:
                 val = _read(row, "causal_valid")
         out.append((name, gloss, _truthy(val)))
@@ -107,7 +114,16 @@ def _read(row: Any, key: str) -> Any:
 
 
 def is_usable(row: Any) -> bool:
-    return all(passed for _, _, passed in audit_states(row))
+    """The primary endpoint: replayed-action success AND action feasibility.
+
+    Proposed-state validity (the first chip) is shown but, per Finding 3, does
+    not gate the verdict; the endpoint is the ``causal`` (replayed success) and
+    ``actionable`` chips together.
+    """
+    states = [passed for _, _, passed in audit_states(row)]
+    # AUDIT_META order is (valid, causal, actionable); the endpoint is the last
+    # two: replayed success AND action feasibility.
+    return bool(states[1] and states[2]) if len(states) >= 3 else False
 
 
 # ----------------------------------------------------------------------- chips

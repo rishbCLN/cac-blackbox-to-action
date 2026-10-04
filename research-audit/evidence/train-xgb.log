@@ -1,0 +1,45 @@
+2026-10-04 18:14:24 | INFO    | src.utils.logging | Logging to /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/logs/01_train_blackbox_20261004_181424.log
+2026-10-04 18:14:24 | INFO    | experiments.01_train_blackbox | Training ['adult', 'german', 'heloc', 'diabetes'] x ['xgb'] (force=False, tune=False)
+2026-10-04 18:14:24 | INFO    | src.data.sources | Loaded local raw CSV audit_source.csv (48842, 15)
+2026-10-04 18:14:24 | INFO    | src.data.sources | [adult] using source 'local' (48842, 15)
+2026-10-04 18:14:24 | INFO    | src.data.load_adult | Adult: 38331 rows kept (0 dropped as missing, 10511 as duplicate profiles), positives=26.4%
+2026-10-04 18:14:24 | INFO    | src.data.preprocess | adult sub-sampled to MAX_ROWS=20000
+2026-10-04 18:14:24 | INFO    | src.data.preprocess | Transformer[adult] fitted on 16000 rows, 9 features
+2026-10-04 18:14:24 | INFO    | src.data.preprocess | Built adult: 16000 train / 4000 test rows -> /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/adult.csv
+2026-10-04 18:14:24 | INFO    | src.model.train | adult/xgb: AUC=0.9182 F1=0.6824 acc=0.8485 [PASS]
+2026-10-04 18:14:24 | INFO    | src.data.sources | Loaded local raw CSV audit_source.csv (1000, 21)
+2026-10-04 18:14:24 | INFO    | src.data.sources | [german] using source 'local' (1000, 21)
+2026-10-04 18:14:25 | INFO    | src.data.load_german | German: 1000 rows, positives=70.0%
+2026-10-04 18:14:25 | INFO    | src.data.preprocess | Transformer[german] fitted on 800 rows, 15 features
+2026-10-04 18:14:25 | INFO    | src.data.preprocess | Built german: 800 train / 200 test rows -> /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/german.csv
+2026-10-04 18:14:25 | INFO    | src.model.train | german/xgb: AUC=0.7846 F1=0.8443 acc=0.7750 [PASS]
+2026-10-04 18:14:25 | INFO    | src.data.sources | Loaded local raw CSV audit_source.csv (10459, 24)
+2026-10-04 18:14:25 | INFO    | src.data.sources | [heloc] using source 'local' (10459, 24)
+2026-10-04 18:14:25 | INFO    | src.data.load_heloc | HELOC: dropping 588 all-missing (-9) rows
+2026-10-04 18:14:25 | INFO    | src.data.load_heloc | HELOC: 9871 rows, positives=48.0%, synthetic=False
+2026-10-04 18:14:25 | INFO    | src.data.preprocess | Transformer[heloc] fitted on 7896 rows, 12 features
+2026-10-04 18:14:25 | INFO    | src.data.preprocess | Built heloc: 7896 train / 1975 test rows -> /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/heloc.csv
+2026-10-04 18:14:25 | INFO    | src.model.train | heloc/xgb: AUC=0.7880 F1=0.7061 acc=0.7205 [PASS]
+2026-10-04 18:14:25 | INFO    | src.data.sources | Loaded local raw CSV audit_source.csv (768, 9)
+2026-10-04 18:14:25 | INFO    | src.data.sources | [diabetes] using source 'local' (768, 9)
+2026-10-04 18:14:25 | INFO    | src.data.load_diabetes | Diabetes: 0 impossible zeros treated as missing across ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
+2026-10-04 18:14:25 | WARNING | src.data.load_diabetes | Diabetes: BloodPressure = 74.5 on 16 row(s), 100% positive vs a 35% base rate — treating as an imputation artefact
+2026-10-04 18:14:25 | WARNING | src.data.load_diabetes | Diabetes: SkinThickness = 27 on 162 row(s), 4% positive vs a 35% base rate — treating as an imputation artefact
+2026-10-04 18:14:25 | WARNING | src.data.load_diabetes | Diabetes: SkinThickness = 32 on 119 row(s), 86% positive vs a 35% base rate — treating as an imputation artefact
+2026-10-04 18:14:25 | WARNING | src.data.load_diabetes | Diabetes: Insulin = 102.5 on 236 row(s), 0% positive vs a 35% base rate — treating as an imputation artefact
+2026-10-04 18:14:25 | WARNING | src.data.load_diabetes | Diabetes: Insulin = 169.5 on 138 row(s), 100% positive vs a 35% base rate — treating as an imputation artefact
+2026-10-04 18:14:25 | INFO    | src.data.load_diabetes | Diabetes: median-imputed 671 missing cell(s)
+2026-10-04 18:14:25 | INFO    | src.data.load_diabetes | Diabetes: 768 rows, positives(no onset)=65.1%, synthetic=False
+2026-10-04 18:14:25 | INFO    | src.data.preprocess | Transformer[diabetes] fitted on 614 rows, 8 features
+2026-10-04 18:14:25 | INFO    | src.data.preprocess | Built diabetes: 614 train / 154 test rows -> /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/diabetes.csv
+2026-10-04 18:14:25 | INFO    | src.model.train | diabetes/xgb: AUC=0.7911 F1=0.7980 acc=0.7338 [BELOW TARGET]
+2026-10-04 18:14:25 | INFO    | experiments.01_train_blackbox | Black-box performance:
+ Dataset Model    n  Accuracy  Precision   Recall       F1      AUC       AP    Brier  Target AUC Meets target
+   Adult   XGB 4000  0.848500   0.763189 0.617062 0.682390 0.918186 0.825099 0.097577        0.90          yes
+  German   XGB  200  0.775000   0.818792 0.871429 0.844291 0.784643 0.888912 0.174177        0.75          yes
+   HELOC   XGB 1975  0.720506   0.712137 0.700106 0.706070 0.788031 0.765440 0.188989        0.75          yes
+Diabetes   XGB  154  0.733766   0.786408 0.810000 0.798030 0.791111 0.868775 0.201543        0.80           NO
+2026-10-04 18:14:34 | WARNING | matplotlib.font_manager | Matplotlib is building the font cache; this may take a moment.
+2026-10-04 18:14:54 | INFO    | src.utils.io | Saved LaTeX table -> /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/paper/tables/blackbox_performance.tex
+2026-10-04 18:14:54 | INFO    | experiments.01_train_blackbox | Metrics written to /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/models/metrics.json
+2026-10-04 18:14:54 | ERROR   | experiments.01_train_blackbox | Acceptance criteria NOT met for: xgb_diabetes

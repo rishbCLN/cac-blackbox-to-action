@@ -8,10 +8,13 @@ state: if the person actually does what they were told, and the world reacts the
 way the fitted SCM says it does, is the resulting record still accepted?
 
 The audit is Pearl's three steps applied to somebody else's answer.  Read the
-proposal as the intervention it implicitly asks for — the features it moved —
-recompute every descendant with the factual noise carried over
-(:meth:`~src.scm.fcm.FCM.repair`), and you get *the world that would actually
-result*.  Two numbers follow:
+proposal as the intervention it *declares* — the features the method says it is
+asking the person to change (``changed_features``) — recompute every descendant
+with the factual noise carried over, and you get *the world that would actually
+result*.  Replaying the declared action set, rather than inferring one from every
+coordinate that moved, is what keeps the audit honest: a proposal that claims a
+flipped world without declaring the actions that produce it replays to a record
+that does not survive.  Two numbers follow:
 
 *The gap* — how far the proposal is from that world, per feature and normalised.
 Zero means the method was describing a reachable state.  Non-zero means it was
@@ -58,11 +61,12 @@ def assess(evaluator: Evaluator,
            method: str | None = None) -> pd.DataFrame:
     """Audit one method's proposals against the world its own changes imply.
 
-    Batched deliberately: every proposal for every record goes through one
-    :meth:`~src.scm.fcm.FCM.repair` call and one ``predict_proba`` call, which is
-    both faster and safer — per-row repair would make it possible for the audit
-    of one record to see a different SCM state than the audit of another, and
-    then a difference in the table could be an artefact of the loop.
+    Each proposal is replayed as the exact action set it declares
+    (``changed_features``): the SCM holds those features at their proposed values
+    and recomputes the rest from the factual noise.  The resulting records are
+    scored in one ``predict_proba`` call, so every row's survival is read off the
+    same model state and a difference in the table is a fact about the proposals
+    rather than an artefact of the loop.
     """
     flat: list[tuple[int, int, Counterfactual]] = [
         (int(record), rank, cf)
@@ -76,7 +80,21 @@ def assess(evaluator: Evaluator,
     X_cf = np.asarray([cf.x_cf for _, _, cf in flat], dtype=float)
     targets = np.asarray([int(cf.y_target) for _, _, cf in flat])
 
-    repaired = evaluator.fcm.repair(X, X_cf)
+    # Replay the *declared* action set — the features each method says it is
+    # asking the person to change — rather than inferring an intervention from
+    # every coordinate that happens to differ in the proposed state.  The two
+    # agree for a method that declares everything it moved; they diverge exactly
+    # when a proposal claims a flipped world without declaring the actions that
+    # would produce it (the empty/omitted-action case), which this audit must
+    # catch rather than silently reward.  A row that declares no action replays
+    # to the factual record, so its "survival" is measured against doing nothing.
+    index = {name: j for j, name in enumerate(evaluator.feature_names)}
+    repaired = np.empty_like(X_cf)
+    for i, (_, _, cf) in enumerate(flat):
+        actions = {name: float(X_cf[i, index[name]])
+                   for name in cf.changed_features if name in index}
+        repaired[i] = (evaluator.fcm.do(X[i], actions) if actions
+                       else X[i].copy())
     gaps = np.abs(repaired - X_cf) / evaluator.span
     p_proposed = _p_target(evaluator, X_cf, targets)
     p_repaired = _p_target(evaluator, repaired, targets)
@@ -103,7 +121,10 @@ def assess(evaluator: Evaluator,
             "proba_repaired": float(p_repaired[i]),
             "proba_drop": float(p_proposed[i] - p_repaired[i]),
             "flip_survives": survives,
-            # The whole promise: it works, and it works for the stated reason.
+            # The strict bundle — valid, survives, and faithful — kept for readers
+            # who want the all-three bar.  It is *not* the headline endpoint:
+            # §9's ``usable`` gates on replayed success and feasibility only, and
+            # reports state fidelity (gap ≤ tolerance) beside it (Finding 3).
             "promise_kept": bool(valid and survives and gaps[i].max() <= tolerance),
             "off_features": ";".join(names[int(j)] for j in off),
         })

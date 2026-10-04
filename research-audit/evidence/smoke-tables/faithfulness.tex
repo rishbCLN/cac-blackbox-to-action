@@ -1,0 +1,30 @@
+\begin{table}[t]
+\caption{Causal faithfulness, over the counterfactuals that flip the black box. Each proposal is read as the intervention it implies, the SCM recomputes the descendants with the factual noise carried over, and the gap is the largest normalised disagreement between what was proposed and what would result. \emph{Flip survives} re-queries the black box on the repaired record; \emph{promise kept} requires both. $\Delta P$ is the mean loss in target-class probability, so a negative value means the consequences happened to help.}
+\label{tab:faithfulness}
+\begin{tabular}{llrrrrrrrr}
+\toprule
+Dataset & Method & $n$ valid & Causal valid & Gap (mean) & Gap (p90) & Features off & Flip survives & Promise kept & $\Delta P$ \\
+\midrule
+Adult & Random & 49 & 0.980 & 0.009 & 0.024 & 0.020 & 0.959 & 0.939 & 0.017 \\
+Adult & Wachter & 50 & 0.860 & 0.026 & 0.127 & 0.220 & 0.980 & 0.860 & -0.005 \\
+Adult & DiCE & 50 & 0.920 & 0.031 & 0.064 & 0.140 & 0.980 & 0.900 & -0.006 \\
+Adult & Oracle & 50 & 0.960 & 0.032 & 0.071 & 0.040 & 0.580 & 0.580 & 0.179 \\
+Adult & CAC & 50 & 1.000 & 0.000 & 0.000 & 0.000 & 1.000 & 1.000 & 0.000 \\
+Diabetes & Random & 47 & 0.574 & 0.109 & 0.286 & 0.553 & 0.532 & 0.426 & 0.148 \\
+Diabetes & Wachter & 47 & 0.766 & 0.061 & 0.125 & 0.277 & 0.894 & 0.660 & 0.017 \\
+Diabetes & DiCE & 50 & 0.740 & 0.048 & 0.141 & 0.340 & 0.920 & 0.740 & 0.016 \\
+Diabetes & Oracle & 50 & 0.960 & 0.019 & 0.065 & 0.040 & 0.920 & 0.880 & 0.025 \\
+Diabetes & CAC & 50 & 1.000 & 0.000 & 0.000 & 0.000 & 1.000 & 1.000 & 0.000 \\
+German & Random & 44 & 0.386 & 0.236 & 0.567 & 0.886 & 0.773 & 0.364 & 0.017 \\
+German & Wachter & 44 & 0.523 & 0.198 & 0.567 & 0.568 & 0.909 & 0.523 & -0.007 \\
+German & DiCE & 47 & 0.426 & 0.285 & 0.800 & 0.830 & 0.872 & 0.404 & 0.000 \\
+German & Oracle & 50 & 0.500 & 0.179 & 0.333 & 0.600 & 0.840 & 0.480 & -0.007 \\
+German & CAC & 50 & 1.000 & 0.000 & 0.000 & 0.000 & 1.000 & 1.000 & 0.000 \\
+HELOC & Random & 40 & 0.625 & 0.121 & 0.259 & 0.625 & 0.525 & 0.300 & 0.063 \\
+HELOC & Wachter & 25 & 0.400 & 0.142 & 0.275 & 0.840 & 0.720 & 0.280 & 0.022 \\
+HELOC & DiCE & 41 & 0.415 & 0.155 & 0.270 & 0.805 & 0.537 & 0.220 & 0.107 \\
+HELOC & Oracle & 50 & 0.820 & 0.072 & 0.132 & 0.280 & 0.520 & 0.380 & 0.009 \\
+HELOC & CAC & 50 & 1.000 & 0.000 & 0.000 & 0.000 & 1.000 & 1.000 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,30 @@
+\begin{table}[t]
+\caption{Recourse quality on the shared query set (the test records the black box rejects). Rates are fractions of records, not of suggestions: a method scores on a record if \emph{any} of its $k$ suggestions passes. \emph{Causal} additionally requires the flip to survive the world the SCM says the plan produces, \emph{Action.} that a person could carry it out under \S7, and \emph{Usable} both at once. Cost is \S7's normalised effort for the cheapest usable plan, and \emph{Cost/Oracle} its median ratio to the cheapest flip that exists on the same record, so the two columns describe the same suggestions.}
+\label{tab:main_results}
+\begin{tabular}{llrrrrrrrrrr}
+\toprule
+Dataset & Method & n & Cov. & Valid & Causal & Action. & Usable & Cost & Cost/Oracle & Plaus. & Queries \\
+\midrule
+Adult & Random & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.033 & 0.405 & 2.304 & 1006.000 \\
+Adult & Wachter & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.113 & 1.260 & 4.864 & 15888.300 \\
+Adult & DiCE & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.051 & 0.541 & 3.097 & 2022.000 \\
+Adult & Oracle & 10 & 1.000 & 1.000 & 0.800 & 1.000 & 0.800 & 0.098 & 1.000 & 3.898 & 3167.600 \\
+Adult & CAC & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.151 & 1.481 & 2.164 & 1248.000 \\
+Diabetes & Random & 10 & 1.000 & 1.000 & 0.600 & 0.800 & 0.500 & 0.030 & 0.968 & 1.388 & 1006.000 \\
+Diabetes & Wachter & 10 & 1.000 & 1.000 & 1.000 & 0.700 & 0.600 & 0.081 & 3.630 & 1.358 & 8515.900 \\
+Diabetes & DiCE & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.067 & 2.820 & 1.491 & 2022.900 \\
+Diabetes & Oracle & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.024 & 1.000 & 1.351 & 129.100 \\
+Diabetes & CAC & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.032 & 1.318 & 1.328 & 819.000 \\
+German & Random & 10 & 1.000 & 1.000 & 0.700 & 1.000 & 0.700 & 0.003 & 1.288 & 1.453 & 1006.000 \\
+German & Wachter & 10 & 1.000 & 1.000 & 0.900 & 0.700 & 0.400 & 0.004 & 1.586 & 1.173 & 49527.400 \\
+German & DiCE & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 0.900 & 0.019 & 10.213 & 1.476 & 2022.400 \\
+German & Oracle & 10 & 1.000 & 1.000 & 0.800 & 1.000 & 0.800 & 0.001 & 1.000 & 1.329 & 95.600 \\
+German & CAC & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.009 & 8.302 & 0.946 & 1497.000 \\
+HELOC & Random & 10 & 1.000 & 0.800 & 0.700 & 0.800 & 0.700 & 0.045 & 3.910 & 1.500 & 1006.000 \\
+HELOC & Wachter & 10 & 1.000 & 0.800 & 0.400 & 0.100 & 0.000 & -- & -- & -- & 37410.500 \\
+HELOC & DiCE & 10 & 1.000 & 1.000 & 0.600 & 0.800 & 0.600 & 0.053 & 6.241 & 1.419 & 3422.800 \\
+HELOC & Oracle & 10 & 1.000 & 1.000 & 0.800 & 1.000 & 0.800 & 0.016 & 1.000 & 1.267 & 6751.600 \\
+HELOC & CAC & 10 & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 & 0.034 & 2.109 & 1.044 & 1272.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

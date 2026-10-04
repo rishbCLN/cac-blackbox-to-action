@@ -1,0 +1,13 @@
+LABELS: 30 | REFS: 39
+UNDEFINED refs: ['tab:ablation', 'tab:case-study', 'tab:cost-model-adult', 'tab:faithfulness', 'tab:feasibility', 'tab:main_results', 'tab:qualitative-cases', 'tab:robustness_budget', 'tab:robustness_k', 'tab:robustness_model', 'tab:robustness_scm', 'tab:scm_validation', 'tab:significance', 'tab:significance_tests']
+
+BIB: 21 | CITES: 21
+MISSING cites: none
+UNUSED bib   : none
+
+INPUTs: 32 | missing: ['tables/qualitative_cases', 'tables/scm_edge_tests_adult', 'tables/scm_edge_tests_german', 'tables/scm_edge_tests_heloc', 'tables/scm_edge_tests_diabetes', 'tables/cost_model_adult', 'tables/cost_model_german', 'tables/cost_model_heloc', 'tables/cost_model_diabetes', 'tables/scm_validation', 'tables/main_results', 'tables/significance', 'tables/significance_tests', 'tables/faithfulness', 'tables/feasibility', 'tables/ablation', 'tables/case_study', 'tables/robustness_budget', 'tables/robustness_k', 'tables/robustness_model', 'tables/robustness_scm']
+FIGURES used: ['results/results_usable_gap', 'scm_adult', 'results/results_recourse_funnel', 'results/results_ablation', 'results/results_cost_of_validity']
+MISSING figs: ['results/results_usable_gap', 'scm_adult', 'results/results_recourse_funnel', 'results/results_ablation', 'results/results_cost_of_validity']
+
+ENVIRONMENT balance:
+  all balanced

@@ -1,0 +1,54 @@
+2026-10-04 18:15:27 | INFO    | src.model.blackbox | Loaded black box xgb_german.joblib
+2026-10-04 18:15:27 | INFO    | src.scm.define_scm | SCM german: 16 nodes, 37 edges, 11 actionable of 15 features
+2026-10-04 18:15:27 | INFO    | src.scm.fcm | Reusing cached FCM fcm_german.joblib
+2026-10-04 18:15:28 | INFO    | src.cost.cost_functions | CostModel[german]: 15 features, 11 actionable, budget 6.120 (top-3 weighted actions)
+2026-10-04 18:15:28 | INFO    | src.evaluation.metrics | german: query set = 1 of 200 test records the black box rejects (asked for 1)
+2026-10-04 18:15:31 | INFO    | src.methods.cac | cac/german: 57 generations, 515 valid plans found over 1 routes, best objective 0.2707
+{
+  "identical_records_repeated_1_seeds": {
+    "n_pairs": 20,
+    "mcnemar_p": 0.0625,
+    "significant": false,
+    "usable_gap": 0.25,
+    "gap_lo": 0.1,
+    "gap_hi": 0.45
+  },
+  "identical_records_repeated_5_seeds": {
+    "n_pairs": 100,
+    "mcnemar_p": 5.960464477539063e-08,
+    "significant": true,
+    "usable_gap": 0.25,
+    "gap_lo": 0.17,
+    "gap_hi": 0.34
+  },
+  "paper_vs_code_causal_gate": {
+    "proposed": [
+      1.0,
+      0.0
+    ],
+    "replayed": [
+      1.0,
+      2.0
+    ],
+    "valid": true,
+    "flip_survives": true,
+    "gap_max": 0.2,
+    "promise_kept": false
+  },
+  "action_metadata_original": {
+    "valid": true,
+    "cost": 0.008605392156862745,
+    "causal_valid": true,
+    "actionable": true,
+    "usable": true,
+    "declared_action_replay_probability": 0.9523850083351135
+  },
+  "action_metadata_empty_declared_actions": {
+    "valid": true,
+    "cost": 0.0,
+    "causal_valid": true,
+    "actionable": true,
+    "usable": true,
+    "declared_action_replay_probability": 0.39021673798561096
+  }
+}

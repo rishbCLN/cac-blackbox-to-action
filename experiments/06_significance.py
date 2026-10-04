@@ -77,11 +77,12 @@ DEFAULT_SEEDS: tuple[int, ...] = (42, 0, 1, 2, 3)
 #: Rates carried per seed, and the ones aggregated with a CI.  These are exactly
 #: the funnel columns of the headline table, so the two cannot drift.
 RATE_COLUMNS: tuple[str, ...] = ("coverage", "validity", "causal_validity",
-                                 "actionability", "usable", "cost_mean",
-                                 "plausibility_mean")
+                                 "state_fidelity", "actionability", "usable",
+                                 "cost_mean", "plausibility_mean")
 
 #: The per-record audit bits McNemar and the bootstrap consume.
-AUDIT_BITS: tuple[str, ...] = ("valid", "causal_valid", "actionable", "usable")
+AUDIT_BITS: tuple[str, ...] = ("valid", "causal_valid", "state_fidelity",
+                               "actionable", "usable")
 
 OUTPUTS: dict[str, str] = {
     "runs": "significance_runs.csv",
@@ -104,15 +105,19 @@ def _per_record_bits(joined: pd.DataFrame, dataset: str, method: str,
     clears the bar (\\S4), so the paired unit for a significance test is the
     record, scored by the disjunction over its suggestions.  ``valid`` etc. are
     booleans here, aligned across methods because every method saw the same query
-    set under the same seed.
+    set under the same seed.  The columns mirror the headline (Finding 3):
+    ``causal_valid`` is replayed-action success and ``usable`` is replayed
+    success and action feasibility; state fidelity is reported, not gated.
     """
+    tolerance = float(CONFIG.CAUSAL_TOLERANCE)
     records = joined.groupby("record")
     out = pd.DataFrame({
         "valid": records["valid"].any(),
-        "causal_valid": (joined.assign(f=joined["valid"] & joined["promise_kept"])
-                         .groupby("record")["f"].any()),
-        "actionable": (joined.assign(f=joined["valid"] & joined["actionable"])
-                       .groupby("record")["f"].any()),
+        "causal_valid": records["flip_survives"].any(),
+        "state_fidelity": (joined.assign(f=joined["valid"]
+                                         & (joined["gap_max"] <= tolerance))
+                           .groupby("record")["f"].any()),
+        "actionable": records["actionable"].any(),
         "usable": records["usable"].any(),
     }).reset_index()
     out.insert(0, "dataset", dataset)
@@ -270,6 +275,7 @@ def _write_tables(aggregate: pd.DataFrame, tests: pd.DataFrame,
             "Method": aggregate["method"].map(lambda m: _METHOD_LABELS.get(m, m)),
             "Valid": _ci_cell(aggregate, "validity"),
             "Causal": _ci_cell(aggregate, "causal_validity"),
+            "Fid.": _ci_cell(aggregate, "state_fidelity"),
             "Action.": _ci_cell(aggregate, "actionability"),
             "Usable": _ci_cell(aggregate, "usable"),
         })
@@ -277,6 +283,10 @@ def _write_tables(aggregate: pd.DataFrame, tests: pd.DataFrame,
             table, "significance",
             caption=(f"Recourse quality over {n_seeds} seeds, as "
                      "mean $\\pm$ half the 95\\% Student-$t$ interval across seeds. "
+                     "\\emph{Causal} is replayed-action success and \\emph{Usable} "
+                     "is replayed success with action feasibility; \\emph{Fid.} "
+                     "(state fidelity) is reported beside the endpoint, not folded "
+                     "into it. "
                      "Every rate is the per-record funnel of "
                      "Table~\\ref{tab:main_results}, recomputed under each seed of "
                      "the search; the Oracle is deterministic and so has a "
@@ -284,7 +294,7 @@ def _write_tables(aggregate: pd.DataFrame, tests: pd.DataFrame,
                      "\\cac{}'s \\emph{Usable} column is the claim that its "
                      "advantage is not an artefact of one lucky "
                      "\\texttt{random\\_state}."),
-            label="tab:significance", column_format="llrrrr", escape=False)
+            label="tab:significance", column_format="llrrrrr", escape=False)
 
     if not tests.empty:
         def _stars(p: float) -> str:

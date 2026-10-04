@@ -279,6 +279,35 @@ def test_faithfulness_summary_reports_its_own_denominator(
     assert np.isnan(summary.loc[0, "flip_survival"])
     assert np.isnan(summary.loc[0, "causal_validity"])
 
+
+def test_faithfulness_rejects_a_flipped_state_with_no_declared_action(
+        ev: metrics.Evaluator, x: np.ndarray) -> None:
+    """The empty-action exploit: a valid proposed state that declares nothing.
+
+    An accepted donor as the proposed state makes proposed-state ``valid`` true,
+    but a plan that declares *no* action is a description of a better record, not
+    advice.  The audit replays the declared action set, so an empty declaration
+    replays to the factual record and cannot survive.  Before this contract the
+    audit inferred the intervention from every moved coordinate and credited the
+    donor's survival to a zero-cost empty plan.
+    """
+    donor = ev.bundle.X_train[ev.bundle.y_train == 1][0].astype(float)
+    assert not np.allclose(donor, x), "donor must differ from the factual record"
+
+    honest = faithfulness.assess(ev, {0: [_forge(ev, x, donor)]},
+                                 method="honest").iloc[0]
+    empty = faithfulness.assess(
+        ev, {0: [_forge(ev, x, donor, changed=())]}, method="empty").iloc[0]
+
+    # Both name the same proposed state, so proposed-state validity agrees.
+    assert bool(honest["valid"]) is True
+    assert bool(empty["valid"]) is True
+    # But the empty declaration replays to the factual record: it neither
+    # survives nor keeps the promise, and its state gap is the full move.
+    assert bool(empty["flip_survives"]) is False
+    assert bool(empty["promise_kept"]) is False
+    assert empty["gap_max"] > 0.0
+
 # ----------------------------------------------------------------- feasibility
 def test_feasibility_refuses_a_plan_that_acts_on_an_immutable_feature(
         ev: metrics.Evaluator, x: np.ndarray) -> None:
@@ -372,36 +401,59 @@ def test_headline_requires_one_suggestion_to_pass_everything() -> None:
     assert row["n_records"] == 1
     assert row["coverage"] == pytest.approx(1.0)
     assert row["validity"] == pytest.approx(1.0)
+    # causal_validity is replayed-action success: rank 0 survives the replay.
     assert row["causal_validity"] == pytest.approx(1.0)
-    # Rank 1 is actionable but invalid, so no *valid* suggestion is actionable.
-    assert row["actionability"] == pytest.approx(0.0)
+    # state fidelity is reported separately; both ranks are faithful (gap 0).
+    assert row["state_fidelity"] == pytest.approx(1.0)
+    # Rank 0 survives but is not actionable; rank 1 is actionable but does not
+    # survive the replay — so no single suggestion is both (Finding 3).
+    assert row["actionability"] == pytest.approx(1.0)
     assert row["usable"] == pytest.approx(0.0)
     assert np.isnan(row["cost_mean"]), "there is no usable plan to price"
 
 
+def test_headline_endpoint_ignores_state_fidelity_gate() -> None:
+    """Finding 3: a low-fidelity proposal that survives and is feasible is usable.
+
+    The old conjunction gated ``usable`` on the proposed/replayed state agreeing
+    (``gap_max`` ≤ tolerance).  The corrected endpoint reports that fidelity
+    beside the headline instead of inside it, so a method whose proposed state is
+    far from the world it replays to still counts as usable when the *replayed*
+    record is accepted and the plan is actionable.
+    """
+    metrics_frame, faith, feas = _funnel_frames()
+    # Rank 0: large state gap, but it survives the replay and is actionable.
+    faith.loc[faith["rank"] == 0, "gap_max"] = 0.9
+    faith.loc[faith["rank"] == 0, "promise_kept"] = False
+    feas.loc[feas["rank"] == 0, "actionable"] = True
+    row = feasibility.headline(metrics_frame, faith, feas).iloc[0]
+    assert row["usable"] == pytest.approx(1.0), "fidelity must not gate the endpoint"
+    assert row["causal_validity"] == pytest.approx(1.0)
+    assert row["state_fidelity"] == pytest.approx(0.0), "but it is still reported"
+
+
 def test_headline_funnel_never_widens() -> None:
     metrics_frame, faith, feas = _funnel_frames()
-    feas.loc[feas["rank"] == 0, "actionable"] = True  # now rank 0 passes all three
+    feas.loc[feas["rank"] == 0, "actionable"] = True  # rank 0 survives and is feasible
     row = feasibility.headline(metrics_frame, faith, feas).iloc[0]
     assert row["usable"] == pytest.approx(1.0)
     assert row["usable"] <= row["actionability"] + 1e-12
-    assert row["actionability"] <= row["validity"] + 1e-12
+    assert row["usable"] <= row["causal_validity"] + 1e-12
     assert row["validity"] <= row["coverage"] + 1e-12
     assert row["cost_mean"] == pytest.approx(0.2), "the usable plan, not the cheap one"
 
 
 def test_join_audits_defines_usable_once_for_everybody() -> None:
-    """``usable`` is a conjunction, and it is this module's to define.
+    """``usable`` is the primary endpoint, and it is this module's to define.
 
     Every table and figure that calls a method usable has to mean the same thing
-    by it.  A caller that re-derived the conjunction from its own three columns
-    would eventually mean something slightly different — and because each of the
-    three is true of *some* suggestion here, nothing in the output would show it.
+    by it: replayed-action success *and* action feasibility (Finding 3).  Neither
+    proposed-state validity nor state fidelity gates it; both are reported beside.
     """
     joined = feasibility.join_audits(*_funnel_frames())
     assert list(joined["usable"]) == [False, False]
     assert list(joined["answered"]) == [True, True]
-    expected = joined["valid"] & joined["promise_kept"] & joined["actionable"]
+    expected = joined["flip_survives"] & joined["actionable"]
     assert list(joined["usable"]) == list(expected)
     for column in ("valid", "promise_kept", "actionable", "flip_survives"):
         assert joined[column].dtype == bool, f"{column} must be a verdict, not a NaN"

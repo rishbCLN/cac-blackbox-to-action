@@ -1,0 +1,9 @@
+2026-10-04 18:20:15.605 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-10-04 18:20:18 | INFO    | src.model.blackbox | Loaded black box xgb_adult.joblib
+2026-10-04 18:20:18 | INFO    | src.scm.define_scm | SCM adult: 10 nodes, 25 edges, 7 actionable of 9 features
+2026-10-04 18:20:18 | INFO    | src.cost.cost_functions | CostModel[adult]: 9 features, 7 actionable, budget 11.222 (top-3 weighted actions)
+2026-10-04 18:20:18 | INFO    | src.evaluation.metrics | adult: query set = 5 of 4000 test records the black box rejects (asked for 5)
+2026-10-04 18:20:18 | INFO    | src.scm.fcm | Reusing cached FCM fcm_adult.joblib
+2026-10-04 18:20:19 | INFO    | src.methods.cac | cac/adult: 28 generations, 118 valid plans found over 3 routes, best objective 0.1814
+APP_STARTUP_EXCEPTIONS 0
+[]

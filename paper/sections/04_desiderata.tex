@@ -2,21 +2,27 @@
 \label{sec:desiderata}
 
 We hold every plan --- whether a point $x'$ from a baseline or an action $a$ from
-\cac{} --- to three audits. Each is a yes/no property; a plan is \Usable{} exactly
-when it passes all three. To audit a baseline that returns a point, we read the
-point as the action ``set the features it changed to the values it named'' and
-propagate it through Eq.~\eqref{eq:propagate} like any other action, so every
-method is judged on the world its advice produces.
+\cac{} --- to three audits, and report a fourth quantity beside them. The primary
+endpoint is a yes/no property: a plan is \Usable{} exactly when it is causally
+valid and actionable (defined below). To audit a baseline that returns a point, we
+read the point as the action ``set the features it changed to the values it
+named'' and propagate it through Eq.~\eqref{eq:propagate} like any other action, so
+every method is judged on the world its advice produces.
 
-\paragraph{1. Validity ($\Valid$).} The plan flips the black box \emph{as named}:
+\paragraph{1. Proposed-state validity ($\Valid$).} The plan flips the black box
+\emph{as named}, before the world reacts:
 \begin{equation}
   \Valid(x') \;=\; \mathbb{1}\big[f(x')\ge\tau\big].
 \end{equation}
 This is the field's usual metric, and the necessary floor. For \cac{} the named
 point is $x^{a}$ itself, so \cac{} passes validity iff it passes the next audit.
+We report it beside the endpoint but do not gate on it, so a plan whose named
+point does not flip yet whose \emph{propagated} world does is not silently
+discarded.
 
-\paragraph{2. Causal validity ($\Causal$).} The plan still flips the box once its
-changes are propagated into their consequences:
+\paragraph{2. Replayed-action success / causal validity ($\Causal$).} The plan
+still flips the box once its declared changes are propagated into their
+consequences:
 \begin{equation}
   \Causal(a) \;=\; \mathbb{1}\big[f(x^{a})\ge\tau\big],
   \qquad x^{a}=\mathcal{M}\big(x^{0};\dopart{X_S=v_S}\big).
@@ -40,15 +46,31 @@ A plan can be causally valid yet fail here (it works, but asks the impossible),
 or actionable yet causally invalid (a person could do it, but it would not
 land).
 
-\paragraph{The conjunction.} A plan is usable iff it survives all three:
+\paragraph{The primary endpoint.} A plan is usable iff its replayed action
+succeeds and a person could carry it out:
 \begin{equation}
-  \Usable(a) \;=\; \Valid(x^{a})\;\wedge\;\Causal(a)\;\wedge\;\Action(a).
+  \Usable(a) \;=\; \Causal(a)\;\wedge\;\Action(a).
   \label{eq:usable}
 \end{equation}
-The three are logically independent --- each of the three ``valid but not usable''
-plans quoted in \S\ref{sec:intro} fails a different one --- so their conjunction
-is a genuinely stricter bar than any single audit, and it is the bar the paper
-reports.
+The two are logically independent --- a plan can be causally valid yet
+inactionable, or actionable yet causally invalid --- so their conjunction is a
+genuinely stricter bar than either audit alone, and it is the bar the paper
+reports. Proposed-state validity (\Valid{}) is reported beside it as the floor the
+field usually stops at; in practice every method clears it, which is precisely why
+the usable gap is invisible to a validity-only evaluation.
+
+\paragraph{State fidelity, reported separately.} A causally valid plan may still
+\emph{describe} a resulting state that differs from the one the SCM actually
+produces --- it claims a flipped world without declaring the actions that reach
+exactly that world. We quantify this as the largest range-normalised disagreement
+between the proposed state $x'$ and the replayed state $x^{a}$, and report it as a
+\emph{state-fidelity} rate (the share of valid plans whose disagreement stays
+within tolerance $\varepsilon$). We report it beside the endpoint rather than
+folding it in: a low-fidelity plan can still be usable (its replayed world is
+accepted and the actions are feasible), and fidelity grades how honestly a method
+described that world rather than whether the recourse works. An earlier version of
+our evaluation gated usability on this quantity; separating it changes several
+baselines' headline rates and is reported as such.
 
 \paragraph{Crediting a method.} A method may offer several ranked suggestions per
 applicant (we take up to five). We credit it with usable recourse for an applicant

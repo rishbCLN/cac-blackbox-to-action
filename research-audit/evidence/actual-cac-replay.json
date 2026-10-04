@@ -1,0 +1,26 @@
+[
+  {
+    "dataset": "adult",
+    "n_cac_suggestions": 50,
+    "max_normalized_declared_replay_gap": 0.0,
+    "rejected_after_replay": 0
+  },
+  {
+    "dataset": "german",
+    "n_cac_suggestions": 50,
+    "max_normalized_declared_replay_gap": 0.0,
+    "rejected_after_replay": 0
+  },
+  {
+    "dataset": "heloc",
+    "n_cac_suggestions": 50,
+    "max_normalized_declared_replay_gap": 0.0,
+    "rejected_after_replay": 0
+  },
+  {
+    "dataset": "diabetes",
+    "n_cac_suggestions": 50,
+    "max_normalized_declared_replay_gap": 0.0,
+    "rejected_after_replay": 0
+  }
+]

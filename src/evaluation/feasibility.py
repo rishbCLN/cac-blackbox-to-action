@@ -197,10 +197,10 @@ def blocked_features(frame: pd.DataFrame, top: int = 10) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-#: §9's headline: the four questions a suggestion has to pass, in order.
+#: §9's headline: the primary endpoint and the quantities reported beside it.
 HEADLINE_COLUMNS: tuple[str, ...] = (
     "dataset", "method", "n_records", "coverage", "validity", "causal_validity",
-    "actionability", "usable", "cost_mean", "cost_ratio_median",
+    "state_fidelity", "actionability", "usable", "cost_mean", "cost_ratio_median",
     "plausibility_mean", "n_queries_mean",
 )
 
@@ -212,12 +212,29 @@ def join_audits(metrics: pd.DataFrame, faith: pd.DataFrame, feas: pd.DataFrame,
                 columns: bool = False) -> pd.DataFrame:
     """The three audits on one row per suggestion, plus ``answered`` and ``usable``.
 
-    ``usable`` is the conjunction the paper leads with — the decision flips, the
-    SCM signs off on the world that flipped it, and a person could carry the plan
-    out — and it is defined *here*, once, because every table and figure that
-    claims a method is usable has to mean the same thing by it.  A caller that
-    re-derived the conjunction from its own three columns would eventually mean
-    something slightly different and nobody would notice.
+    ``usable`` is the primary endpoint the paper leads with, and it is defined
+    *here*, once, because every table and figure that claims a method is usable
+    has to mean the same thing by it.  A caller that re-derived it from its own
+    columns would eventually mean something slightly different and nobody would
+    notice.
+
+    The endpoint is **replayed-action success and action feasibility**: a person
+    could carry the plan out (``actionable``), and once they do and the SCM fills
+    in the consequences the black box still accepts the resulting record
+    (``flip_survives``).  Deliberately *not* folded into the gate are two things
+    the project reports beside it rather than inside it:
+
+    * *proposed-state validity* (``valid``) — the box flips at the point the
+      method named, before the world reacts.  This is weaker than replayed
+      success and is kept as its own column, not a precondition, so a proposal
+      that only works once consequences are filled in is not silently dropped.
+    * *state fidelity* (``gap_max`` ≤ ``CAUSAL_TOLERANCE``) — whether the proposed
+      state and the replayed one agree.  A low-fidelity proposal can still be
+      usable (its replayed world is accepted and feasible); fidelity measures how
+      honestly the method described that world, which is a quality of the
+      explanation, not a requirement of the recourse.  ``promise_kept`` keeps the
+      strict conjunction (valid *and* survives *and* faithful) for readers who
+      want the old all-three bar, but it no longer gates ``usable``.
 
     Pass ``columns=True`` to keep everything the three frames carry (the named
     off-target features, the rendered actions, the violations) rather than only
@@ -238,8 +255,10 @@ def join_audits(metrics: pd.DataFrame, faith: pd.DataFrame, feas: pd.DataFrame,
     for column in ("valid", "causal_valid", "promise_kept", "actionable",
                    "flip_survives"):
         joined[column] = joined[column].fillna(False).astype(bool)
-    joined["usable"] = (joined["valid"] & joined["promise_kept"]
-                        & joined["actionable"])
+    # Finding 3: the primary endpoint is replayed-action success AND action
+    # feasibility.  Proposed-state validity (``valid``) and state fidelity
+    # (``promise_kept``/``gap_max``) are reported alongside, never as gates.
+    joined["usable"] = joined["flip_survives"] & joined["actionable"]
     return joined
 
 
@@ -248,16 +267,25 @@ def headline(metrics: pd.DataFrame, faith: pd.DataFrame, feas: pd.DataFrame,
              reference: str = "oracle") -> pd.DataFrame:
     """Join the three audits into the one table the paper leads with.
 
-    Read left to right, it is a funnel: of the records a method answered, how many
-    answers flip the decision; of those, how many describe a world the SCM allows;
-    of those, how many a person could actually carry out.  ``usable`` is the
-    conjunction — one suggestion, per record, that does all three — and it is the
-    only column that answers the question a reader came with.
+    Read left to right it reports four distinct quantities and the endpoint that
+    combines two of them (Finding 3):
+
+    * ``validity`` — proposed-state validity: the box flips at the point the
+      method named, before the world reacts.
+    * ``causal_validity`` — replayed-action success: the person carries out the
+      declared action, the SCM fills in the consequences, and the box still
+      accepts the resulting record.  This is the definition the manuscript's
+      recourse equation states.
+    * ``state_fidelity`` — whether the proposed state and the replayed one agree
+      (gap ≤ ``CAUSAL_TOLERANCE``).  Reported *beside* the endpoint, not folded
+      into it: it grades how honestly a method described its own world.
+    * ``actionability`` — action feasibility: a person could carry the plan out
+      without breaking §7's immutability, direction, or budget rules.
+    * ``usable`` — the primary endpoint: replayed-action success **and** action
+      feasibility, per record (one suggestion that does both).
 
     The funnel is computed per *record*, not per suggestion, because five
-    suggestions for one person are one piece of advice with options.  A method
-    needs one that survives all three tests, not five that each survive a
-    different one.
+    suggestions for one person are one piece of advice with options.
 
     Everything to the right of ``usable`` describes the plan a person would
     actually take: the cheapest usable suggestion for each record, so ``cost_mean``
@@ -269,6 +297,7 @@ def headline(metrics: pd.DataFrame, faith: pd.DataFrame, feas: pd.DataFrame,
     if metrics.empty:
         return pd.DataFrame(columns=list(HEADLINE_COLUMNS))
     joined = join_audits(metrics, faith, feas)
+    tolerance = float(CONFIG.CAUSAL_TOLERANCE)
 
     rows: list[dict[str, Any]] = []
     for (dataset, method), group in joined.groupby(["dataset", "method"], sort=True):
@@ -281,12 +310,16 @@ def headline(metrics: pd.DataFrame, faith: pd.DataFrame, feas: pd.DataFrame,
             "n_records": int(records.ngroups),
             "coverage": float(records["answered"].any().mean()),
             "validity": float(records["valid"].any().mean()),
-            "causal_validity": float(
-                group.assign(f=group["valid"] & group["promise_kept"])
+            # Replayed-action success — the manuscript's recourse definition.
+            "causal_validity": float(records["flip_survives"].any().mean()),
+            # State fidelity, reported separately: among valid proposals, how many
+            # described a world the SCM actually agrees with.
+            "state_fidelity": float(
+                group.assign(f=group["valid"]
+                             & (group["gap_max"] <= tolerance))
                 .groupby("record")["f"].any().mean()),
-            "actionability": float(
-                group.assign(f=group["valid"] & group["actionable"])
-                .groupby("record")["f"].any().mean()),
+            # Action feasibility, as its own axis.
+            "actionability": float(records["actionable"].any().mean()),
             "usable": float(records["usable"].any().mean()),
             "cost_mean": _mean(best["cost"]),
             "plausibility_mean": _mean(best["plausibility"]),

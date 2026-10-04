@@ -244,7 +244,10 @@ class LiveEngine:
 
         changed = tuple(breakdown.changed)
         promise_kept = bool(valid and flip_survives and causal_valid)
-        usable = bool(valid and promise_kept and actionable)
+        # Finding 3: the primary endpoint is replayed-action success AND action
+        # feasibility.  State fidelity (``causal_valid``) and proposed-state
+        # validity are reported on the Audit, not folded into ``usable``.
+        usable = bool(flip_survives and actionable)
         return Audit(
             dataset=self.dataset, x=x, x_edit=x_edit, repaired=repaired,
             y_original=y_original, y_target=y_target,
@@ -511,24 +514,28 @@ def cohort_headline(dataset: str, n: int, k: int,
     of its ``k`` plans passes) and each plan is scored by :meth:`LiveEngine.audit_plan`
     --- the declared endpoint, priced on its asked subset --- so the columns are the
     ones :mod:`src.evaluation.feasibility` computes: ``causal_validity`` is
-    ``valid & promise_kept`` and ``usable`` is ``valid & promise_kept & actionable``.
+    replayed-action success (``flip_survives``), ``state_fidelity`` is reported
+    beside it, and ``usable`` is replayed success *and* action feasibility
+    (Finding 3).
     """
     eng = get_engine(dataset)
     records = rejected_records(dataset, n)
     rows: list[dict[str, Any]] = []
     for method in methods:
-        flags = {"validity": [], "causal_validity": [], "actionability": [],
-                 "usable": [], "cost": []}
+        flags = {"validity": [], "causal_validity": [], "state_fidelity": [],
+                 "actionability": [], "usable": [], "cost": []}
         for record in records:
             x = eng.factual_row(record)
             plans = generate_plans(dataset, method, record, k)
             audits = [eng.audit_plan(x, cf) for cf in plans]
             v = any(a.valid for a in audits)
-            c = any(a.valid and a.promise_kept for a in audits)
-            act = any(a.valid and a.actionable for a in audits)
+            c = any(a.flip_survives for a in audits)
+            fid = any(a.valid and a.causal_valid for a in audits)
+            act = any(a.actionable for a in audits)
             usable = [a for a in audits if a.usable]
             flags["validity"].append(v)
             flags["causal_validity"].append(c)
+            flags["state_fidelity"].append(fid)
             flags["actionability"].append(act)
             flags["usable"].append(bool(usable))
             if usable:
@@ -538,6 +545,7 @@ def cohort_headline(dataset: str, n: int, k: int,
             "dataset": dataset, "method": method, "n_records": len(records),
             "validity": sum(flags["validity"]) / n_rec,
             "causal_validity": sum(flags["causal_validity"]) / n_rec,
+            "state_fidelity": sum(flags["state_fidelity"]) / n_rec,
             "actionability": sum(flags["actionability"]) / n_rec,
             "usable": sum(flags["usable"]) / n_rec,
             "cost_mean": float(np.mean(flags["cost"])) if flags["cost"] else float("nan"),

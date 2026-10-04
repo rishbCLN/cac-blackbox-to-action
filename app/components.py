@@ -85,15 +85,16 @@ def per_record(dataset: str) -> pd.DataFrame:
     and causal validity from ``counterfactuals``, feasibility/actionability from
     ``feasibility_per_cf``, the SCM's off-promise features from
     ``faithfulness_per_cf`` --- into the columns the plot layer and the verdict
-    badges read.  ``usable`` is the conjunction, computed here so the app and the
-    headline table agree by construction rather than by coincidence.
+    badges read.  ``usable`` is the primary endpoint, computed here so the app and
+    the headline table agree by construction rather than by coincidence.
 
-    The ``causal`` column is ``promise_kept`` (the plan flips the box, the flip
-    survives re-running the repaired world through the SCM, *and* the SCM signs
-    off), not the looser ``causal_valid`` (SCM agrees alone).  This is the exact
-    definition :func:`src.evaluation.feasibility.join_audits` leads with, so the
-    per-applicant badges and the paper's ``headline.csv`` count the same plans as
-    usable; reading ``causal_valid`` here overstated the usable rate.
+    The ``causal`` column is replayed-action success (``flip_survives``): the plan
+    flips the box and the flip survives re-running the SCM-repaired world through
+    the box.  State fidelity (the proposed and repaired states agreeing) is a
+    separate ``state_fidelity`` column, reported beside the endpoint rather than
+    folded into it (Finding 3), so ``usable`` is replayed success *and* action
+    feasibility --- the exact definition
+    :func:`src.evaluation.feasibility.join_audits` leads with.
     """
     cf = load_csv("counterfactuals")
     if cf is None:
@@ -111,18 +112,24 @@ def per_record(dataset: str) -> pd.DataFrame:
                  if c in faith]
         cf = cf.merge(faith[keys + extra], on=keys, how="left")
 
-    # ``causal`` is the promise the plan makes surviving the SCM (promise_kept),
-    # matching the headline's conjunction; fall back to causal_valid only when the
+    # ``causal`` is replayed-action success (flip_survives), matching the
+    # headline's ``causal_validity``; fall back to causal_valid only when the
     # faithfulness audit is absent.
-    if "promise_kept" in cf:
-        cf["causal"] = cf["promise_kept"]
+    if "flip_survives" in cf:
+        cf["causal"] = cf["flip_survives"]
     else:
         cf["causal"] = cf.get("causal_valid")
+    # State fidelity, reported separately: the strict promise_kept bundle, or the
+    # SCM-agreement flag when the full faithfulness audit is unavailable.
+    if "promise_kept" in cf:
+        cf["state_fidelity"] = cf["promise_kept"]
+    else:
+        cf["state_fidelity"] = cf.get("causal_valid")
     if "actionable" not in cf:
         cf["actionable"] = cf.get("feasible")
-    for col in ("valid", "causal", "actionable"):
+    for col in ("valid", "causal", "state_fidelity", "actionable"):
         cf[col] = cf[col].astype("boolean")
-    cf["usable"] = (cf["valid"] & cf["causal"] & cf["actionable"]).fillna(False)
+    cf["usable"] = (cf["causal"] & cf["actionable"]).fillna(False)
     return cf
 
 
@@ -331,8 +338,7 @@ def verdict_markdown(row: pd.Series | None) -> str:
         colour = OK if _as_bool(state) else WARN
         mark = "✓" if _as_bool(state) else "✗"
         parts.append(f"<span style='color:{colour}'><b>{mark} {name}</b></span>")
-    usable = _as_bool(row.get("valid")) and _as_bool(row.get("causal")) \
-        and _as_bool(row.get("actionable"))
+    usable = _as_bool(row.get("causal")) and _as_bool(row.get("actionable"))
     verdict = (f"<span style='color:{OK}'><b>USABLE</b></span>" if usable
                else f"<span style='color:{WARN}'><b>not usable</b></span>")
     return " &nbsp;·&nbsp; ".join(parts) + " &nbsp;⟶&nbsp; " + verdict

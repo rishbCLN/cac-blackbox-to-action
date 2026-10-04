@@ -21,7 +21,7 @@ export PYTHONPATH
 # stages whose inputs have not changed. Delete .build/ (or `make clean`) to force.
 STAMP := .build
 
-.PHONY: all paper test app clean clean-all help
+.PHONY: all paper test app clean clean-all help prepare smoke significance research
 .DEFAULT_GOAL := help
 
 # --------------------------------------------------------------------------- #
@@ -50,6 +50,14 @@ $(STAMP)/compare: $(STAMP)/cost
 	$(PY) experiments/02_compare_methods.py
 	@touch $@
 
+# 4b. Significance: repeat the comparison across seeds and test the gap.
+#     paper/sections/09_experiments.tex inputs tables/significance.tex and
+#     tables/significance_tests.tex, so the advertised paper build must produce
+#     them. Depends on the same models/costs the comparison does.
+$(STAMP)/significance: $(STAMP)/compare
+	$(PY) experiments/06_significance.py
+	@touch $@
+
 # 5. Objective ablation.
 $(STAMP)/ablation: $(STAMP)/compare
 	$(PY) experiments/03_ablation.py
@@ -76,14 +84,42 @@ $(STAMP)/user_study: $(STAMP)/qualitative
 	$(PY) user_study/analysis.py
 	@touch $@
 
-all: $(STAMP)/figures $(STAMP)/user_study
+all: $(STAMP)/figures $(STAMP)/user_study $(STAMP)/significance
 	@echo "Pipeline complete. Tables in paper/tables/, figures in paper/figures/."
 
+# Named entry points the audit's gap-closure plan asks for, so a reader can run
+# the inputs, a fast check, the full study, or the significance study on its own.
+#
+#   make prepare       data -> models -> SCMs -> cost models (everything the
+#                      experiments read, nothing downstream of them)
+#   make smoke         a fast 10-record comparison into a *separate* results dir,
+#                      so a quick check never overwrites publication artifacts
+#   make significance  just the seed-repeated significance study + its tables
+#   make research      the full deterministic study (alias for `all`)
+.PHONY: prepare smoke significance research
+prepare: $(STAMP)/cost
+	@echo "Inputs ready: models/, data/processed/, SCMs, cost models."
+
+smoke:
+	CAC_RESULTS_DIR=$(CURDIR)/results/smoke \
+	CAC_TABLES_DIR=$(CURDIR)/paper/tables/smoke \
+		$(PY) experiments/02_compare_methods.py -n 10 -k 5
+	@echo "Smoke comparison in results/smoke/ (separate from publication artifacts)."
+
+significance: $(STAMP)/significance
+	@echo "Significance tables in paper/tables/ (significance.tex, significance_tests.tex)."
+
+research: all
+
 # --------------------------------------------------------------------------- #
-# Paper. Needs a TeX Live install (pdflatex + bibtex). Two bibtex/pdflatex
-# passes resolve the \cite and \ref cross-references.
+# Paper. `paper/main.tex` is the canonical, generated manuscript: it \input's
+# the tables and figures the pipeline writes, so it depends on the full artifact
+# set and cannot be built with stale or missing inputs. (The repo-root main.tex
+# is a frozen self-contained variant with hand-inlined numbers and is NOT built
+# here; see the note at its head.) Needs a TeX Live install (pdflatex + bibtex);
+# two bibtex/pdflatex passes resolve the \cite and \ref cross-references.
 # --------------------------------------------------------------------------- #
-paper:
+paper: $(STAMP)/figures $(STAMP)/user_study $(STAMP)/significance
 	cd paper && pdflatex -interaction=nonstopmode main.tex && \
 		bibtex main && \
 		pdflatex -interaction=nonstopmode main.tex && \
@@ -100,6 +136,7 @@ app:
 clean:
 	rm -rf $(STAMP)
 	rm -f results/*.csv paper/tables/*.tex
+	rm -rf results/smoke paper/tables/smoke
 	rm -f paper/figures/results/* paper/figures/eda/* paper/figures/recourse/* \
 		paper/figures/user_study/* paper/figures/scm_*.png paper/figures/scm_*.pdf \
 		paper/figures/scm_*.mmd
@@ -114,9 +151,13 @@ clean-all: clean
 	@echo "Cleaned models and processed data too."
 
 help:
-	@echo "Targets: all | paper | test | app | clean | clean-all"
-	@echo "  make all    - run the full deterministic pipeline (data..figures)"
-	@echo "  make paper  - build paper/main.pdf (needs TeX Live: pdflatex+bibtex)"
-	@echo "  make test   - run the test suite"
-	@echo "  make app    - launch the Streamlit demo over stored results"
-	@echo "  make clean  - remove generated artifacts (keeps raw data + models)"
+	@echo "Targets: all | research | prepare | smoke | significance | paper | test | app | clean | clean-all"
+	@echo "  make all          - run the full deterministic pipeline (data..figures..significance)"
+	@echo "  make research     - alias for 'all' (the full study)"
+	@echo "  make prepare      - data -> models -> SCMs -> cost models (experiment inputs only)"
+	@echo "  make smoke        - fast 10-record comparison into results/smoke (never touches publication artifacts)"
+	@echo "  make significance - seed-repeated significance study + its two paper tables"
+	@echo "  make paper        - build the canonical paper/main.pdf (needs TeX Live; depends on the full artifact set)"
+	@echo "  make test         - run the test suite"
+	@echo "  make app          - launch the Streamlit demo over stored results"
+	@echo "  make clean        - remove generated artifacts (keeps raw data + models)"

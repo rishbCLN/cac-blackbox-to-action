@@ -146,7 +146,7 @@ def _per_record(joined: pd.DataFrame) -> pd.DataFrame:
             "record": int(record),
             "method": str(method),
             "valid": bool(len(valid)),
-            "causal": bool((valid["promise_kept"]).any()),
+            "causal": bool((valid["flip_survives"]).any()),
             "actionable": bool((valid["actionable"]).any()),
             "usable": bool(len(usable)),
             "cost_usable": float(usable["cost"].min()) if len(usable) else np.nan,
@@ -158,7 +158,7 @@ def _per_record(joined: pd.DataFrame) -> pd.DataFrame:
             # advice nobody is given.  ``NaN``/``False`` when nothing flipped —
             # comparing the price of a plan that does not work is meaningless.
             "cost_shown": float(shown["cost"]) if bool(shown["valid"]) else np.nan,
-            "causal_shown": bool(shown["valid"]) and bool(shown["promise_kept"]),
+            "causal_shown": bool(shown["valid"]) and bool(shown["flip_survives"]),
             "gap_max": float(valid["gap_max"].max()) if len(valid) else np.nan,
             "gap_shown": float(shown["gap_max"]) if bool(shown["valid"]) else np.nan,
             "immutable": int(valid["immutable"].max()) if len(valid) else 0,
@@ -371,9 +371,15 @@ def _profile(evaluator: metrics.Evaluator, x: np.ndarray) -> str:
 
 
 def _verdict(row: "pd.Series[Any]") -> str:
-    """The three audits as three boxes, in funnel order."""
+    """The three audits as three boxes, in funnel order.
+
+    "The SCM agrees" is replayed-action success — the person acts, the SCM fills
+    in the consequences, and the box still accepts the result (Finding 3).  State
+    fidelity (how far the proposed state strays from that replayed one) is a
+    separate quantity, shown in the side-effect lines below rather than gated here.
+    """
     marks = (("flips the decision", row.get("valid")),
-             ("the SCM agrees", row.get("promise_kept")),
+             ("the SCM agrees", row.get("flip_survives")),
              ("a person could do it", row.get("actionable")))
     return "   ".join(f"[{'x' if bool(v) else ' '}] {label}" for label, v in marks)
 
@@ -480,15 +486,19 @@ def _method_block(evaluator: metrics.Evaluator, results: dict[str, Any],
     if not bool(row["valid"]):
         lines.append("      -> the black box does not change its mind, so there is "
                      "nothing here to follow.")
-    elif not bool(row["promise_kept"]):
-        lines.append("      -> the flip is real only in a world the SCM says cannot "
-                     "happen; carrying this out would not produce it.")
+    elif not bool(row["flip_survives"]):
+        lines.append("      -> the flip does not survive the SCM's consequences; "
+                     "carrying this out would not produce the accepted world.")
     elif not bool(row["actionable"]):
         lines.append("      -> a description of a better applicant, not advice this "
                      "one can act on.")
     else:
-        lines.append("      -> usable: it flips, the SCM agrees, and a person "
-                     "could do it.")
+        reached = "      -> usable: it flips, survives the SCM's consequences, and "
+        tail = "a person could do it."
+        if not bool(row.get("promise_kept", True)):
+            tail += "  (The proposed state strays from the replayed one — see the "
+            tail += "side effects above; usable, but low fidelity.)"
+        lines.append(reached + tail)
     return lines + [""]
 
 
@@ -553,7 +563,7 @@ def _case_rows(evaluator: metrics.Evaluator, results: dict[str, Any],
             "answered": True,
             "rank": int(row["rank"]),
             "valid": bool(row["valid"]),
-            "causal": bool(row["promise_kept"]),
+            "causal": bool(row["flip_survives"]),
             "actionable": bool(row["actionable"]),
             "usable": bool(row["usable"]),
             "cost": float(row["cost"]),
@@ -790,8 +800,9 @@ def _check(cases: pd.DataFrame, frequency: pd.DataFrame) -> list[str]:
             if undercut.empty:
                 problems.append(f"{tag}: no baseline's advice is both cheaper than "
                                 f"CAC's and unusable")
-        if case == "side_effect" and accused["causal"].fillna(True).all():
-            problems.append(f"{tag}: every baseline's advice agrees with the SCM")
+        if case == "side_effect" and not (
+                accused["gap_max"].fillna(0.0) > float(CONFIG.CAUSAL_TOLERANCE)).any():
+            problems.append(f"{tag}: no baseline's advice strays from the SCM")
     for _, row in frequency.iterrows():
         if int(row["n_queries"]) == 0:
             problems.append(f"{row['dataset']}: the query set is empty")

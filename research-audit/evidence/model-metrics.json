@@ -1,0 +1,242 @@
+{
+  "xgb_adult": {
+    "dataset": "adult",
+    "model_type": "xgb",
+    "path": "models/xgb_adult.joblib",
+    "n_features": 9,
+    "feature_names": [
+      "age",
+      "education",
+      "occupation",
+      "hours_per_week",
+      "marital_status",
+      "gender",
+      "workclass",
+      "capital_gain",
+      "capital_loss"
+    ],
+    "target_auc": 0.9,
+    "meets_target": true,
+    "tuned_params": {},
+    "model_selection": {},
+    "test": {
+      "accuracy": 0.8485,
+      "precision": 0.7631887456037515,
+      "recall": 0.6170616113744076,
+      "f1": 0.6823899371069182,
+      "roc_auc": 0.918185856017509,
+      "average_precision": 0.8250988805962391,
+      "brier": 0.09757737523784005,
+      "confusion_matrix": {
+        "tn": 2743,
+        "fp": 202,
+        "fn": 404,
+        "tp": 651
+      },
+      "n": 4000,
+      "positive_rate": 0.26375
+    },
+    "train": {
+      "accuracy": 0.8818125,
+      "precision": 0.8288619034171139,
+      "recall": 0.6954976303317536,
+      "f1": 0.7563458317227162,
+      "roc_auc": 0.9465752359610233,
+      "average_precision": 0.8805639714582583,
+      "brier": 0.08088909105067989,
+      "confusion_matrix": {
+        "tn": 11174,
+        "fp": 606,
+        "fn": 1285,
+        "tp": 2935
+      },
+      "n": 16000,
+      "positive_rate": 0.26375
+    },
+    "is_synthetic_data": false,
+    "random_state": 42,
+    "trained_at": "2026-10-04T12:44:24+00:00"
+  },
+  "xgb_german": {
+    "dataset": "german",
+    "model_type": "xgb",
+    "path": "models/xgb_german.joblib",
+    "n_features": 15,
+    "feature_names": [
+      "age",
+      "sex",
+      "num_dependents",
+      "credit_history",
+      "existing_credits",
+      "employment_since",
+      "job",
+      "savings_status",
+      "checking_status",
+      "property_magnitude",
+      "housing",
+      "purpose",
+      "credit_amount",
+      "duration",
+      "installment_rate"
+    ],
+    "target_auc": 0.75,
+    "meets_target": true,
+    "tuned_params": {},
+    "model_selection": {},
+    "test": {
+      "accuracy": 0.775,
+      "precision": 0.8187919463087249,
+      "recall": 0.8714285714285714,
+      "f1": 0.8442906574394463,
+      "roc_auc": 0.7846428571428572,
+      "average_precision": 0.8889124889836849,
+      "brier": 0.1741768908544489,
+      "confusion_matrix": {
+        "tn": 33,
+        "fp": 27,
+        "fn": 18,
+        "tp": 122
+      },
+      "n": 200,
+      "positive_rate": 0.7
+    },
+    "train": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "roc_auc": 1.0,
+      "average_precision": 1.0,
+      "brier": 0.008907225667719872,
+      "confusion_matrix": {
+        "tn": 240,
+        "fp": 0,
+        "fn": 0,
+        "tp": 560
+      },
+      "n": 800,
+      "positive_rate": 0.7
+    },
+    "is_synthetic_data": false,
+    "random_state": 42,
+    "trained_at": "2026-10-04T12:44:25+00:00"
+  },
+  "xgb_heloc": {
+    "dataset": "heloc",
+    "model_type": "xgb",
+    "path": "models/xgb_heloc.joblib",
+    "n_features": 12,
+    "feature_names": [
+      "ExternalRiskEstimate",
+      "MSinceOldestTradeOpen",
+      "AverageMInFile",
+      "NumSatisfactoryTrades",
+      "PercentTradesNeverDelq",
+      "MaxDelqEver",
+      "NumTotalTrades",
+      "NumTradesOpeninLast12M",
+      "NumInqLast6M",
+      "NetFractionRevolvingBurden",
+      "NumRevolvingTradesWBalance",
+      "PercentTradesWBalance"
+    ],
+    "target_auc": 0.75,
+    "meets_target": true,
+    "tuned_params": {},
+    "model_selection": {},
+    "test": {
+      "accuracy": 0.7205063291139241,
+      "precision": 0.7121374865735768,
+      "recall": 0.7001055966209081,
+      "f1": 0.7060702875399361,
+      "roc_auc": 0.7880312187986638,
+      "average_precision": 0.7654404980725513,
+      "brier": 0.18898900793202528,
+      "confusion_matrix": {
+        "tn": 760,
+        "fp": 268,
+        "fn": 284,
+        "tp": 663
+      },
+      "n": 1975,
+      "positive_rate": 0.479493670886076
+    },
+    "train": {
+      "accuracy": 0.8823454913880446,
+      "precision": 0.8776750330250991,
+      "recall": 0.8769799366420274,
+      "f1": 0.8773273471543642,
+      "roc_auc": 0.9552818360445378,
+      "average_precision": 0.9502658884718587,
+      "brier": 0.09741828823527358,
+      "confusion_matrix": {
+        "tn": 3645,
+        "fp": 463,
+        "fn": 466,
+        "tp": 3322
+      },
+      "n": 7896,
+      "positive_rate": 0.4797365754812563
+    },
+    "is_synthetic_data": false,
+    "random_state": 42,
+    "trained_at": "2026-10-04T12:44:25+00:00"
+  },
+  "xgb_diabetes": {
+    "dataset": "diabetes",
+    "model_type": "xgb",
+    "path": "models/xgb_diabetes.joblib",
+    "n_features": 8,
+    "feature_names": [
+      "Pregnancies",
+      "Glucose",
+      "BloodPressure",
+      "SkinThickness",
+      "Insulin",
+      "BMI",
+      "DiabetesPedigreeFunction",
+      "Age"
+    ],
+    "target_auc": 0.8,
+    "meets_target": false,
+    "tuned_params": {},
+    "model_selection": {},
+    "test": {
+      "accuracy": 0.7337662337662337,
+      "precision": 0.7864077669902912,
+      "recall": 0.81,
+      "f1": 0.7980295566502463,
+      "roc_auc": 0.7911111111111111,
+      "average_precision": 0.8687749299354477,
+      "brier": 0.20154253922809115,
+      "confusion_matrix": {
+        "tn": 32,
+        "fp": 22,
+        "fn": 19,
+        "tp": 81
+      },
+      "n": 154,
+      "positive_rate": 0.6493506493506493
+    },
+    "train": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "roc_auc": 1.0,
+      "average_precision": 1.0,
+      "brier": 0.005770216740952575,
+      "confusion_matrix": {
+        "tn": 214,
+        "fp": 0,
+        "fn": 0,
+        "tp": 400
+      },
+      "n": 614,
+      "positive_rate": 0.6514657980456026
+    },
+    "is_synthetic_data": false,
+    "random_state": 42,
+    "trained_at": "2026-10-04T12:44:25+00:00"
+  }
+}

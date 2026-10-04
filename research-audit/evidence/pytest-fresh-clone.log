@@ -1,0 +1,140 @@
+........................................................................ [ 22%]
+.......EEEEE
+==================================== ERRORS ====================================
+___ ERROR at setup of test_every_feature_declares_a_space_to_live_in[adult] ____
+
+request = <SubRequest 'bundle' for <Function test_every_feature_declares_a_space_to_live_in[adult]>>
+
+    @pytest.fixture(scope="module", params=list(DATASETS))
+    def bundle(request: pytest.FixtureRequest) -> DatasetBundle:
+        """One prepared dataset, read from disk — never rebuilt, never downloaded."""
+>       return load_dataset(request.param)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_data.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dataset = 'adult'
+
+    def load_dataset(dataset: str) -> DatasetBundle:
+        """Read a previously prepared dataset back from disk (no recomputation)."""
+        paths = processed_paths(dataset)
+        if not paths["csv"].exists():
+>           raise FileNotFoundError(
+                f"{paths['csv']} not found — run `python experiments/01_train_blackbox.py` "
+                "or `build_dataset()` first."
+            )
+E           FileNotFoundError: /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/adult.csv not found — run `python experiments/01_train_blackbox.py` or `build_dataset()` first.
+
+src/data/preprocess.py:348: FileNotFoundError
+_ ERROR at setup of test_the_schema_survives_the_round_trip_through_json[adult] _
+
+request = <SubRequest 'bundle' for <Function test_every_feature_declares_a_space_to_live_in[adult]>>
+
+    @pytest.fixture(scope="module", params=list(DATASETS))
+    def bundle(request: pytest.FixtureRequest) -> DatasetBundle:
+        """One prepared dataset, read from disk — never rebuilt, never downloaded."""
+>       return load_dataset(request.param)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_data.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dataset = 'adult'
+
+    def load_dataset(dataset: str) -> DatasetBundle:
+        """Read a previously prepared dataset back from disk (no recomputation)."""
+        paths = processed_paths(dataset)
+        if not paths["csv"].exists():
+>           raise FileNotFoundError(
+                f"{paths['csv']} not found — run `python experiments/01_train_blackbox.py` "
+                "or `build_dataset()` first."
+            )
+E           FileNotFoundError: /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/adult.csv not found — run `python experiments/01_train_blackbox.py` or `build_dataset()` first.
+
+src/data/preprocess.py:348: FileNotFoundError
+__ ERROR at setup of test_the_flags_and_the_views_tell_the_same_story[adult] ___
+
+request = <SubRequest 'bundle' for <Function test_every_feature_declares_a_space_to_live_in[adult]>>
+
+    @pytest.fixture(scope="module", params=list(DATASETS))
+    def bundle(request: pytest.FixtureRequest) -> DatasetBundle:
+        """One prepared dataset, read from disk — never rebuilt, never downloaded."""
+>       return load_dataset(request.param)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_data.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dataset = 'adult'
+
+    def load_dataset(dataset: str) -> DatasetBundle:
+        """Read a previously prepared dataset back from disk (no recomputation)."""
+        paths = processed_paths(dataset)
+        if not paths["csv"].exists():
+>           raise FileNotFoundError(
+                f"{paths['csv']} not found — run `python experiments/01_train_blackbox.py` "
+                "or `build_dataset()` first."
+            )
+E           FileNotFoundError: /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/adult.csv not found — run `python experiments/01_train_blackbox.py` or `build_dataset()` first.
+
+src/data/preprocess.py:348: FileNotFoundError
+_ ERROR at setup of test_encode_then_decode_is_the_identity_on_real_records[adult] _
+
+request = <SubRequest 'bundle' for <Function test_every_feature_declares_a_space_to_live_in[adult]>>
+
+    @pytest.fixture(scope="module", params=list(DATASETS))
+    def bundle(request: pytest.FixtureRequest) -> DatasetBundle:
+        """One prepared dataset, read from disk — never rebuilt, never downloaded."""
+>       return load_dataset(request.param)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_data.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dataset = 'adult'
+
+    def load_dataset(dataset: str) -> DatasetBundle:
+        """Read a previously prepared dataset back from disk (no recomputation)."""
+        paths = processed_paths(dataset)
+        if not paths["csv"].exists():
+>           raise FileNotFoundError(
+                f"{paths['csv']} not found — run `python experiments/01_train_blackbox.py` "
+                "or `build_dataset()` first."
+            )
+E           FileNotFoundError: /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/adult.csv not found — run `python experiments/01_train_blackbox.py` or `build_dataset()` first.
+
+src/data/preprocess.py:348: FileNotFoundError
+___________ ERROR at setup of test_model_space_is_reversible[adult] ____________
+
+request = <SubRequest 'bundle' for <Function test_every_feature_declares_a_space_to_live_in[adult]>>
+
+    @pytest.fixture(scope="module", params=list(DATASETS))
+    def bundle(request: pytest.FixtureRequest) -> DatasetBundle:
+        """One prepared dataset, read from disk — never rebuilt, never downloaded."""
+>       return load_dataset(request.param)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_data.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dataset = 'adult'
+
+    def load_dataset(dataset: str) -> DatasetBundle:
+        """Read a previously prepared dataset back from disk (no recomputation)."""
+        paths = processed_paths(dataset)
+        if not paths["csv"].exists():
+>           raise FileNotFoundError(
+                f"{paths['csv']} not found — run `python experiments/01_train_blackbox.py` "
+                "or `build_dataset()` first."
+            )
+E           FileNotFoundError: /Users/shashwatkarn/Documents/ChatGPT/PROJECT AI/cac-blackbox-to-action/data/processed/adult.csv not found — run `python experiments/01_train_blackbox.py` or `build_dataset()` first.
+
+src/data/preprocess.py:348: FileNotFoundError
+=========================== short test summary info ============================
+ERROR tests/test_data.py::test_every_feature_declares_a_space_to_live_in[adult]
+ERROR tests/test_data.py::test_the_schema_survives_the_round_trip_through_json[adult]
+ERROR tests/test_data.py::test_the_flags_and_the_views_tell_the_same_story[adult]
+ERROR tests/test_data.py::test_encode_then_decode_is_the_identity_on_real_records[adult]
+ERROR tests/test_data.py::test_model_space_is_reversible[adult] - FileNotFoun...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!

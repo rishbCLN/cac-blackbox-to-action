@@ -1,0 +1,38 @@
+{
+  "commit": "5c8e9f370941f721ef2f28f1c50c6388f724b6a1",
+  "python": "3.12.5 (v3.12.5:ff3bc82f7c9, Aug  7 2024, 05:32:06) [Clang 13.0.0 (clang-1300.0.29.30)]",
+  "platform": "macOS-26.5.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "data": {
+    "data/raw/adult/audit_source.csv": {
+      "sha256": "853d1f1432c831de8017897f0e90df6ebe4d6b0e5cff2087944fb57bdbe644e8",
+      "bytes": 5277526
+    },
+    "data/raw/diabetes/audit_source.csv": {
+      "sha256": "d943613ee7b914cea44b1063467217c6d7a10ac9537c3be70845ceb54259d78c",
+      "bytes": 24938
+    },
+    "data/raw/german_credit/audit_source.csv": {
+      "sha256": "4ce6007c9eb3dbcd67e7858773566b0eb3ff140033cf67b2d8a42b3a89edfb9d",
+      "bytes": 80030
+    },
+    "data/raw/heloc/audit_source.csv": {
+      "sha256": "f66d77f4e4e27c11205ba6258008f5e071f1f09724f4893e9ff2840a4e99f259",
+      "bytes": 668021
+    }
+  },
+  "training": "XGBoost defaults, no tuning",
+  "comparison": {
+    "n_records_per_dataset": 10,
+    "k": 5,
+    "random_state": 42,
+    "methods": [
+      "random",
+      "wachter",
+      "dice",
+      "oracle",
+      "cac"
+    ]
+  },
+  "OMP_NUM_THREADS": 2
+}

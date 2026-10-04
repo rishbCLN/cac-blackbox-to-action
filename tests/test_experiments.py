@@ -393,16 +393,20 @@ _SUGGESTIONS: tuple[dict[str, Any], ...] = (
 
 @pytest.fixture(scope="module")
 def joined() -> pd.DataFrame:
-    """:data:`_SUGGESTIONS` as a frame, with the funnel's conjunction applied.
+    """:data:`_SUGGESTIONS` as a frame, with the funnel's endpoint applied.
 
     ``usable`` is derived here the way :func:`~src.evaluation.feasibility.join_audits`
-    derives it, and that function's own tests are what keep the two definitions the
-    same; a fixture that hard-coded the column could tell experiment 05 a record is
-    usable that the headline table counts as a failure.
+    derives it — replayed-action success (``flip_survives``) and action feasibility
+    (Finding 3) — and that function's own tests are what keep the two definitions
+    the same.  None of these rows is a survive-but-unfaithful case, so
+    ``flip_survives`` coincides with ``promise_kept`` throughout and the endpoint
+    is unchanged from the old all-three bar; the point of the fixture is the
+    per-record *selection*, not the endpoint's edge behaviour.
     """
     frame = pd.DataFrame(list(_SUGGESTIONS)).astype({
         "valid": bool, "promise_kept": bool, "actionable": bool})
-    frame["usable"] = frame["valid"] & frame["promise_kept"] & frame["actionable"]
+    frame["flip_survives"] = frame["promise_kept"]
+    frame["usable"] = frame["flip_survives"] & frame["actionable"]
     frame["sensitive_shift"] = 0.0
     return frame
 

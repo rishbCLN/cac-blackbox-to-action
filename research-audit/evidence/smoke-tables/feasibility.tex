@@ -1,0 +1,30 @@
+\begin{table}[t]
+\caption{Human feasibility under \S7, over the counterfactuals that flip the black box, evaluated on what each method \emph{asks for} rather than on what the SCM propagates. \emph{Immutable} and \emph{wrong dir.} are the share of plans touching a feature nobody can act on or moving one against its only direction; \emph{too many} the share exceeding the 3-action budget. \emph{Ordinary} is reported separately because an unusual plan is harder to believe rather than forbidden.}
+\label{tab:feasibility}
+\begin{tabular}{llrrrrrrrrr}
+\toprule
+Dataset & Method & $n$ valid & Actionable & Admissible & In budget & Immutable & Wrong dir. & Too many & Actions & Ordinary \\
+\midrule
+Adult & Random & 49 & 0.980 & 0.980 & 1.000 & 0.000 & 0.020 & 0.000 & 1.408 & 0.082 \\
+Adult & Wachter & 50 & 0.720 & 0.980 & 0.720 & 0.000 & 0.020 & 0.280 & 3.200 & 0.020 \\
+Adult & DiCE & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 1.520 & 0.020 \\
+Adult & Oracle & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 2.340 & 0.300 \\
+Adult & CAC & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 2.320 & 0.400 \\
+Diabetes & Random & 47 & 0.766 & 0.766 & 1.000 & 0.000 & 0.234 & 0.000 & 1.043 & 0.000 \\
+Diabetes & Wachter & 47 & 0.426 & 0.426 & 1.000 & 0.000 & 0.574 & 0.000 & 2.489 & 0.128 \\
+Diabetes & DiCE & 50 & 0.960 & 0.960 & 1.000 & 0.000 & 0.040 & 0.000 & 1.540 & 0.040 \\
+Diabetes & Oracle & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 1.860 & 0.080 \\
+Diabetes & CAC & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 1.920 & 0.120 \\
+German & Random & 44 & 0.955 & 0.955 & 1.000 & 0.000 & 0.045 & 0.000 & 1.523 & 0.318 \\
+German & Wachter & 44 & 0.455 & 0.773 & 0.477 & 0.000 & 0.227 & 0.523 & 4.159 & 0.159 \\
+German & DiCE & 47 & 0.915 & 0.915 & 1.000 & 0.000 & 0.085 & 0.000 & 1.809 & 0.191 \\
+German & Oracle & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 1.580 & 0.420 \\
+German & CAC & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 2.780 & 0.600 \\
+HELOC & Random & 40 & 0.750 & 0.825 & 0.900 & 0.000 & 0.175 & 0.100 & 2.225 & 0.000 \\
+HELOC & Wachter & 25 & 0.040 & 0.360 & 0.120 & 0.000 & 0.640 & 0.880 & 5.640 & 0.040 \\
+HELOC & DiCE & 41 & 0.878 & 0.902 & 0.927 & 0.000 & 0.098 & 0.073 & 2.220 & 0.000 \\
+HELOC & Oracle & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 2.700 & 0.180 \\
+HELOC & CAC & 50 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 & 0.000 & 2.580 & 0.540 \\
+\bottomrule
+\end{tabular}
+\end{table}

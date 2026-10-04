@@ -23,35 +23,41 @@ BUILD_PAPER=0
 
 step() { echo; echo "===== $* ====="; }
 
-step "1/9  Train black boxes (downloads + preprocesses data on first run)"
+step "1/10  Train black boxes (downloads + preprocesses data on first run)"
 "$PY" experiments/01_train_blackbox.py
 
-step "2/9  Validate structural causal models (writes scm_* tables + figures)"
+step "2/10  Validate structural causal models (writes scm_* tables + figures)"
 "$PY" -m src.scm.validate_scm
 
-step "3/9  Build cost / actionability models (writes cost_model_* tables)"
+step "3/10  Build cost / actionability models (writes cost_model_* tables)"
 "$PY" -m src.cost.cost_functions
 
-step "4/9  Compare every method on every dataset (main results)"
+step "4/10  Compare every method on every dataset (main results)"
 "$PY" experiments/02_compare_methods.py
 
-step "5/9  Objective ablation"
+step "5/10  Significance (seed-repeated comparison + paired tests + tables)"
+"$PY" experiments/06_significance.py
+
+step "6/10  Objective ablation"
 "$PY" experiments/03_ablation.py
 
-step "6/9  Robustness (budget, k, model transfer, graph misspecification)"
+step "7/10  Robustness (budget, k, model transfer, graph misspecification)"
 "$PY" experiments/04_robustness.py
 
-step "7/9  Qualitative cases (the per-applicant advice)"
+step "8/10  Qualitative cases (the per-applicant advice)"
 "$PY" experiments/05_qualitative.py
 
-step "8/9  Figures (result figures + recourse plans)"
+step "9/10  Figures (result figures + recourse plans)"
 "$PY" -m src.viz.plot_results
 "$PY" -m src.viz.plot_counterfactuals
 
-step "9/9  User-study analysis (synthetic responses)"
+step "10/10  User-study analysis (synthetic responses)"
 "$PY" user_study/analysis.py
 
 if [[ "$BUILD_PAPER" == "1" ]]; then
+  # Canonical manuscript: paper/main.tex, which \input's the tables and figures
+  # produced above. (The repo-root main.tex is a frozen self-contained variant
+  # and is intentionally not built here.)
   step "paper  Build paper/main.pdf (needs pdflatex + bibtex)"
   ( cd paper \
     && pdflatex -interaction=nonstopmode main.tex \
