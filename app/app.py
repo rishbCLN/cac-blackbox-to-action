@@ -27,10 +27,19 @@ from pathlib import Path
 import streamlit as st
 
 # Launchable from anywhere: make the project root win over any stray
-# site-packages ``src`` before the first-party imports run.
+# site-packages ``src`` before the first-party imports run, and remove
+# the script's directory from sys.path so 'import app' resolves to the package.
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+APP_DIR = Path(__file__).resolve().parent
+
+while str(APP_DIR) in sys.path:
+    sys.path.remove(str(APP_DIR))
+if str(ROOT) in sys.path:
+    sys.path.remove(str(ROOT))
+sys.path.insert(0, str(ROOT))
+
+if "app" in sys.modules and not hasattr(sys.modules["app"], "__path__"):
+    del sys.modules["app"]
 
 from app.ui import (  # noqa: E402
     page_applicant,

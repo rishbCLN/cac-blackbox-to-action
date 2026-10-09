@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "D:\cac-blackbox-to-action\experiments\05_qualitative.py", line 895, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "D:\cac-blackbox-to-action\experiments\05_qualitative.py", line 880, in main
+    out = _run_dataset(dataset, args.cases, args.records)
+  File "D:\cac-blackbox-to-action\experiments\05_qualitative.py", line 610, in _run_dataset
+    evaluator, results, joined = _score(dataset)
+                                 ~~~~~~^^^^^^^^^
+  File "D:\cac-blackbox-to-action\experiments\05_qualitative.py", line 331, in _score
+    tables.append(evaluator.table(per_record, method=method))
+                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\cac-blackbox-to-action\src\evaluation\metrics.py", line 259, in table
+    row = self.row(cf, int(record), rank)
+  File "D:\cac-blackbox-to-action\src\evaluation\metrics.py", line 236, in row
+    "plausibility": float(self.plausibility(x_cf, int(cf.y_target))[0]),
+                          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\cac-blackbox-to-action\src\evaluation\metrics.py", line 165, in plausibility
+    R = self.bundle.X_train[self.bundle.y_train == int(y_target)]
+        ^^^^^^^^^^^^^^^^^^^
+  File "D:\cac-blackbox-to-action\src\data\preprocess.py", line 216, in X_train
+    return self.X[self.train_idx]
+           ~~~~~~^^^^^^^^^^^^^^^^
+numpy._core._exceptions._ArrayMemoryError: Unable to allocate 1.10 MiB for an array with shape (16000, 9) and data type float64

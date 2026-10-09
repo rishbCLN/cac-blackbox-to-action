@@ -25,9 +25,10 @@ def render() -> None:
         "When a model rejects someone, the usual explanation names the nearest "
         "change that would flip the answer. That advice can be **impossible**, or "
         "it can **quietly backfire** once the world reacts. This demo separates "
-        "the three things recourse actually needs.")
+        "what recourse actually needs: a plan must **survive the world's reaction** "
+        "and be **something a person can do** (flipping the model is only the floor).")
 
-    st.markdown("### The three tests every plan must pass")
+    st.markdown("### What every plan is checked against")
     st.markdown(theme.audit_legend(), unsafe_allow_html=True)
 
     dataset = S.current_dataset()
@@ -73,8 +74,9 @@ def render() -> None:
 
     theme.presenter_note(
         "Open on HELOC. Say: 'Here's one rejected applicant. A normal tool tells "
-        "them to do something that flips the score on paper, but it fails one of "
-        "our three tests. CAC's plan passes all three.' Then click 'See the whole "
+        "them to do something that flips the score on paper, but it fails the "
+        "usable test --- it either snaps back once the world reacts or asks the "
+        "impossible. CAC's plan is usable.' Then click 'See the whole "
         "picture'.")
 
 
@@ -136,7 +138,7 @@ def _tell_story(dataset: str, rows: pd.DataFrame) -> None:
         if failing is not None:
             _advice_card(failing, tone="warn")
             st.markdown(theme.chips(failing), unsafe_allow_html=True)
-            st.markdown(_why_fails(failing))
+            st.markdown(_why_fails(failing), unsafe_allow_html=True)
         else:
             st.markdown("*(Every baseline happened to succeed on this record; "
                         "browse other cases on the Head-to-head page.)*")
@@ -147,33 +149,58 @@ def _tell_story(dataset: str, rows: pd.DataFrame) -> None:
             st.markdown(theme.chips(cac), unsafe_allow_html=True)
             st.markdown(theme.verdict_badge(theme.is_usable(cac)),
                         unsafe_allow_html=True)
+            st.markdown(
+                f"<div style='background:{theme.PALETTE_OK_BG};border:1px solid {theme.PALETTE_OK_BORDER};"
+                f"color:{theme.PALETTE_OK};border-radius:12px;padding:0.75rem 1rem;margin:0.6rem 0;font-size:0.92rem;line-height:1.45;'>"
+                f"<b>Why CAC succeeds:</b> It optimizes actions through the causal model &mdash; no broken downstream promises, and stays within realistic human effort.</div>",
+                unsafe_allow_html=True
+            )
 
 
 def _advice_card(row: pd.Series, tone: str) -> None:
     advice = str(row.get("advice") or "").strip() or "(no plan produced)"
     method = label_of(str(row.get("method")))
     conseq = str(row.get("consequences") or "").strip()
-    body = f"**{method}:** {advice}"
-    st.markdown(f"<div class='story-card'>{body}</div>", unsafe_allow_html=True)
+    accent = theme.PALETTE_OK if tone == "ok" else theme.PALETTE_WARN
+    
+    st.markdown(
+        f"<div class='story-card' style='border-left: 4px solid {accent};'>"
+        f"<div style='font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:{accent};margin-bottom:0.35rem;'>"
+        f"{method}</div>"
+        f"<div style='font-size:1.05rem;font-weight:500;line-height:1.5;color:#242220;'>{advice}</div>"
+        f"</div>",
+        unsafe_allow_html=True
+    )
     if conseq and conseq.lower() != "nan":
-        st.caption(f"Knock-on effects the causal model fills in: {conseq}")
+        st.markdown(
+            f"<div style='background:{theme.PALETTE_SURFACE_HIGH};border:1px solid {theme.PALETTE_BORDER};border-radius:10px;padding:0.55rem 0.85rem;margin:0.4rem 0 0.6rem;font-size:0.86rem;color:{theme.PALETTE_TEXT_MUTED};'>"
+            f"<strong>Knock-on effects (SCM):</strong> {conseq}</div>",
+            unsafe_allow_html=True
+        )
 
 
 def _why_fails(row: pd.Series) -> str:
     if not theme._truthy(row.get("actionable")):
         blocked = str(row.get("blocked_features") or "").replace(";", ", ")
-        why = (f"asks for something nobody can change (**{blocked}**)"
+        why = (f"asks for something nobody can change (<b>{blocked}</b>)"
                if blocked and blocked.lower() != "nan" else
                "is over the effort budget or asks too many changes")
-        return f"**Why it's not usable:** it {why}."
-    if not theme._truthy(row.get("causal")):
+        body = f"<b>Why it's not usable:</b> It {why}."
+    elif not theme._truthy(row.get("causal")):
         off = str(row.get("off_features") or "").replace(";", ", ")
-        extra = f" (breaks **{off}**)" if off and off.lower() != "nan" else ""
-        return ("**Why it's not usable:** once the world reacts, the change "
-                f"forces other features to move and the 'yes' no longer holds{extra}.")
-    if not theme._truthy(row.get("valid")):
-        return "**Why it's not usable:** it does not even flip the model."
-    return "**Why it's not usable:** it fails one of the three tests."
+        extra = f" (breaks <b>{off}</b>)" if off and off.lower() != "nan" else ""
+        body = (f"<b>Why it's not usable:</b> Once the world reacts, the change forces other features "
+                f"to move and the 'yes' no longer holds{extra}.")
+    elif not theme._truthy(row.get("valid")):
+        body = "<b>Why it's not usable:</b> It does not even flip the model."
+    else:
+        body = "<b>Why it's not usable:</b> It fails the usable test (survives the world's reaction and is doable)."
+
+    return (
+        f"<div style='background:{theme.PALETTE_WARN_BG};border:1px solid {theme.PALETTE_WARN_BORDER};"
+        f"color:{theme.PALETTE_WARN};border-radius:12px;padding:0.75rem 1rem;margin:0.6rem 0;font-size:0.92rem;line-height:1.45;'>"
+        f"{body}</div>"
+    )
 
 
 def _first_failing(rows: pd.DataFrame) -> pd.Series | None:

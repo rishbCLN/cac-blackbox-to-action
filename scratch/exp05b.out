@@ -1,0 +1,519 @@
+2026-10-05 07:46:11 | INFO    | src.utils.logging | Logging to D:\cac-blackbox-to-action\logs\05_qualitative_20261005_074611.log
+2026-10-05 07:46:11 | INFO    | experiments.05_qualitative | === adult ===
+2026-10-05 07:46:11 | INFO    | src.model.blackbox | Loaded black box xgb_adult.joblib
+2026-10-05 07:46:12 | INFO    | src.scm.define_scm | SCM adult: 10 nodes, 25 edges, 7 actionable of 9 features
+2026-10-05 07:46:12 | INFO    | src.scm.fcm | Reusing cached FCM fcm_adult.joblib
+2026-10-05 07:46:13 | INFO    | src.cost.cost_functions | CostModel[adult]: 9 features, 7 actionable, budget 11.222 (top-3 weighted actions)
+2026-10-05 07:56:22 | INFO    | experiments.05_qualitative | adult: re-scored 2487 proposals from 5 methods over 100 records
+2026-10-05 07:56:23 | INFO    | experiments.05_qualitative | adult/cac_only: no record qualifies — nothing to narrate
+2026-10-05 07:56:23 | INFO    | experiments.05_qualitative | adult/cheaper_but_wrong: no record qualifies — nothing to narrate
+2026-10-05 07:56:23 | INFO    | experiments.05_qualitative | adult/immutable_advice: no record qualifies — nothing to narrate
+2026-10-05 07:56:23 | INFO    | experiments.05_qualitative | adult/side_effect: narrating record 76 of 2 that qualify
+2026-10-05 07:56:23 | INFO    | experiments.05_qualitative | adult/everyone_agrees: narrating record 9 of 87 that qualify
+2026-10-05 07:56:23 | INFO    | experiments.05_qualitative | === german ===
+2026-10-05 07:56:23 | INFO    | src.model.blackbox | Loaded black box xgb_german.joblib
+2026-10-05 07:56:23 | INFO    | src.scm.define_scm | SCM german: 16 nodes, 37 edges, 11 actionable of 15 features
+2026-10-05 07:56:23 | INFO    | src.scm.fcm | Reusing cached FCM fcm_german.joblib
+2026-10-05 07:56:24 | INFO    | src.cost.cost_functions | CostModel[german]: 15 features, 11 actionable, budget 6.120 (top-3 weighted actions)
+2026-10-05 07:58:45 | INFO    | experiments.05_qualitative | german: re-scored 1208 proposals from 5 methods over 51 records
+2026-10-05 07:58:45 | INFO    | experiments.05_qualitative | german/cac_only: no record qualifies — nothing to narrate
+2026-10-05 07:58:45 | INFO    | experiments.05_qualitative | german/cheaper_but_wrong: no record qualifies — nothing to narrate
+2026-10-05 07:58:45 | INFO    | experiments.05_qualitative | german/immutable_advice: no record qualifies — nothing to narrate
+2026-10-05 07:58:46 | INFO    | experiments.05_qualitative | german/side_effect: narrating record 16 of 39 that qualify
+2026-10-05 07:58:46 | INFO    | experiments.05_qualitative | german/everyone_agrees: narrating record 72 of 36 that qualify
+2026-10-05 07:58:46 | INFO    | experiments.05_qualitative | === heloc ===
+2026-10-05 07:58:46 | INFO    | src.model.blackbox | Loaded black box xgb_heloc.joblib
+2026-10-05 07:58:46 | INFO    | src.scm.define_scm | SCM heloc: 13 nodes, 28 edges, 8 actionable of 12 features
+2026-10-05 07:58:46 | INFO    | src.scm.fcm | Reusing cached FCM fcm_heloc.joblib
+2026-10-05 07:58:46 | INFO    | src.cost.cost_functions | CostModel[heloc]: 12 features, 8 actionable, budget 6.285 (top-3 weighted actions)
+2026-10-05 08:05:23 | INFO    | experiments.05_qualitative | heloc: re-scored 2284 proposals from 5 methods over 100 records
+2026-10-05 08:05:24 | INFO    | experiments.05_qualitative | heloc/immutable_advice: no record qualifies — nothing to narrate
+2026-10-05 08:05:24 | INFO    | experiments.05_qualitative | heloc/cac_only: narrating record 89 of 24 that qualify
+2026-10-05 08:05:24 | INFO    | experiments.05_qualitative | heloc/cheaper_but_wrong: narrating record 84 of 4 that qualify
+2026-10-05 08:05:24 | INFO    | experiments.05_qualitative | heloc/side_effect: narrating record 99 of 73 that qualify
+2026-10-05 08:05:25 | INFO    | experiments.05_qualitative | heloc/everyone_agrees: narrating record 106 of 17 that qualify
+2026-10-05 08:05:25 | INFO    | experiments.05_qualitative | === diabetes ===
+2026-10-05 08:05:25 | INFO    | src.model.blackbox | Loaded black box xgb_diabetes.joblib
+2026-10-05 08:05:25 | INFO    | src.scm.define_scm | SCM diabetes: 9 nodes, 17 edges, 3 actionable of 8 features
+2026-10-05 08:05:25 | INFO    | src.scm.fcm | Reusing cached FCM fcm_diabetes.joblib
+2026-10-05 08:05:25 | INFO    | src.cost.cost_functions | CostModel[diabetes]: 8 features, 3 actionable, budget 5.925 (top-3 weighted actions)
+2026-10-05 08:06:27 | INFO    | experiments.05_qualitative | diabetes: re-scored 1046 proposals from 5 methods over 43 records
+2026-10-05 08:06:27 | INFO    | experiments.05_qualitative | diabetes/cac_only: no record qualifies — nothing to narrate
+2026-10-05 08:06:27 | INFO    | experiments.05_qualitative | diabetes/cheaper_but_wrong: no record qualifies — nothing to narrate
+2026-10-05 08:06:27 | INFO    | experiments.05_qualitative | diabetes/immutable_advice: no record qualifies — nothing to narrate
+2026-10-05 08:06:27 | INFO    | experiments.05_qualitative | diabetes/side_effect: narrating record 89 of 10 that qualify
+2026-10-05 08:06:28 | INFO    | experiments.05_qualitative | diabetes/everyone_agrees: narrating record 149 of 40 that qualify
+2026-10-05 08:06:28 | INFO    | experiments.05_qualitative | Wrote results/qualitative_cases.csv (50 rows)
+2026-10-05 08:06:28 | INFO    | experiments.05_qualitative | Wrote results/qualitative_frequency.csv (20 rows)
+2026-10-05 08:06:28 | INFO    | experiments.05_qualitative | Wrote results/qualitative_narratives.txt (10 case(s))
+2026-10-05 08:06:28 | WARNING | experiments.05_qualitative | no adult/cac_only case in this run; the flagship table shows adult/side_effect instead
+2026-10-05 08:06:28 | INFO    | src.utils.io | Saved LaTeX table -> D:\cac-blackbox-to-action\paper\tables\case_study.tex
+2026-10-05 08:06:28 | INFO    | src.utils.io | Saved LaTeX table -> D:\cac-blackbox-to-action\paper\tables\qualitative_cases.tex
+====================================================================================
+Adult — side_effect — test record 76
+  The advice a baseline would actually hand over, and the world it would not produce.
+  Shown because: a shipped plan disagrees most widely with the SCM; 2 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.003 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    age = 74 years, education = 10th, occupation = Other-service, hours_per_week = 6
+    hours/week, marital_status = Widowed, gender = Female, workclass = Private,
+    capital_gain = 0 USD/year, capital_loss = 0 USD/year
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.203 of the budget — 4.040 in §7's own units — over 3 action(s); the black box then says P(accept) = 0.971, the SCM's repaired world 0.971
+      do: hours_per_week: 6 hours/week -> 45 hours/week (cost 0.49)
+      do: education: 10th -> HS-grad (cost 0.55)
+      do: capital_gain: 0 USD/year -> 99999 USD/year (cost 3.00)
+      and the SCM says this follows: occupation: Other-service -> Adm-clerical
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.160 of the budget — 3.000 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.758, the SCM's repaired world 0.758
+      do: capital_gain: 0 USD/year -> 99999 USD/year (cost 3.00)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.076 of the budget — 1.423 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.931, the SCM's repaired world 0.931
+      do: capital_gain: 0 USD/year -> 21145 USD/year (cost 1.42)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  wachter  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.445 of the budget — 8.640 in §7's own units — over 3 action(s); the black box then says P(accept) = 0.857, the SCM's repaired world 0.955
+      do: hours_per_week: 6 hours/week -> 50 hours/week (cost 0.64)
+      do: occupation: Other-service -> Exec-managerial (cost 1.50)
+      do: education: 10th -> Doctorate (cost 6.50)
+      but workclass: the plan assumes Private, the SCM says Self-emp-not-inc (gap 0.12)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.  (The proposed state strays from the replayed one — see the side effects above; usable, but low fidelity.)
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.042 of the budget — 0.785 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.680, the SCM's repaired world 0.680
+      do: capital_gain: 0 USD/year -> 9748 USD/year (cost 0.78)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+====================================================================================
+Adult — everyone_agrees — test record 9
+  An applicant every method serves — CAC is not always different.
+  Shown because: every method's plan is usable; 87 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.491 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    age = 58 years, education = Some-college, occupation = Sales, hours_per_week =
+    40 hours/week, marital_status = Married-civ-spouse, gender = Male, workclass =
+    Private, capital_gain = 0 USD/year, capital_loss = 0 USD/year
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.008 of the budget — 0.300 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.535, the SCM's repaired world 0.535
+      do: hours_per_week: 40 hours/week -> 50 hours/week (cost 0.30)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.004 of the budget — 0.150 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.530, the SCM's repaired world 0.530
+      do: hours_per_week: 40 hours/week -> 45 hours/week (cost 0.15)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.015 of the budget — 0.570 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.510, the SCM's repaired world 0.510
+      do: hours_per_week: 40 hours/week -> 59 hours/week (cost 0.57)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  wachter  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.002 of the budget — 0.090 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.629, the SCM's repaired world 0.629
+      do: hours_per_week: 40 hours/week -> 43 hours/week (cost 0.09)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.002 of the budget — 0.090 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.629, the SCM's repaired world 0.629
+      do: hours_per_week: 40 hours/week -> 43 hours/week (cost 0.09)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+====================================================================================
+German — side_effect — test record 16
+  The advice a baseline would actually hand over, and the world it would not produce.
+  Shown because: a shipped plan disagrees most widely with the SCM; 39 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.474 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    age = 22 years, sex = male, num_dependents = 1 people, credit_history =
+    existing_paid_duly, existing_credits = 1 accounts, employment_since =
+    1_to_4_years, job = skilled_employee, savings_status = above_1000_DM,
+    checking_status = 0_to_200_DM, property_magnitude = real_estate, housing = own,
+    purpose = car_new, credit_amount = 1007 DM, duration = 12 months,
+    installment_rate = 4 % band of disposable income
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.015 of the budget — 0.363 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.990, the SCM's repaired world 0.990
+      do: purpose: car_new -> domestic_appliances (cost 0.10)
+      do: savings_status: above_1000_DM -> below_100_DM (cost 0.26)
+      and the SCM says this follows: credit_amount: 1007 DM -> 250 DM
+      and the SCM says this follows: duration: 12 months -> 4 months
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.000 of the budget — 0.012 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.877, the SCM's repaired world 0.877
+      do: duration: 12 months -> 11 months (cost 0.01)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.003 of the budget — 0.180 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.501, the SCM's repaired world 0.859
+      do: credit_amount: 1007 DM -> 5039 DM (cost 0.18)
+      but installment_rate: the plan assumes 4 % band of disposable income, the SCM says 1 % band of disposable income (gap 1.00)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.  (The proposed state strays from the replayed one — see the side effects above; usable, but low fidelity.)
+
+  wachter  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.000 of the budget — 0.002 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.859, the SCM's repaired world 0.980
+      do: credit_amount: 1007 DM -> 1051 DM (cost 0.00)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.000 of the budget — 0.003 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.859, the SCM's repaired world 0.979
+      do: credit_amount: 1007 DM -> 1064 DM (cost 0.00)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+====================================================================================
+German — everyone_agrees — test record 72
+  An applicant every method serves — CAC is not always different.
+  Shown because: every method's plan is usable; 36 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.101 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    age = 32 years, sex = male, num_dependents = 1 people, credit_history =
+    existing_paid_duly, existing_credits = 1 accounts, employment_since =
+    below_1_year, job = skilled_employee, savings_status = below_100_DM,
+    checking_status = below_0_DM, property_magnitude = savings_or_insurance, housing
+    = own, purpose = radio_tv, credit_amount = 1938 DM, duration = 24 months,
+    installment_rate = 4 % band of disposable income
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.001 of the budget — 0.015 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.941, the SCM's repaired world 0.941
+      do: checking_status: below_0_DM -> no_account (cost 0.01)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.001 of the budget — 0.015 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.941, the SCM's repaired world 0.941
+      do: checking_status: below_0_DM -> no_account (cost 0.01)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.005 of the budget — 0.295 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.892, the SCM's repaired world 0.746
+      do: checking_status: below_0_DM -> no_account (cost 0.01)
+      do: credit_amount: 1938 DM -> 14451 DM (cost 0.28)
+      but duration: the plan assumes 24 months, the SCM says 52 months (gap 0.41)
+      but installment_rate: the plan assumes 4 % band of disposable income, the SCM says 3 % band of disposable income (gap 0.33)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.  (The proposed state strays from the replayed one — see the side effects above; usable, but low fidelity.)
+
+  wachter  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.159 of the budget — 1.638 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.843, the SCM's repaired world 0.843
+      do: savings_status: below_100_DM -> none_or_unknown (cost 0.04)
+      do: employment_since: below_1_year -> 4_to_7_years (cost 1.60)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.002 of the budget — 0.108 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.718, the SCM's repaired world 0.718
+      do: duration: 24 months -> 15 months (cost 0.11)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+====================================================================================
+HELOC — cac_only — test record 89
+  CAC gives this person a plan that works; dice does not.
+  Shown because: CAC's plan is usable and the strongest baseline's is not; 24 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.047 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    ExternalRiskEstimate = 55 score, MSinceOldestTradeOpen = 47 months,
+    AverageMInFile = 23 months, NumSatisfactoryTrades = 13 accounts,
+    PercentTradesNeverDelq = 77 %, MaxDelqEver = 6 code, NumTotalTrades = 13
+    accounts, NumTradesOpeninLast12M = 2 accounts, NumInqLast6M = 0 inquiries,
+    NetFractionRevolvingBurden = 93 % utilisation, NumRevolvingTradesWBalance = 2
+    accounts, PercentTradesWBalance = 75 %
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.128 of the budget — 1.480 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.567, the SCM's repaired world 0.567
+      do: MSinceOldestTradeOpen: 47 months -> 179 months (cost 0.66)
+      do: NetFractionRevolvingBurden: 93 % utilisation -> 11 % utilisation (cost 0.82)
+      and the SCM says this follows: ExternalRiskEstimate: 55 score -> 74 score
+      and the SCM says this follows: AverageMInFile: 23 months -> 70 months
+      and the SCM says this follows: NumSatisfactoryTrades: 13 accounts -> 27 accounts
+      and the SCM says this follows: PercentTradesNeverDelq: 77 % -> 81 %
+      and the SCM says this follows: NumTotalTrades: 13 accounts -> 29 accounts
+      and the SCM says this follows: NumRevolvingTradesWBalance: 2 accounts -> 4 accounts
+      and the SCM says this follows: PercentTradesWBalance: 75 % -> 69 %
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [ ] the SCM agrees   [x] a person could do it)
+    effort 0.229 of the budget — 2.085 in §7's own units — over 3 action(s); the black box then says P(accept) = 0.513, the SCM's repaired world 0.228
+      do: NumSatisfactoryTrades: 13 accounts -> 18 accounts (cost 0.25)
+      do: NumTotalTrades: 13 accounts -> 25 accounts (cost 0.36)
+      do: MSinceOldestTradeOpen: 47 months -> 342 months (cost 1.48)
+      but AverageMInFile: the plan assumes 23 months, the SCM says 94 months (gap 0.18)
+      -> the flip does not survive the SCM's consequences; carrying this out would not produce the accepted world.
+
+  dice  ([x] flips the decision   [ ] the SCM agrees   [x] a person could do it)
+    effort 0.268 of the budget — 3.025 in §7's own units — over 3 action(s); the black box then says P(accept) = 0.537, the SCM's repaired world 0.100
+      do: NumSatisfactoryTrades: 13 accounts -> 29 accounts (cost 0.80)
+      do: NumTotalTrades: 13 accounts -> 40 accounts (cost 0.81)
+      do: MSinceOldestTradeOpen: 47 months -> 330 months (cost 1.42)
+      but AverageMInFile: the plan assumes 23 months, the SCM says 95 months (gap 0.18)
+      -> the flip does not survive the SCM's consequences; carrying this out would not produce the accepted world.
+
+  wachter  ([ ] flips the decision   [ ] the SCM agrees   [x] a person could do it)
+    effort 0.000 of the budget — 0.000 in §7's own units — over 0 action(s); the black box then says P(accept) = 0.047, the SCM's repaired world 0.047
+      do: nothing
+      -> the black box does not change its mind, so there is nothing here to follow.
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.433 of the budget — 4.534 in §7's own units — over 3 action(s); the black box then says P(accept) = 0.531, the SCM's repaired world 0.576
+      do: NumRevolvingTradesWBalance: 2 accounts -> 16 accounts (cost 0.50)
+      do: NumSatisfactoryTrades: 13 accounts -> 65 accounts (cost 1.55)
+      do: MSinceOldestTradeOpen: 47 months -> 543 months (cost 2.48)
+      but AverageMInFile: the plan assumes 23 months, the SCM says 148 months (gap 0.31)
+      but PercentTradesWBalance: the plan assumes 75 %, the SCM says 93 % (gap 0.18)
+      but NumTotalTrades: the plan assumes 13 accounts, the SCM says 29 accounts (gap 0.15)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.  (The proposed state strays from the replayed one — see the side effects above; usable, but low fidelity.)
+
+====================================================================================
+HELOC — cheaper_but_wrong — test record 84
+  A baseline undercuts CAC on effort with a plan the SCM rejects.
+  Shown because: a baseline's plan is cheaper than CAC's and causally impossible; 4 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.414 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    ExternalRiskEstimate = 72 score, MSinceOldestTradeOpen = 73 months,
+    AverageMInFile = 36 months, NumSatisfactoryTrades = 7 accounts,
+    PercentTradesNeverDelq = 100 %, MaxDelqEver = 8 code, NumTotalTrades = 7
+    accounts, NumTradesOpeninLast12M = 1 accounts, NumInqLast6M = 1 inquiries,
+    NetFractionRevolvingBurden = 45 % utilisation, NumRevolvingTradesWBalance = 1
+    accounts, PercentTradesWBalance = 80 %
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.027 of the budget — 0.570 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.665, the SCM's repaired world 0.665
+      do: NetFractionRevolvingBurden: 45 % utilisation -> 18 % utilisation (cost 0.27)
+      do: NumTotalTrades: 7 accounts -> 17 accounts (cost 0.30)
+      and the SCM says this follows: ExternalRiskEstimate: 72 score -> 78 score
+      and the SCM says this follows: NumSatisfactoryTrades: 7 accounts -> 15 accounts
+      and the SCM says this follows: NumRevolvingTradesWBalance: 1 accounts -> 2 accounts
+      and the SCM says this follows: PercentTradesWBalance: 80 % -> 69 %
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [ ] the SCM agrees   [x] a person could do it)
+    effort 0.000 of the budget — 0.020 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.519, the SCM's repaired world 0.463
+      do: NumInqLast6M: 1 inquiries -> 0 inquiries (cost 0.02)
+      but PercentTradesWBalance: the plan assumes 80 %, the SCM says 38 % (gap 0.42)
+      -> the flip does not survive the SCM's consequences; carrying this out would not produce the accepted world.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.075 of the budget — 1.580 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.519, the SCM's repaired world 0.519
+      do: NumSatisfactoryTrades: 7 accounts -> 44 accounts (cost 1.58)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  wachter  ([x] flips the decision   [ ] the SCM agrees   [x] a person could do it)
+    effort 0.000 of the budget — 0.020 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.519, the SCM's repaired world 0.463
+      do: NumInqLast6M: 1 inquiries -> 0 inquiries (cost 0.02)
+      but PercentTradesWBalance: the plan assumes 80 %, the SCM says 38 % (gap 0.42)
+      -> the flip does not survive the SCM's consequences; carrying this out would not produce the accepted world.
+
+  random  ([x] flips the decision   [ ] the SCM agrees   [x] a person could do it)
+    effort 0.001 of the budget — 0.070 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.532, the SCM's repaired world 0.346
+      do: NumInqLast6M: 1 inquiries -> 0 inquiries (cost 0.02)
+      do: NumTradesOpeninLast12M: 1 accounts -> 2 accounts (cost 0.05)
+      -> the flip does not survive the SCM's consequences; carrying this out would not produce the accepted world.
+
+====================================================================================
+HELOC — side_effect — test record 99
+  The advice a baseline would actually hand over, and the world it would not produce.
+  Shown because: a shipped plan disagrees most widely with the SCM; 73 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.168 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    ExternalRiskEstimate = 83 score, MSinceOldestTradeOpen = 54 months,
+    AverageMInFile = 24 months, NumSatisfactoryTrades = 5 accounts,
+    PercentTradesNeverDelq = 100 %, MaxDelqEver = 8 code, NumTotalTrades = 6
+    accounts, NumTradesOpeninLast12M = 2 accounts, NumInqLast6M = 0 inquiries,
+    NetFractionRevolvingBurden = 5 % utilisation, NumRevolvingTradesWBalance = 1
+    accounts, PercentTradesWBalance = 100 %
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.007 of the budget — 0.170 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.580, the SCM's repaired world 0.580
+      do: NumTradesOpeninLast12M: 2 accounts -> 1 accounts (cost 0.05)
+      do: NumRevolvingTradesWBalance: 1 accounts -> 0 accounts (cost 0.12)
+      and the SCM says this follows: AverageMInFile: 24 months -> 26 months
+      and the SCM says this follows: NumSatisfactoryTrades: 5 accounts -> 4 accounts
+      and the SCM says this follows: PercentTradesNeverDelq: 100 % -> 99 %
+      and the SCM says this follows: NumTotalTrades: 6 accounts -> 4 accounts
+      and the SCM says this follows: NetFractionRevolvingBurden: 5 % utilisation -> 0 % utilisation
+      and the SCM says this follows: PercentTradesWBalance: 100 % -> 72 %
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.068 of the budget — 1.483 in §7's own units — over 3 action(s); the black box then says P(accept) = 0.512, the SCM's repaired world 0.657
+      do: NetFractionRevolvingBurden: 5 % utilisation -> 18 % utilisation (cost 0.03)
+      do: NumTradesOpeninLast12M: 2 accounts -> 4 accounts (cost 0.10)
+      do: NumSatisfactoryTrades: 5 accounts -> 27 accounts (cost 1.35)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.413 of the budget — 4.215 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.517, the SCM's repaired world 0.681
+      do: NumTotalTrades: 6 accounts -> 66 accounts (cost 1.80)
+      do: MSinceOldestTradeOpen: 54 months -> 537 months (cost 2.42)
+      but NumSatisfactoryTrades: the plan assumes 5 accounts, the SCM says 47 accounts (gap 0.53)
+      but AverageMInFile: the plan assumes 24 months, the SCM says 144 months (gap 0.30)
+      but NumRevolvingTradesWBalance: the plan assumes 1 accounts, the SCM says 8 accounts (gap 0.20)
+      but NetFractionRevolvingBurden: the plan assumes 5 % utilisation, the SCM says 31 % utilisation (gap 0.11)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.  (The proposed state strays from the replayed one — see the side effects above; usable, but low fidelity.)
+
+  wachter  ([ ] flips the decision   [ ] the SCM agrees   [x] a person could do it)
+    effort 0.000 of the budget — 0.000 in §7's own units — over 0 action(s); the black box then says P(accept) = 0.168, the SCM's repaired world 0.168
+      do: nothing
+      -> the black box does not change its mind, so there is nothing here to follow.
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.164 of the budget — 2.637 in §7's own units — over 3 action(s); the black box then says P(accept) = 0.586, the SCM's repaired world 0.540
+      do: NetFractionRevolvingBurden: 5 % utilisation -> 158 % utilisation (cost 0.38)
+      do: MSinceOldestTradeOpen: 54 months -> 141 months (cost 0.43)
+      do: NumSatisfactoryTrades: 5 accounts -> 46 accounts (cost 1.82)
+      but PercentTradesWBalance: the plan assumes 100 %, the SCM says 84 % (gap 0.16)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.  (The proposed state strays from the replayed one — see the side effects above; usable, but low fidelity.)
+
+====================================================================================
+HELOC — everyone_agrees — test record 106
+  An applicant every method serves — CAC is not always different.
+  Shown because: every method's plan is usable; 17 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.475 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    ExternalRiskEstimate = 83 score, MSinceOldestTradeOpen = 182 months,
+    AverageMInFile = 89 months, NumSatisfactoryTrades = 8 accounts,
+    PercentTradesNeverDelq = 100 %, MaxDelqEver = 8 code, NumTotalTrades = 8
+    accounts, NumTradesOpeninLast12M = 0 accounts, NumInqLast6M = 4 inquiries,
+    NetFractionRevolvingBurden = 28 % utilisation, NumRevolvingTradesWBalance = 1
+    accounts, PercentTradesWBalance = 20 %
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.001 of the budget — 0.060 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.698, the SCM's repaired world 0.698
+      do: NumInqLast6M: 4 inquiries -> 1 inquiries (cost 0.06)
+      and the SCM says this follows: ExternalRiskEstimate: 83 score -> 86 score
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.001 of the budget — 0.040 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.571, the SCM's repaired world 0.626
+      do: NumInqLast6M: 4 inquiries -> 2 inquiries (cost 0.04)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.013 of the budget — 0.265 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.613, the SCM's repaired world 0.509
+      do: NetFractionRevolvingBurden: 28 % utilisation -> 134 % utilisation (cost 0.27)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  wachter  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.005 of the budget — 0.124 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.667, the SCM's repaired world 0.606
+      do: NumInqLast6M: 4 inquiries -> 7 inquiries (cost 0.02)
+      do: NumSatisfactoryTrades: 8 accounts -> 9 accounts (cost 0.10)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.001 of the budget — 0.050 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.533, the SCM's repaired world 0.726
+      do: NumTradesOpeninLast12M: 0 accounts -> 1 accounts (cost 0.05)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+====================================================================================
+Diabetes — side_effect — test record 89
+  The advice a baseline would actually hand over, and the world it would not produce.
+  Shown because: a shipped plan disagrees most widely with the SCM; 10 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.288 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    Pregnancies = 10 births, Glucose = 148 mg/dl, BloodPressure = 84 mm Hg,
+    SkinThickness = 48 mm, Insulin = 237 mu U/ml, BMI = 37.60 kg/m^2,
+    DiabetesPedigreeFunction = 1.00 score, Age = 51 years
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.043 of the budget — 0.423 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.586, the SCM's repaired world 0.586
+      do: BMI: 37.60 kg/m^2 -> 32.90 kg/m^2 (cost 0.42)
+      and the SCM says this follows: Glucose: 148 mg/dl -> 90 mg/dl
+      and the SCM says this follows: BloodPressure: 84 mm Hg -> 69 mm Hg
+      and the SCM says this follows: Insulin: 237 mu U/ml -> 31 mu U/ml
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.062 of the budget — 1.224 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.505, the SCM's repaired world 0.505
+      do: Glucose: 148 mg/dl -> 85 mg/dl (cost 1.22)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.066 of the budget — 1.304 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.505, the SCM's repaired world 0.505
+      do: Glucose: 148 mg/dl -> 83 mg/dl (cost 1.30)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  wachter  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.202 of the budget — 1.999 in §7's own units — over 2 action(s); the black box then says P(accept) = 0.641, the SCM's repaired world 0.918
+      do: BloodPressure: 84 mm Hg -> 83 mm Hg (cost 0.01)
+      do: BMI: 37.60 kg/m^2 -> 24.27 kg/m^2 (cost 1.99)
+      but Glucose: the plan assumes 148 mg/dl, the SCM says 83 mg/dl (gap 0.41)
+      but Insulin: the plan assumes 237 mu U/ml, the SCM says 76 mu U/ml (gap 0.19)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.  (The proposed state strays from the replayed one — see the side effects above; usable, but low fidelity.)
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.160 of the budget — 1.581 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.554, the SCM's repaired world 0.880
+      do: BMI: 37.60 kg/m^2 -> 25.27 kg/m^2 (cost 1.58)
+      but Glucose: the plan assumes 148 mg/dl, the SCM says 87 mg/dl (gap 0.38)
+      but Insulin: the plan assumes 237 mu U/ml, the SCM says 75 mu U/ml (gap 0.19)
+      but BloodPressure: the plan assumes 84 mm Hg, the SCM says 66 mm Hg (gap 0.18)
+      but SkinThickness: the plan assumes 48 mm, the SCM says 35 mm (gap 0.14)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.  (The proposed state strays from the replayed one — see the side effects above; usable, but low fidelity.)
+
+====================================================================================
+Diabetes — everyone_agrees — test record 149
+  An applicant every method serves — CAC is not always different.
+  Shown because: every method's plan is usable; 40 of the query set qualify, this is #1.
+====================================================================================
+  The black box scores this applicant at P(accept) = 0.457 against a threshold of 0.50, so the answer is no.
+  What the file says about them:
+    Pregnancies = 1 births, Glucose = 128 mg/dl, BloodPressure = 88 mm Hg,
+    SkinThickness = 39 mm, Insulin = 110 mu U/ml, BMI = 36.50 kg/m^2,
+    DiabetesPedigreeFunction = 1.06 score, Age = 37 years
+
+  What each method tells them to do:
+
+  cac  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.004 of the budget — 0.084 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.562, the SCM's repaired world 0.562
+      do: Glucose: 128 mg/dl -> 122 mg/dl (cost 0.08)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  oracle  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.004 of the budget — 0.084 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.562, the SCM's repaired world 0.562
+      do: Glucose: 128 mg/dl -> 122 mg/dl (cost 0.08)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  dice  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.015 of the budget — 0.294 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.585, the SCM's repaired world 0.585
+      do: Glucose: 128 mg/dl -> 107 mg/dl (cost 0.29)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  wachter  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.013 of the budget — 0.252 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.585, the SCM's repaired world 0.585
+      do: Glucose: 128 mg/dl -> 110 mg/dl (cost 0.25)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+
+  random  ([x] flips the decision   [x] the SCM agrees   [x] a person could do it)
+    effort 0.001 of the budget — 0.014 in §7's own units — over 1 action(s); the black box then says P(accept) = 0.515, the SCM's repaired world 0.515
+      do: Glucose: 128 mg/dl -> 127 mg/dl (cost 0.01)
+      -> usable: it flips, survives the SCM's consequences, and a person could do it.
+

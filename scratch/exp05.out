@@ -1,0 +1,6 @@
+2026-10-05 07:40:47 | INFO    | src.utils.logging | Logging to D:\cac-blackbox-to-action\logs\05_qualitative_20261005_074047.log
+2026-10-05 07:40:47 | INFO    | experiments.05_qualitative | === adult ===
+2026-10-05 07:40:47 | INFO    | src.model.blackbox | Loaded black box xgb_adult.joblib
+2026-10-05 07:40:47 | INFO    | src.scm.define_scm | SCM adult: 10 nodes, 25 edges, 7 actionable of 9 features
+2026-10-05 07:40:47 | INFO    | src.scm.fcm | Reusing cached FCM fcm_adult.joblib
+2026-10-05 07:40:48 | INFO    | src.cost.cost_functions | CostModel[adult]: 9 features, 7 actionable, budget 11.222 (top-3 weighted actions)

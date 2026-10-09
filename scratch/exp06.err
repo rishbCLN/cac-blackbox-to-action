@@ -1,0 +1,33 @@
+Traceback (most recent call last):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7096, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'state_fidelity_mean'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\cac-blackbox-to-action\experiments\06_significance.py", line 436, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "D:\cac-blackbox-to-action\experiments\06_significance.py", line 410, in main
+    _write_tables(aggregate, tests, n_seeds)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\cac-blackbox-to-action\experiments\06_significance.py", line 278, in _write_tables
+    "Fid.": _ci_cell(aggregate, "state_fidelity"),
+            ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\cac-blackbox-to-action\experiments\06_significance.py", line 260, in _ci_cell
+    mean=float(row[f"{metric}_mean"]),
+               ~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\series.py", line 1133, in __getitem__
+    return self._get_value(key)
+           ~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\series.py", line 1249, in _get_value
+    loc = self.index.get_loc(label)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexes\base.py", line 3819, in get_loc
+    raise KeyError(key) from err
+KeyError: 'state_fidelity_mean'

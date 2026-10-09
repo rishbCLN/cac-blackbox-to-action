@@ -83,12 +83,12 @@ def _verdict_card(dataset: str, record: int, method: str,
                   frame: pd.DataFrame) -> None:
     row = C.best_row(frame, method, record)
     with st.container(border=True):
-        head, badge = st.columns([1, 1])
+        head, badge = st.columns([1.5, 1])
         head.markdown(f"### {label_of(method)}")
         if row is None:
             head.markdown("*no plan produced*")
             return
-        badge.markdown(theme.verdict_badge(theme.is_usable(row)),
+        badge.markdown(f"<div style='text-align:right;'>{theme.verdict_badge(theme.is_usable(row))}</div>",
                        unsafe_allow_html=True)
         st.markdown(theme.chips(row), unsafe_allow_html=True)
 
@@ -99,7 +99,7 @@ def _verdict_card(dataset: str, record: int, method: str,
 
         reason = _reason(row)
         if reason:
-            st.markdown(reason)
+            st.markdown(reason, unsafe_allow_html=True)
 
         table = C.moves_table(row)
         if not table.empty:
@@ -112,17 +112,28 @@ def _reason(row: pd.Series) -> str:
         return ""
     if not theme._truthy(row.get("actionable")):
         blocked = str(row.get("blocked_features") or "").replace(";", ", ")
-        if blocked and blocked.lower() != "nan":
-            return f":red[Not doable] --- asks to change **{blocked}**."
-        return ":red[Not doable] --- over the effort budget or too many changes."
-    if not theme._truthy(row.get("causal")):
+        detail = (f"asks to change <b>{blocked}</b> (immutable/protected feature)"
+                  if blocked and blocked.lower() != "nan" else
+                  "exceeds the allowed effort budget or requires too many simultaneous changes")
+        prefix = "Not doable"
+    elif not theme._truthy(row.get("causal")):
         off = str(row.get("off_features") or "").replace(";", ", ")
-        extra = f" It breaks **{off}**." if off and off.lower() != "nan" else ""
-        return (":red[Breaks under the causal model] --- the world reacts and the "
-                f"flip no longer holds.{extra}")
-    if not theme._truthy(row.get("valid")):
-        return ":red[Does not flip the model.]"
-    return ""
+        extra = f" (breaks <b>{off}</b>)" if off and off.lower() != "nan" else ""
+        detail = f"The causal model propagates changes and the decision flips back{extra}"
+        prefix = "Breaks under causal model"
+    elif not theme._truthy(row.get("valid")):
+        prefix = "Invalid"
+        detail = "Does not even flip the black-box model's decision"
+    else:
+        prefix = "Not usable"
+        detail = "Fails the combined causal and actionability criteria"
+
+    return (
+        f"<div style='background:{theme.PALETTE_WARN_BG};border:1px solid {theme.PALETTE_WARN_BORDER};"
+        f"color:{theme.PALETTE_WARN};border-radius:10px;padding:0.6rem 0.9rem;margin:0.5rem 0;"
+        f"font-size:0.88rem;line-height:1.45;'>"
+        f"<strong>{prefix}:</strong> {detail}.</div>"
+    )
 
 
 def _narrative(dataset: str, record: int) -> None:
