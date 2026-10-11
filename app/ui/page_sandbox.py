@@ -1,4 +1,4 @@
-"""Live Sandbox --- the judge drives (Phase 4).
+"""Act 4 --- Live Sandbox: the judge drives, the world reacts.
 
 Pick a real rejected applicant, edit any feature, and watch the three audits
 recompute live on the real model plus the fitted causal model.  The reveal is the
@@ -7,6 +7,10 @@ consequences you did not ask for --- exactly what a non-causal tool hides.
 
 Everything runs through :mod:`app.live`; the engine only ever *queries*
 ``predict_proba`` and runs one SCM repair per edit.  Nothing is trained here.
+
+The plan editor, verdict and cascade live in an ``st.fragment`` so a slider edit
+reruns only that block (snappy, and live edits never animate); the staged
+entrance and the one USABLE-reward beat are the only motion on this page.
 """
 
 from __future__ import annotations
@@ -16,13 +20,39 @@ import json
 import numpy as np
 import streamlit as st
 
+from app.ui import flow as F
+from app.ui import motion as Mo
 from app.ui import state as S
 from app.ui import theme
 from src.viz import label_of
 
 
 def render() -> None:
-    st.title("Live sandbox: type a plan, watch the world react")
+    F.stepper(4)
+    F.keyboard_nav()
+
+    speed = F.speed()
+    reduced = F.reduced()
+    demo = S.demo_mode()
+    cls = Mo.root_class(speed, reduced=reduced)
+
+    # --- hero: eyebrow, title, framing, faded up once on entrance ---
+    st.markdown(
+        f"<div class='{cls}' style='padding:0.2rem 0 0.2rem;'>"
+        f"<div class='mo-fade-up mo-stagger' style='font-size:0.9rem;font-weight:700;"
+        f"letter-spacing:0.16em;text-transform:uppercase;color:{theme.PALETTE_PRIMARY};'>"
+        f"Act 4 &middot; Live sandbox</div>"
+        f"<div class='mo-fade-up mo-stagger' style='font-size:2.1rem;font-weight:800;"
+        f"line-height:1.2;letter-spacing:-0.01em;color:{theme.PALETTE_TEXT};"
+        f"margin:0.25rem 0 0.3rem;'>Type a plan, watch the world react</div>"
+        f"<div class='mo-fade-up mo-stagger' style='font-size:1.05rem;line-height:1.55;"
+        f"color:{theme.PALETTE_TEXT_MUTED};max-width:820px;'>"
+        f"Pick a rejected applicant and edit any feature. The reveal: change one "
+        f"thing and the causal model fills in the consequences you <i>didn&rsquo;t</i> "
+        f"ask for &mdash; exactly what an ordinary tool hides. Every number is live "
+        f"on the real model.</div>"
+        f"</div>",
+        unsafe_allow_html=True)
 
     dataset = S.current_dataset()
     if dataset is None:
@@ -57,27 +87,27 @@ def render() -> None:
         f"**{_label(eng.predict_label(x))}**. Goal: flip it to "
         f"**{_label(eng.default_target(x))}**.")
 
+    F.banner("You drive. Edit any feature and all three audits recompute live "
+             "\u2014 on the real model and the fitted causal model.")
+
     _seed_controls(L, eng, dataset, record, x, meta)
     st.divider()
 
-    left, right = st.columns([2, 3])
-    with left:
-        st.markdown("#### Your plan")
-        x_edit = _editors(eng, dataset, record, x, meta)
-    with right:
-        audit = eng.audit(x, x_edit)
-        _verdict(audit)
-        st.divider()
-        _cascade(eng, audit)
+    _plan_fragment(eng, dataset, record, x, meta,
+                   speed=speed, reduced=reduced, demo=demo)
 
-    st.divider()
-    _details(eng, audit)
-
-    theme.presenter_note(
-        "Seed from CAC's plan, show it's USABLE, then hand the mouse over. Ask the "
-        "judge to 'max out' a feature or move a downstream one --- watch A go red "
-        "(over budget / impossible) or the cascade table reveal side effects that "
-        "flip S to red. Every number recomputes on the real model.")
+    F.presenter_hud(
+        4,
+        script=("'Now you drive. I'll seed CAC's plan \u2014 stamped USABLE. Then "
+                "hand over the mouse: max out a feature and watch A go red (over "
+                "budget / impossible), or nudge a downstream feature and watch the "
+                "cascade table reveal the side effects that flip S to red. Every "
+                "number recomputes on the real model.'"),
+        clicks=["Seed: CAC", "(hand over the mouse)", "edit a feature",
+                "(watch the cascade table)", "Next \u25B6"],
+        watch="Verdict + P(target) after the world reacts",
+        budget_s=75,
+        next_cue="Act 5 \u2014 the causal map that does the judging.")
 
 
 # ------------------------------------------------------------------- controls
@@ -114,6 +144,30 @@ def _seed_controls(L, eng, dataset: str, record: int, x, meta) -> None:
     if queued:
         st.info(f"Pre-selected from the causal map: {', '.join(queued)}. "
                 "Adjust them below.")
+
+
+@st.fragment
+def _plan_fragment(eng, dataset: str, record: int, x, meta, *, speed: str,
+                   reduced: bool, demo: bool) -> None:
+    """Editors + live verdict + cascade, isolated so a slider edit is instant.
+
+    Everything here recomputes on every edit, so nothing animates (per the motion
+    rule); the only motion is a one-shot confetti beat the first time a plan
+    becomes USABLE in demo + cinematic.
+    """
+    left, right = st.columns([2, 3])
+    with left:
+        st.markdown("#### Your plan")
+        x_edit = _editors(eng, dataset, record, x, meta)
+    with right:
+        audit = eng.audit(x, x_edit)
+        _verdict(audit)
+        _maybe_celebrate(audit, dataset, record, speed=speed, reduced=reduced,
+                         demo=demo)
+        st.divider()
+        _cascade(eng, audit)
+    st.divider()
+    _details(eng, audit)
 
 
 def _editors(eng, dataset: str, record: int, x, meta) -> np.ndarray:
@@ -193,6 +247,21 @@ def _verdict(audit) -> None:
         warns.append("asks for something impossible")
     if warns:
         st.warning("Not doable: " + ", ".join(warns) + ".")
+
+
+def _maybe_celebrate(audit, dataset: str, record: int, *, speed: str,
+                     reduced: bool, demo: bool) -> None:
+    """A one-shot confetti beat the first time a plan turns USABLE (demo+cinematic).
+
+    Tracks the previous usable state per (dataset, record) so it fires on the
+    transition into USABLE, never on every live edit while it stays usable.
+    """
+    flag = f"_sbx_usable_{dataset}_{record}"
+    prev = bool(st.session_state.get(flag, False))
+    now = bool(getattr(audit, "usable", False))
+    if now and not prev and demo and Mo.confetti_enabled(speed, reduced):
+        F.safe_html(Mo.confetti_html(height=150), height=150)
+    st.session_state[flag] = now
 
 
 def _cap(audit) -> int:

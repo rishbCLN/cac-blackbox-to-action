@@ -36,7 +36,7 @@ THESIS = ("Every method can flip the model on paper. Only a plan that also "
 DATASET_BLURB: dict[str, str] = {
     "adult": "Income (>$50k?). An honest case where the gap is small.",
     "german": "German credit approval. A clear usable-recourse gap.",
-    "heloc": "Home-equity credit. The dramatic case: one tool helps only 13%.",
+    "heloc": "Home-equity credit. The dramatic case: the widest usable-recourse gap.",
     "diabetes": "Diabetes onset risk. Favourable class is 'no onset'.",
 }
 

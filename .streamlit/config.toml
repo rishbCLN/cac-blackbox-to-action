@@ -11,3 +11,16 @@ headless = true
 
 [browser]
 gatherUsageStats = false
+
+[runner]
+# Snappier reruns for live slider/dataset edits during the talk.
+fastReruns = true
+
+[client]
+# Hide the dev toolbar / "Deploy" button for a clean presentation surface.
+toolbarMode = "minimal"
+# Demo-only — leave OFF during the build so tracebacks stay debuggable. Our pages
+# already degrade to friendly cards via flow.safe_pyplot/flow.safe_html, so a
+# judge never sees a stack trace; uncomment this only for the live talk to also
+# swallow any stray exception detail from the Streamlit UI itself.
+# showErrorDetails = "none"

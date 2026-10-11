@@ -183,10 +183,14 @@ def check_pages() -> None:
             if not ab.empty:
                 E._ablation_figure(ab)
                 plt.close("all")
-                full = E._val(ab, "cac", "usable")
-                noc = E._val(ab, "cac_no_causal", "usable")
+                # The ablation hero is per-plan flip survival (not usable): on
+                # usable the ablation barely moves, but removing the causal term
+                # makes plans stop surviving the SCM-repaired world.  Lock that
+                # monotonicity --- turning the term off must never *raise* it.
+                full = E._val(ab, "cac", "flip_survival")
+                noc = E._val(ab, "cac_no_causal", "flip_survival")
                 if full == full and noc == noc:  # noqa: PLR0124 - NaN check
-                    assert full >= noc, "removing the causal term should not help"
+                    assert full >= noc, "removing the causal term should not raise flip survival"
 
         # Gap D: the k and budget robustness sweeps build for every dataset.
         E._rob_sweep(dataset, arm="k", label="k", x_label="k",
@@ -212,10 +216,25 @@ def check_pages() -> None:
     print("APP PAGES OK")
 
 
+def check_flow_and_motion() -> None:
+    """Delegate to the motion + flow smoke checks so one run covers the UI spine.
+
+    ``smoke_flow`` is a sibling script in this ``scratch/`` dir; import it by name
+    (its parent is on ``sys.path`` via this file) and run its pure checks, which
+    also import every page the eight-act registry names.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import smoke_flow  # noqa: PLC0415
+
+    smoke_flow.check_motion()
+    smoke_flow.check_flow()
+
+
 def main() -> int:
     check_components()
     check_live()
     check_pages()
+    check_flow_and_motion()
     print("APP COMPONENTS OK")
     return 0
 

@@ -14,6 +14,8 @@ library.
 
 from __future__ import annotations
 
+import tempfile
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -33,6 +35,13 @@ _ATOL = 1e-8
 AUDITS = (("F", "valid", "flips the box"),
           ("S", "causal", "survives the SCM"),
           ("A", "actionable", "a person could do it"))
+
+#: On-the-fly recourse renders land here, never the tracked ``paper/figures``
+#: tree: both the app and the headless smoke call :func:`recourse_png`, and
+#: writing into ``paper/`` would dirty committed figures on every run.  One lock
+#: serialises the brief ``save_figure`` swap the redirect needs.
+_RECOURSE_FIG_DIR = Path(tempfile.gettempdir()) / "cac_demo_recourse"
+_RECOURSE_FIG_LOCK = threading.Lock()
 
 
 # ------------------------------------------------------------------- discovery
@@ -145,6 +154,41 @@ def cost_model(dataset: str):
     from src.cost.cost_functions import get_cost_model  # noqa: PLC0415
 
     return get_cost_model(dataset)
+
+
+# ------------------------------------------------------------- the causal map
+
+@st.cache_resource(show_spinner=False)
+def scm_object(dataset: str) -> Any:
+    """The dataset's structural causal model, cached once per process (read-only).
+
+    The map page reads ``scm.manipulable`` / ``scm.downstream`` every rerun and
+    both figure builders need the same graph; caching it keeps the Act 5 page and
+    its intervention trace instant after the first visit.
+    """
+    from src.scm.define_scm import get_scm  # noqa: PLC0415
+
+    return get_scm(dataset)
+
+
+@st.cache_resource(show_spinner=False)
+def scm_figure(dataset: str, show_costs: bool = True) -> Any:
+    """The SCM graph figure, built once and reused (matplotlib is slow to rebuild)."""
+    from src.viz import plot_graphs  # noqa: PLC0415
+
+    return plot_graphs.plot_scm(scm_object(dataset), show_costs=show_costs)
+
+
+@st.cache_resource(show_spinner=False)
+def intervention_figure(dataset: str, picked: tuple[str, ...]) -> Any:
+    """The downstream-cascade figure for one intervention set, cached per selection.
+
+    ``picked`` is a tuple (hashable) so repeated selections during a talk are
+    instant; the list form is what :func:`plot_intervention_paths` expects.
+    """
+    from src.viz import plot_graphs  # noqa: PLC0415
+
+    return plot_graphs.plot_intervention_paths(scm_object(dataset), list(picked))
 
 
 def methods_for(dataset: str, frame: pd.DataFrame) -> list[str]:
@@ -276,18 +320,58 @@ def recourse_png(dataset: str, record: int, frame: pd.DataFrame) -> Path | None:
     synthesized single-applicant frame, so the demo and the paper draw plans the
     identical way. Saved under a distinct ``app_`` name so it never clobbers a
     curated figure.
-    """
-    from src.viz.plot_counterfactuals import plot_recourse_plans  # noqa: PLC0415
 
+    The render is memoised on ``(dataset, record)`` (``frame`` is kept for a
+    stable public signature; every caller passes :func:`per_record` for the same
+    dataset, which the cached path recomputes), so flipping back to an applicant
+    during a talk is instant.  The figure is written to a temp dir, never
+    ``paper/figures``, so an interactive render never dirties a committed artefact.
+    """
+    return _recourse_png(dataset, int(record))
+
+
+@st.cache_data(show_spinner=False)
+def _recourse_png(dataset: str, record: int) -> Path | None:
+    """Build + cache one applicant's recourse figure; see :func:`recourse_png`."""
+    from src.viz import plot_counterfactuals as pc  # noqa: PLC0415
+
+    frame = per_record(dataset)
     cases = synth_cases(dataset, record, frame)
     if cases.empty:
         return None
-    paths = plot_recourse_plans(
-        dataset, "app", record, cases=cases,
-        results_cache={dataset: plans(dataset)},
-        cost_cache={dataset: cost_model(dataset)},
-        name=f"app_{dataset}_{record}")
+    # Swap the viz layer's ``save_figure`` for the temp-dir saver just for this
+    # call: ``plot_recourse_plans`` -> ``_save`` looks the name up in its module
+    # globals at call time, so replacing the attribute (under a lock, always
+    # restored) reroutes the write without touching ``src/``.
+    with _RECOURSE_FIG_LOCK:
+        original_save = pc.save_figure
+        pc.save_figure = _save_figure_tmp
+        try:
+            paths = pc.plot_recourse_plans(
+                dataset, "app", record, cases=cases,
+                results_cache={dataset: plans(dataset)},
+                cost_cache={dataset: cost_model(dataset)},
+                name=f"app_{dataset}_{record}")
+        finally:
+            pc.save_figure = original_save
     return next((p for p in paths if p.suffix == ".png"), None)
+
+
+def _save_figure_tmp(fig: Any, name: str, subdir: str | None = None) -> list[Path]:
+    """A ``save_figure`` drop-in that writes under the demo's temp dir.
+
+    Mirrors :func:`src.utils.io.save_figure` (same formats + DPI) but targets
+    :data:`_RECOURSE_FIG_DIR` instead of ``CONFIG.FIGURES_DIR`` so an interactive
+    render stays out of the tracked ``paper/figures`` tree.
+    """
+    out_dir = _RECOURSE_FIG_DIR / subdir if subdir else _RECOURSE_FIG_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
+    paths: list[Path] = []
+    for ext in CONFIG.FIGURE_FORMATS:
+        p = out_dir / f"{name}.{ext}"
+        fig.savefig(p, dpi=CONFIG.FIGURE_DPI, bbox_inches="tight", format=ext)
+        paths.append(p)
+    return paths
 
 
 def moves_table(row: pd.Series) -> pd.DataFrame:
