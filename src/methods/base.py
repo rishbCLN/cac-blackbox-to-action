@@ -494,6 +494,7 @@ _METHOD_MODULES: dict[str, str] = {
     "wachter": "src.methods.baseline_wachter",
     "random": "src.methods.baseline_random",
     "oracle": "src.methods.oracle",
+    "mint": "src.methods.mint",
 }
 
 

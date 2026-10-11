@@ -30,6 +30,7 @@ _LAZY = {
     "WachterMethod": "src.methods.baseline_wachter",
     "RandomMethod": "src.methods.baseline_random",
     "OracleMethod": "src.methods.oracle",
+    "MINTMethod": "src.methods.mint",
 }
 
 

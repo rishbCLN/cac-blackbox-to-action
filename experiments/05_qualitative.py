@@ -76,7 +76,7 @@ RIVAL = "dice"
 FLAGSHIP = "adult"
 
 #: Reading order for the methods inside one narrative.
-METHOD_ORDER = ("cac", "oracle", "dice", "wachter", "random")
+METHOD_ORDER = ("cac", "mint", "oracle", "dice", "wachter", "random")
 
 #: The published methods a case is allowed to *accuse*.  ``oracle`` sees the SCM
 #: and ``random`` is a control, so "a baseline undercuts CAC with an impossible

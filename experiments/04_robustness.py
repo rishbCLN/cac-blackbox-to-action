@@ -522,7 +522,7 @@ def _arm_model(dataset: str, bundle: DatasetBundle, model: Any,
     arm = _Arm("model", reference=f"cac@{CONFIG.BLACKBOX_TYPE}")
     fcm, cost_model = get_fcm(dataset), get_cost_model(dataset)
     generated: dict[str, dict[int, list[Counterfactual]]] = {}
-    for name in ("random", "wachter", "dice", "oracle", "cac"):
+    for name in ("random", "wachter", "dice", "oracle", "mint", "cac"):
         method = get_method(name, dataset, model=model)
         per_record, run = _generate(method, records, X, k, y_target, "model",
                                     f"generated@{CONFIG.BLACKBOX_TYPE}")
@@ -754,7 +754,7 @@ _FORMATS: dict[str, str] = {
     "budget": "lrr" + "r" * 7, "model": "lll" + "r" * 7,
 }
 
-_METHOD_RANK = {"cac": 0, "oracle": 1, "dice": 2, "wachter": 3, "random": 4}
+_METHOD_RANK = {"cac": 0, "mint": 1, "oracle": 2, "dice": 3, "wachter": 4, "random": 5}
 
 
 def _audit_rank(tag: str) -> int:

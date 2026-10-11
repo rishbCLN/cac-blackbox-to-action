@@ -68,7 +68,7 @@ LOGGER = get_logger("experiments.06_significance")
 
 #: The method the paper argues for, and the baselines it is compared against.
 REFERENCE = "cac"
-METHOD_ORDER: tuple[str, ...] = ("random", "wachter", "dice", "oracle", "cac")
+METHOD_ORDER: tuple[str, ...] = ("random", "wachter", "dice", "oracle", "mint", "cac")
 
 #: Seeds handed to the search.  The first is \S9's canonical run, so a single-seed
 #: table is a strict subset of this one; the rest measure the spread around it.
@@ -94,7 +94,7 @@ OUTPUTS: dict[str, str] = {
 _DATASET_LABELS = {"adult": "Adult", "german": "German", "heloc": "HELOC",
                    "diabetes": "Diabetes"}
 _METHOD_LABELS = {"random": "Random", "wachter": "Wachter", "dice": "DiCE",
-                  "oracle": "Oracle", "cac": "CAC"}
+                  "oracle": "Oracle", "mint": "MINT", "cac": "CAC"}
 
 
 def _per_record_bits(joined: pd.DataFrame, dataset: str, method: str,

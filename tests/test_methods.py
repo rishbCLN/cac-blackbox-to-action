@@ -5,7 +5,7 @@ contract every method signs by subclassing
 :class:`~src.methods.base.CounterfactualMethod`: nine fields, at most ``k``
 suggestions, no duplicates, ranked, on the grid, inside the box, and never a
 plan that asks somebody to change something §7 says nobody can change.  Those
-are the same assertions for all five methods, because the point of the base
+are the same assertions for all six methods, because the point of the base
 class is that §9 can compare them at all.
 
 The second kind is each method's own claim.  The oracle says its answer is
@@ -19,7 +19,7 @@ central claim, reduced to one record and one assertion.
 
 Nothing here is forged: unlike ``test_metrics``, whose job is to catch a referee
 that can be fooled, this module runs the real searches on a real rejected
-applicant.  One record, ``k=3``, German (the smallest dataset), all five methods
+applicant.  One record, ``k=3``, German (the smallest dataset), all six methods
 generated once in a module-scoped fixture — a few seconds in total, marked
 ``slow`` so it can be deselected, and the cheap contract checks that need no
 search are left unmarked.
@@ -44,6 +44,9 @@ DATASET = "german"
 K = 3
 #: The methods that do not consult the graph — §9's comparison group.
 BASELINES: tuple[str, ...] = ("random", "wachter", "dice")
+#: The methods that score through the SCM, so the base class fills their
+#: ``causal_path``: CAC and the MINT causal baseline.
+CAUSAL: tuple[str, ...] = ("cac", "mint")
 
 
 @pytest.fixture(scope="module")
@@ -99,9 +102,10 @@ def cfs(plans: Any) -> Mapping[str, Sequence[Counterfactual]]:
 # --------------------------------------------------------------- the registry
 
 
-def test_registry_offers_exactly_the_five_methods() -> None:
-    """§9's table has five rows, and they come from here rather than a list."""
-    assert set(available_methods()) == {"random", "wachter", "dice", "oracle", "cac"}
+def test_registry_offers_exactly_the_six_methods() -> None:
+    """§9's table has six rows, and they come from here rather than a list."""
+    assert set(available_methods()) == {"random", "wachter", "dice", "oracle",
+                                        "mint", "cac"}
 
 
 def test_get_method_builds_what_it_was_asked_for(model: Any) -> None:
@@ -198,12 +202,12 @@ def test_generate_refuses_a_nonsense_request(model: Any, x: np.ndarray) -> None:
         method.generate(x[:-1], y_target=1, k=1)
 
 
-# ------------------------------------------------- the contract all five sign
+# ------------------------------------------------- the contract all six sign
 
 
 @pytest.mark.slow
 def test_no_method_raises(plans: Any) -> None:
-    """Reported once, with the exception, rather than as five broken tests.
+    """    Reported once, with the exception, rather than as six broken tests.
 
     §9 scores a crash as zero coverage on purpose — a person who gets an error
     got no recourse — but in the test suite a crash is a regression, so it fails
@@ -285,30 +289,33 @@ def test_no_plan_asks_for_something_nobody_can_do(
 
 
 @pytest.mark.slow
-def test_only_cac_reports_a_causal_path(cfs: Mapping[str, Sequence[Counterfactual]],
-                                        ev: Evaluator) -> None:
-    """§8.1 reserves ``causal_path`` for CAC, and the base class enforces it.
+def test_only_the_causal_methods_report_a_causal_path(
+        cfs: Mapping[str, Sequence[Counterfactual]], ev: Evaluator) -> None:
+    """§8.1 fills ``causal_path`` only for a method that scores through the SCM.
 
-    The field is not decoration: a baseline that filled it in would be claiming
-    to have reasoned about consequences it never consulted, and §9's causal
-    columns would then be scoring a claim nobody made.  CAC's path is checked
-    against the graph rather than against itself — the features it moved, plus
-    everything downstream of them.
+    The field is not decoration: an acausal method that filled it in would be
+    claiming to have reasoned about consequences it never consulted, and §9's
+    causal columns would then be scoring a claim nobody made.  CAC and MINT both
+    propagate through the fitted SCM, so both earn a path; the point baselines
+    and the acausal oracle do not.  Each path is checked against the graph rather
+    than against itself — the features the method moved, plus everything
+    downstream of them.
     """
     for name, found in cfs.items():
-        if name == "cac":
+        if name in CAUSAL:
             continue
         for cf in found:
             assert cf.causal_path == (), f"{name} claims a causal path"
 
-    for cf in cfs["cac"]:
-        moved = [n for n, m in zip(ev.feature_names,
-                                   ~np.isclose(cf.x_original, cf.x_cf,
-                                               rtol=0.0, atol=MOVE_ATOL)) if m]
-        assert cf.causal_path, "cac moved something but reports no path"
-        expected = set(moved) | set(ev.fcm.scm.downstream(moved))
-        assert set(cf.causal_path) <= expected
-        assert set(cf.changed_features) <= set(cf.causal_path)
+    for name in CAUSAL:
+        for cf in cfs[name]:
+            moved = [n for n, m in zip(ev.feature_names,
+                                       ~np.isclose(cf.x_original, cf.x_cf,
+                                                   rtol=0.0, atol=MOVE_ATOL)) if m]
+            assert cf.causal_path, f"{name} moved something but reports no path"
+            expected = set(moved) | set(ev.fcm.scm.downstream(moved))
+            assert set(cf.causal_path) <= expected
+            assert set(cf.changed_features) <= set(cf.causal_path)
 
 
 @pytest.mark.slow
@@ -440,6 +447,46 @@ def test_cac_prices_the_action_and_reports_the_consequence(
         assert set(cf.changed_features) <= set(cf.extras["state_changed"])
 
 
+# ---------------------------------------------------- what MINT promises
+
+
+@pytest.mark.slow
+def test_mint_proposes_a_causal_intervention_priced_as_an_action(
+        cfs: Mapping[str, Sequence[Counterfactual]], ev: Evaluator,
+        x: np.ndarray) -> None:
+    """MINT is CAC's cost opponent, so it has to keep CAC's accounting.
+
+    Its answer is a causal intervention: handing *only* ``changed_features`` to
+    the fitted FCM has to reproduce the record it proposed, so ``causal_gap`` is
+    zero like CAC's and unlike any baseline's.  And its ``cost`` prices that
+    action, not the state the SCM drags along behind it — otherwise a Cost column
+    comparing MINT and CAC would be comparing two different measurements.  What
+    MINT does *not* carry is what CAC adds: no ``state_cost``, no term breakdown,
+    because not having them is the baseline.
+    """
+    found = cfs["mint"]
+    assert found, "mint found no causal intervention on this applicant"
+    discrete = ev.cost_model.is_discrete
+    for cf in found:
+        assert cf.valid, "mint returned a plan that does not flip"
+        assert cf.n_changed <= int(CONFIG.MAX_ACTIONS)
+        mask = np.array([n in set(cf.changed_features) for n in ev.feature_names],
+                        dtype=bool)
+        assert mask.any(), "mint proposed a plan with no actions in it"
+        actions = np.where(mask, cf.x_cf, x)
+        implied = ev.fcm.repair(x.reshape(1, -1), actions.reshape(1, -1))[0]
+        tol = np.where(discrete, 0.5 + 1e-9, 1e-6)
+        assert np.all(np.abs(implied - cf.x_cf) <= tol), (
+            "mint's proposal is not what its own intervention implies: "
+            f"{[ev.feature_names[j] for j in np.flatnonzero(np.abs(implied - cf.x_cf) > tol)]}")
+        assert cf.cost == pytest.approx(
+            float(ev.cost_model.breakdown(x, actions).total))
+        gap = float(np.max(ev.fcm.violation(x.reshape(1, -1), cf.x_cf.reshape(1, -1))))
+        assert gap == pytest.approx(cf.causal_gap, abs=1e-9)
+        assert gap <= 1e-6, f"mint left a causal gap of {gap:.3g}"
+        assert "state_cost" not in cf.extras and "term_cost" not in cf.extras
+
+
 # ------------------------------------------------------ what the paper claims
 
 
@@ -477,7 +524,7 @@ def test_the_same_seed_gives_the_same_advice(model: Any, x: np.ndarray) -> None:
     project does not seed; that is a documented deviation rather than something
     this test can fix.
     """
-    for name in ("random", "wachter", "oracle", "cac"):
+    for name in ("random", "wachter", "oracle", "mint", "cac"):
         first = get_method(name, DATASET, model=model).generate(x, y_target=1, k=2)
         second = get_method(name, DATASET, model=model).generate(x, y_target=1, k=2)
         assert [cf.key() for cf in first] == [cf.key() for cf in second], name

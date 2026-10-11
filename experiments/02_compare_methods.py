@@ -56,9 +56,10 @@ from src.utils.logging import get_logger, setup_logging  # noqa: E402
 
 LOGGER = get_logger("experiments.02_compare_methods")
 
-#: Table order: the literature first, then the two references the paper adds, so
+#: Table order: the acausal methods first — the three literature baselines and
+#: the oracle's cost reference — then the two causal methods, MINT then CAC, so
 #: a reader meets the baselines before the thing being argued for.
-METHOD_ORDER: tuple[str, ...] = ("random", "wachter", "dice", "oracle", "cac")
+METHOD_ORDER: tuple[str, ...] = ("random", "wachter", "dice", "oracle", "mint", "cac")
 
 #: Which result goes in which file.  Named once so the writer, the log and the
 #: docstring above cannot drift apart.
@@ -81,7 +82,7 @@ OUTPUTS: dict[str, str] = {
 _DATASET_LABELS = {"adult": "Adult", "german": "German", "heloc": "HELOC",
                    "diabetes": "Diabetes"}
 _METHOD_LABELS = {"random": "Random", "wachter": "Wachter", "dice": "DiCE",
-                  "oracle": "Oracle", "cac": "CAC"}
+                  "oracle": "Oracle", "mint": "MINT", "cac": "CAC"}
 
 def _run_method(evaluator: metrics.Evaluator, name: str, records: np.ndarray,
                 X: np.ndarray, k: int, y_target: int
