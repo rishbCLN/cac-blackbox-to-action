@@ -55,7 +55,7 @@ number in the paper.
 
 ```
 src/            the library: data, model, scm, cost, methods, evaluation, viz
-experiments/    01 train boxes · 02 compare methods · 03 ablation · 04 robustness · 05 qualitative · 06 significance
+experiments/    01 train boxes · 02 compare methods · 03 ablation · 04 robustness · 05 qualitative · 06 significance · 07 de-circularized audit · 08 known-SCM worlds
 paper/          canonical manuscript: main.tex + sections/ + references.bib; tables/ and figures/ are generated (repo-root main.tex is a frozen standalone variant)
 notebooks/      01 EDA · 02 SCM · 03 methods · 04 results  (read the stored artifacts)
 app/            Streamlit demo over the stored results (never calls the black box)
@@ -93,21 +93,50 @@ set. The primary black box is XGBoost, the secondary an MLP; both expose only
 `predict` / `predict_proba` — no method inspects trees, gradients, or feature
 importances. Held-out performance is in `paper/tables/blackbox_performance.tex`.
 
+## Causal validity without circularity
+
+Scoring a plan only through the same structural model CAC optimises against is a
+circular test, so causal validity is audited two further ways the search never
+sees:
+
+- **Independent FCM (`experiments/07_decircular_audit.py`).** The structural
+  equations are re-fit on a held-out split disjoint from the one the method used,
+  and every method's plans are re-scored through that independent model.
+- **Known-ground-truth worlds (`experiments/08_known_scm.py`).** Two synthetic
+  datasets are generated from fully known structural equations — `synth_reach`,
+  where every rejection has a reachable, budget-feasible fix, and `synth_block`,
+  where some rejections can only be undone by moving a non-manipulable ancestor —
+  and declared actions are replayed through the exact analytic SCM.
+
+Usable rate is therefore reported under the **specified** SCM, an **independent**
+FCM, and the **true** SCM. CAC and the cost-optimal causal baseline **MINT**
+(minimal-cost causal intervention, scored by identical cost accounting) are
+expected to fall below perfect causal validity under an auditor they did not
+optimise against — that lower number is the honest one, and `synth_block` keeps
+the genuinely unreachable cases visible instead of papering over them.
+
 ## Statistical validity
 
-Every headline number is an average over one query set produced by a stochastic
-search, so `experiments/06_significance.py` repeats the whole comparison across
-five seeds (`SIGNIFICANCE_SEEDS = 42, 0, 1, 2, 3`) and reports each rate as a mean
-with a 95% Student-*t* interval over seeds. CAC is compared to each baseline on the
-same records with an **exact McNemar test** on the paired usable/not-usable
-outcomes, the effect sized with a paired bootstrap, and the family of baselines
-per dataset corrected with **Holm's step-down** rule. The tables are
-`paper/tables/significance.tex` (rates ± CI) and
-`paper/tables/significance_tests.tex` (paired tests). This study is part of the
-reproducible build — `make all` and `run_all.sh` run it, and `make significance`
-runs it on its own. The run is resumable — it appends per-seed rows to
-`results/significance_runs.csv` and skips cells already on disk — so it can also
-be run dataset by dataset.
+Headline rates come from a stochastic search, so `experiments/06_significance.py`
+repeats the whole comparison across five seeds
+(`SIGNIFICANCE_SEEDS = 42, 0, 1, 2, 3`). Two different questions are kept apart:
+
+- **Does the optimiser wobble?** Each rate's mean with a 95% Student-*t* interval
+  over the five seeds measures search/seed stability — not applicant uncertainty —
+  and `paper/tables/significance.tex` is captioned as such.
+- **Is CAC better per applicant?** Significance is tested at the level of the
+  **applicant**, the unit that actually generalises. The paired **exact McNemar
+  test** compares one prespecified usable/not-usable outcome per applicant at the
+  canonical seed (42); the usable-rate gap is sized by a **cluster bootstrap** over
+  applicants (each applicant's mean rate across the seeds), so repeating identical
+  seeds can no longer inflate significance. The baseline family per dataset is
+  corrected with **Holm's step-down** rule, in
+  `paper/tables/significance_tests.tex`.
+
+This study is part of the reproducible build — `make all` and `run_all.sh` run it,
+and `make significance` runs it on its own. The run is resumable — it appends
+per-seed rows to `results/significance_runs.csv` and skips cells already on disk —
+so it can also be run dataset by dataset.
 
 ---
 
