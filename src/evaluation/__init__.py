@@ -49,6 +49,7 @@ _MODULES = {
         "PairedResult",
         "aggregate_seeds",
         "bootstrap_diff",
+        "cluster_bootstrap_diff",
         "holm_bonferroni",
         "mcnemar",
         "mean_ci",

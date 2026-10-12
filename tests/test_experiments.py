@@ -630,3 +630,60 @@ def test_the_flagship_is_chosen_by_a_rule_not_by_the_number_it_prints(
 
     assert exp05._flagship(pd.DataFrame(columns=["dataset", "case", "record"])).empty
 
+
+# ----------------------------------------- repeated applicants are not evidence
+
+@pytest.fixture(scope="module")
+def exp06() -> Any:
+    return _load("06_significance")
+
+
+def _duplicated_seed_frame(n_seeds: int) -> pd.DataFrame:
+    """Twenty applicants, five helped only by CAC, copied across ``n_seeds`` seeds.
+
+    The outcome is a deterministic function of the record, so every seed is a
+    byte-identical copy of the same twenty people: the extra seeds add no
+    applicants and no information. This is the shape
+    ``research-audit/probe_findings.py`` used to show the pooled ``(seed, record)``
+    test manufacturing significance out of repetition.
+    """
+    rows = [dict(dataset="german", method=method, seed=seed, record=record,
+                 usable=bool(method == "cac" or record >= 5))
+            for seed in range(n_seeds)
+            for record in range(20)
+            for method in ("cac", "oracle")]
+    return pd.DataFrame(rows)
+
+
+def test_repeating_applicants_across_seeds_adds_no_significance(exp06: Any) -> None:
+    """Finding 2's regression: duplicated seeds must not sharpen the inference.
+
+    Five discordant applicants favouring CAC give an exact McNemar ``p = 0.0625``
+    whether they are seen under one seed or five, because the test reads one
+    prespecified outcome per *applicant*. The cluster bootstrap's interval must
+    likewise not narrow when the same people are copied. The old pooled test
+    reported ``p = 5.96e-8`` and a tighter interval for these very same twenty
+    people --- the defect this pins shut.
+    """
+    one = exp06._paired_tests(_duplicated_seed_frame(1)).iloc[0]
+    five = exp06._paired_tests(_duplicated_seed_frame(5)).iloc[0]
+    assert int(one["n_pairs"]) == int(five["n_pairs"]) == 20
+    assert one["mcnemar_p"] == pytest.approx(0.0625, abs=1e-9)
+    assert five["mcnemar_p"] == pytest.approx(one["mcnemar_p"])
+    assert one["usable_gap"] == pytest.approx(0.25)
+    assert five["usable_gap"] == pytest.approx(one["usable_gap"])
+    assert (five["gap_lo"], five["gap_hi"]) == \
+        pytest.approx((one["gap_lo"], one["gap_hi"]))
+
+
+def test_the_canonical_seed_is_the_paper_run_when_present(exp06: Any) -> None:
+    """The McNemar binary is read at ``random_state=42`` whenever it was run.
+
+    The fallback to the smallest seed exists only for sliced runs that omit the
+    canonical one; when 42 is present it must be chosen, so the paired test asks
+    exactly the question the headline table answers.
+    """
+    assert exp06._canonical_seed([3, 1, 42, 0]) == 42
+    assert exp06._canonical_seed([3, 1, 2]) == 1  # no 42: smallest present
+    assert exp06._canonical_seed([7]) == 7
+

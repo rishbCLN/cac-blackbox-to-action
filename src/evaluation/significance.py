@@ -21,7 +21,9 @@ pairs), which is the paired comparison the design calls for, and computes an
 exact binomial $p$-value that needs no large-sample approximation.
 :func:`bootstrap_diff` puts a confidence interval on the size of the gap by
 resampling the records, so the effect is reported with a magnitude and not only a
-verdict.
+verdict.  :func:`cluster_bootstrap_diff` is the same idea when a record appears
+more than once --- once per seed --- and resamples the *applicant* rather than the
+row, so repeating a person under more seeds cannot masquerade as more evidence.
 
 Nothing here knows what a "method" or a "dataset" is; the functions take arrays
 and frames, so they are exercised by unit tests on forged data and reused
@@ -46,6 +48,7 @@ __all__ = [
     "mcnemar",
     "paired_wilcoxon",
     "bootstrap_diff",
+    "cluster_bootstrap_diff",
     "holm_bonferroni",
 ]
 
@@ -263,6 +266,49 @@ def bootstrap_diff(reference: Sequence[float] | np.ndarray,
     hi = float(np.quantile(means, 1.0 - alpha))
     return CI(observed, lo, hi, float(diff.std(ddof=1) / np.sqrt(n)),
               float(diff.std(ddof=1)), n)
+
+
+def cluster_bootstrap_diff(reference: Sequence[float] | np.ndarray,
+                           other: Sequence[float] | np.ndarray,
+                           clusters: Sequence[object] | np.ndarray,
+                           n_boot: int = 10_000, confidence: float = 0.95,
+                           seed: int = 42) -> CI:
+    """Bootstrap CI for the paired difference, resampling whole clusters.
+
+    Each observation ``i`` is one outcome of ``reference`` and ``other`` on a unit
+    that belongs to ``clusters[i]`` --- an applicant observed under several search
+    seeds, say.  Rows sharing a cluster are correlated and carry no independent
+    information, so the honest resampling unit is the cluster, not the row: each
+    cluster is first collapsed to its mean ``reference`` and mean ``other``
+    outcome, and the bootstrap then resamples those per-cluster means.  Copying a
+    cluster's rows --- the same applicant seen under more seeds --- therefore
+    leaves both the observed difference and the interval unchanged, which is the
+    property a pooled ``(seed, record)`` bootstrap silently violated: it treated
+    every repetition as a fresh draw and narrowed the interval accordingly.
+
+    With exactly one observation per cluster this reduces to
+    :func:`bootstrap_diff`; the returned :class:`CI` has ``n`` equal to the number
+    of distinct clusters, so a reader sees how many independent units the interval
+    actually rests on.
+    """
+    ref = np.asarray(reference, dtype=float)
+    oth = np.asarray(other, dtype=float)
+    cl = np.asarray(clusters).reshape(-1)
+    if not (ref.shape == oth.shape == cl.shape):
+        raise ValueError(f"reference, other and clusters must match: "
+                         f"{ref.shape} vs {oth.shape} vs {cl.shape}")
+    if ref.size == 0:
+        return CI(float("nan"), float("nan"), float("nan"), float("nan"), 0.0, 0)
+    # Collapse each cluster to its within-cluster mean for both methods.  The
+    # paired difference of those means is the per-cluster effect the bootstrap
+    # resamples; duplicated rows change the counts but not the means.
+    _labels, inverse = np.unique(cl, return_inverse=True)
+    inverse = inverse.reshape(-1)
+    counts = np.bincount(inverse)
+    ref_by_cluster = np.bincount(inverse, weights=ref) / counts
+    oth_by_cluster = np.bincount(inverse, weights=oth) / counts
+    return bootstrap_diff(ref_by_cluster, oth_by_cluster, n_boot=n_boot,
+                          confidence=confidence, seed=seed)
 
 
 def holm_bonferroni(p_values: Sequence[float], alpha: float = 0.05

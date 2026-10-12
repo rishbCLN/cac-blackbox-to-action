@@ -31,6 +31,7 @@ import pytest
 from src.evaluation.significance import (
     aggregate_seeds,
     bootstrap_diff,
+    cluster_bootstrap_diff,
     holm_bonferroni,
     mcnemar,
     mean_ci,
@@ -195,6 +196,59 @@ def test_bootstrap_is_deterministic_under_a_fixed_seed() -> None:
     first = bootstrap_diff(ref, oth, n_boot=1000, seed=7)
     second = bootstrap_diff(ref, oth, n_boot=1000, seed=7)
     assert (first.lo, first.hi) == (second.lo, second.hi)
+
+
+# ------------------------------------------------------ cluster_bootstrap_diff
+def test_cluster_bootstrap_ignores_duplicate_rows_within_a_cluster() -> None:
+    """Seeing an applicant under more seeds is not more applicants.
+
+    This is Finding 2 in miniature: the pooled ``(seed, record)`` bootstrap
+    narrowed its interval when the same people were copied under extra seed
+    labels, reading repetition as independent evidence. Collapsing each cluster to
+    its mean before resampling makes both the point estimate and the interval
+    invariant to that duplication, and ``n`` keeps reporting the number of
+    *people* behind the interval, not people times seeds.
+    """
+    rng = np.random.default_rng(0)
+    clusters = np.arange(40)
+    ref = rng.uniform(0.8, 1.0, size=40)
+    oth = rng.uniform(0.3, 0.6, size=40)
+    once = cluster_bootstrap_diff(ref, oth, clusters, n_boot=4000, seed=1)
+    # Five identical "seeds": every applicant's two outcomes repeated five times.
+    five = cluster_bootstrap_diff(np.tile(ref, 5), np.tile(oth, 5),
+                                  np.tile(clusters, 5), n_boot=4000, seed=1)
+    assert once.n == five.n == 40
+    assert five.mean == pytest.approx(once.mean)
+    assert five.lo == pytest.approx(once.lo)
+    assert five.hi == pytest.approx(once.hi)
+
+
+def test_cluster_bootstrap_with_singleton_clusters_is_the_plain_bootstrap() -> None:
+    """One observation per cluster leaves nothing to collapse, so it must agree."""
+    ref = [1.0, 1.0, 0.0, 1.0, 0.0, 1.0]
+    oth = [0.0, 1.0, 0.0, 0.0, 1.0, 0.0]
+    clustered = cluster_bootstrap_diff(ref, oth, list(range(6)), n_boot=1000, seed=7)
+    plain = bootstrap_diff(ref, oth, n_boot=1000, seed=7)
+    assert clustered.n == plain.n
+    assert (clustered.mean, clustered.lo, clustered.hi) == \
+        pytest.approx((plain.mean, plain.lo, plain.hi))
+
+
+def test_cluster_bootstrap_averages_within_a_cluster_before_resampling() -> None:
+    """A duplicated cluster's two rows average, they do not each get a vote.
+
+    Two applicants, one of them recorded twice with opposing outcomes: the point
+    estimate must weigh that applicant by its 0.5 mean, not twice at the extremes.
+    """
+    ci = cluster_bootstrap_diff([1.0, 0.0, 1.0], [0.0, 0.0, 0.0],
+                                ["alice", "alice", "bob"], n_boot=2000, seed=3)
+    assert ci.n == 2  # two people, not three rows
+    assert ci.mean == pytest.approx(0.75)  # mean(0.5, 1.0)
+
+
+def test_cluster_bootstrap_rejects_mismatched_lengths() -> None:
+    with pytest.raises(ValueError, match="match"):
+        cluster_bootstrap_diff([1.0, 0.0], [1.0, 1.0], [0])
 
 
 # ------------------------------------------------------------- holm_bonferroni

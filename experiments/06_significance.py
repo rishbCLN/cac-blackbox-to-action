@@ -74,6 +74,12 @@ METHOD_ORDER: tuple[str, ...] = ("random", "wachter", "dice", "oracle", "mint", 
 #: table is a strict subset of this one; the rest measure the spread around it.
 DEFAULT_SEEDS: tuple[int, ...] = (42, 0, 1, 2, 3)
 
+#: The one seed whose per-applicant outcome is the prespecified binary the McNemar
+#: test reads.  It is \S9's canonical run, so the paired test asks exactly the
+#: question the headline table answers --- one outcome per applicant, not one per
+#: (applicant, seed) --- and no amount of extra seeds can inflate the pair count.
+CANONICAL_SEED: int = DEFAULT_SEEDS[0]
+
 #: Rates carried per seed, and the ones aggregated with a CI.  These are exactly
 #: the funnel columns of the headline table, so the two cannot drift.
 RATE_COLUMNS: tuple[str, ...] = ("coverage", "validity", "causal_validity",
@@ -197,37 +203,77 @@ def _aggregate(runs: pd.DataFrame) -> pd.DataFrame:
     return _ordered(agg)
 
 
-def _paired_tests(per_record: pd.DataFrame) -> pd.DataFrame:
-    """McNemar + bootstrap for CAC against each baseline, Holm-corrected per dataset.
+def _canonical_seed(seeds: Sequence[int]) -> int:
+    """The prespecified seed for the McNemar binary, robust to a missing \\S9 run.
 
-    The paired unit is a ``(seed, record)`` cell: CAC and the baseline were both
-    scored on record ``r`` under seed ``s``, so their two outcomes there are a
-    matched pair.  Pooling the seeds gives the test more pairs without ever
-    comparing a method to itself under a different seed.  Holm corrects the family
-    of baselines within a dataset, since each row tests the same CAC column.
+    The paired binary is one outcome per applicant at :data:`CANONICAL_SEED`.  If
+    that seed was not among those actually run (a sliced invocation, or a test
+    frame), fall back to the smallest seed present so the choice is deterministic
+    and identical no matter how many *other* seeds were added --- the property the
+    duplication regression pins down.
+    """
+    present = sorted({int(s) for s in seeds})
+    if CANONICAL_SEED in present:
+        return CANONICAL_SEED
+    return present[0]
+
+
+def _paired_tests(per_record: pd.DataFrame) -> pd.DataFrame:
+    """McNemar + cluster bootstrap for CAC vs each baseline, Holm-corrected.
+
+    The inferential unit is the **applicant**, not the ``(seed, record)`` cell: a
+    record seen under five seeds is one person, and treating its five rows as five
+    independent observations fabricates evidence (duplicating identical seeds alone
+    drove an exact ``p`` from 0.0625 to 5.96e-8 without adding a single applicant).
+    So each question is answered at the applicant level, and the per-seed spread is
+    reported separately in the aggregate table rather than folded in here:
+
+    * **Is the gap real?**  McNemar reads one prespecified binary per applicant ---
+      ``usable`` at the canonical seed (``random_state=42``) --- so there is exactly
+      one pair per applicant and the discordant count is a number of *people*.
+    * **How big is it?**  The effect is each applicant's mean ``usable`` rate over
+      the seeds, and :func:`~src.evaluation.significance.cluster_bootstrap_diff`
+      resamples applicants (the clusters), so the interval rests on the number of
+      people, not people times seeds.
+
+    Holm still corrects the family of baselines within a dataset, since every row
+    tests the same CAC column.
     """
     rows: list[dict[str, Any]] = []
     for dataset, group in per_record.groupby("dataset", sort=False):
         ref = group[group["method"] == REFERENCE]
         if ref.empty:
             continue
-        ref = ref.set_index(["seed", "record"]).sort_index()
+        canonical = _canonical_seed(group["seed"])
+        # One prespecified outcome per applicant for the paired McNemar test.
+        ref_bit = (ref[ref["seed"] == canonical]
+                   .set_index("record")["usable"].sort_index())
+        # Every seed's outcome per applicant for the cluster-bootstrap effect size.
+        ref_long = ref.set_index(["seed", "record"]).sort_index()
         dataset_rows: list[dict[str, Any]] = []
         for method, sub in group.groupby("method", sort=False):
             if method == REFERENCE:
                 continue
-            other = sub.set_index(["seed", "record"]).sort_index()
-            shared = ref.index.intersection(other.index)
-            if shared.empty:
+            oth_bit = (sub[sub["seed"] == canonical]
+                       .set_index("record")["usable"].sort_index())
+            applicants = ref_bit.index.intersection(oth_bit.index)
+            oth_long = sub.set_index(["seed", "record"]).sort_index()
+            shared = ref_long.index.intersection(oth_long.index)
+            if applicants.empty and shared.empty:
                 continue
-            r_usable = ref.loc[shared, "usable"].to_numpy(dtype=bool)
-            o_usable = other.loc[shared, "usable"].to_numpy(dtype=bool)
-            mc = significance.mcnemar(r_usable, o_usable)
-            boot = significance.bootstrap_diff(r_usable.astype(float),
-                                               o_usable.astype(float))
+            mc = significance.mcnemar(
+                ref_bit.loc[applicants].to_numpy(dtype=bool),
+                oth_bit.loc[applicants].to_numpy(dtype=bool))
+            clusters = [rec for _seed, rec in shared]
+            boot = significance.cluster_bootstrap_diff(
+                ref_long.loc[shared, "usable"].to_numpy(dtype=float),
+                oth_long.loc[shared, "usable"].to_numpy(dtype=float),
+                clusters)
             dataset_rows.append({
                 "dataset": dataset, "method": method, "reference": REFERENCE,
-                "n_pairs": mc.n_pairs, "cac_only": mc.reference_only,
+                "canonical_seed": int(canonical),
+                "n_pairs": mc.n_pairs, "n_applicants": boot.n,
+                "cac_only": mc.reference_only,
                 "baseline_only": mc.other_only, "discordant": mc.discordant,
                 "usable_gap": boot.mean, "gap_lo": boot.lo, "gap_hi": boot.hi,
                 "mcnemar_p": mc.p_value,
@@ -290,9 +336,15 @@ def _write_tables(aggregate: pd.DataFrame, tests: pd.DataFrame,
                      "Every rate is the per-record funnel of "
                      "Table~\\ref{tab:main_results}, recomputed under each seed of "
                      "the search; the Oracle is deterministic and so has a "
-                     "zero-width interval by construction. A tight interval on "
-                     "\\cac{}'s \\emph{Usable} column is the claim that its "
-                     "advantage is not an artefact of one lucky "
+                     "zero-width interval by construction. This interval measures "
+                     "the \\emph{optimizer}'s variation over seeds with the "
+                     "applicants and the black box held fixed --- it is a statement "
+                     "about search stability, not an applicant-level confidence "
+                     "interval, and a zero-width cell at $1.00$ does not imply "
+                     "certainty about unseen applicants. The applicant-level test "
+                     "of the gap is Table~\\ref{tab:significance_tests}. A tight "
+                     "interval on \\cac{}'s \\emph{Usable} column is the claim that "
+                     "its advantage is not an artefact of one lucky "
                      "\\texttt{random\\_state}."),
             label="tab:significance", column_format="llrrrrr", escape=False)
 
@@ -303,7 +355,7 @@ def _write_tables(aggregate: pd.DataFrame, tests: pd.DataFrame,
         table = pd.DataFrame({
             "Dataset": tests["dataset"].map(lambda d: _DATASET_LABELS.get(d, d)),
             "Baseline": tests["method"].map(lambda m: _METHOD_LABELS.get(m, m)),
-            "Pairs": tests["n_pairs"].astype(int),
+            "Applicants": tests["n_pairs"].astype(int),
             "CAC only": tests["cac_only"].astype(int),
             "Base only": tests["baseline_only"].astype(int),
             "Usable gap": [f"${g:.3f}$ [{lo:.3f}, {hi:.3f}]" for g, lo, hi
@@ -314,12 +366,18 @@ def _write_tables(aggregate: pd.DataFrame, tests: pd.DataFrame,
         save_latex_table(
             table, "significance_tests",
             caption=("\\cac{} against each baseline on the \\emph{usable} rate, "
-                     "paired over every (seed, record) cell. \\emph{CAC only} and "
-                     "\\emph{Base only} count the records exactly one method made "
-                     "usable --- the discordant pairs McNemar conditions on. "
-                     "\\emph{Usable gap} is the mean paired difference with a "
-                     "10{,}000-sample bootstrap interval; \\emph{McNemar $p$} is "
-                     "the exact two-sided value after Holm correction across the "
+                     "paired per \\emph{applicant} rather than per (seed, record) "
+                     "cell: a record seen under several seeds is one person. The "
+                     "\\emph{Applicants} column counts the query records compared. "
+                     "\\emph{CAC only} and \\emph{Base only} count the applicants "
+                     "exactly one method made usable at the prespecified canonical "
+                     "seed (\\texttt{random\\_state}=42) --- the discordant pairs "
+                     "the exact McNemar test conditions on. \\emph{Usable gap} is "
+                     "the mean over applicants of each applicant's \\emph{usable}"
+                     "-rate difference across the seeds, with a 10{,}000-sample "
+                     "cluster bootstrap that resamples applicants, so repeating a "
+                     "person under more seeds cannot narrow it. \\emph{McNemar $p$} "
+                     "is the exact two-sided value after Holm correction across the "
                      "baselines of each dataset (\\texttt{***} $p<10^{-3}$, "
                      "\\texttt{**} $p<10^{-2}$, \\texttt{*} $p<0.05$, "
                      "\\texttt{n.s.} otherwise)."),
