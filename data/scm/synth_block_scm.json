@@ -1,0 +1,35 @@
+{
+  "dataset": "synth_block",
+  "target": "approved",
+  "nodes": ["age", "experience", "training", "income", "savings", "approved"],
+  "edges": [
+    {"from": "age", "to": "income", "type": "direct"},
+    {"from": "experience", "to": "income", "type": "direct"},
+    {"from": "training", "to": "income", "type": "direct"},
+    {"from": "income", "to": "savings", "type": "direct"},
+    {"from": "income", "to": "approved", "type": "direct"},
+    {"from": "savings", "to": "approved", "type": "direct"},
+    {"from": "age", "to": "approved", "type": "direct"}
+  ],
+  "non_manipulable": ["age"],
+  "sensitive": ["age"],
+  "interventional_costs": {
+    "age": "infinite",
+    "experience": "low",
+    "training": "medium",
+    "income": "medium",
+    "savings": "low",
+    "approved": "low"
+  },
+  "references": [],
+  "provenance": {
+    "base": "synthetic ground-truth SCM for Workstream C (Finding 6b)",
+    "additions": [],
+    "reason": "Known-equation world so experiment 08 can audit declared actions through the true SCM rather than through an FCM the method also optimised against. The graph here is the exact data-generating process in src/data/load_synth_block.py; it is not inferred. It is the deliberate foil to synth_reach: identical features, bounds and cost model, differing only in the structural equations and the decisive age -> approved edge."
+  },
+  "notes": [
+    "SYNTHETIC: the data-generating structural equations are known in closed form (src/data/load_synth_block.py). income = 30 + 0.8*experience + 6*training + 0.15*age + eps; savings = 0.4*income + eps; approved = 1 iff 0.28*(age-44) + 0.05*(income-60) + 0.08*(savings-22) + eps >= 0.",
+    "age is immutable AND a direct parent of approved: for sufficiently young applicants no admissible income/savings move can offset the age penalty, so they have HONEST non-recourse. The sibling world synth_reach removes exactly the age -> approved edge, which is why recourse always exists there.",
+    "approved is a sink: no intervention may target a descendant of the prediction."
+  ]
+}

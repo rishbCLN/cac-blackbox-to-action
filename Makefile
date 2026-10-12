@@ -1,7 +1,8 @@
 # Causal Actionable Counterfactuals --- reproducible pipeline.
 #
 #   make all      data -> models -> SCMs -> cost models -> all methods ->
-#                 ablation -> robustness -> qualitative -> figures -> tables
+#                 ablation -> robustness -> qualitative -> figures ->
+#                 de-circularized + known-SCM audits -> tables
 #   make paper    build paper/main.pdf from the tables and figures `make all` wrote
 #   make test     run the test suite
 #   make app      launch the Streamlit demo over the stored results
@@ -21,7 +22,7 @@ export PYTHONPATH
 # stages whose inputs have not changed. Delete .build/ (or `make clean`) to force.
 STAMP := .build
 
-.PHONY: all paper test app clean clean-all help prepare smoke significance research
+.PHONY: all paper test app clean clean-all help prepare smoke significance research decircular known_scm
 .DEFAULT_GOAL := help
 
 # --------------------------------------------------------------------------- #
@@ -84,7 +85,22 @@ $(STAMP)/user_study: $(STAMP)/qualitative
 	$(PY) user_study/analysis.py
 	@touch $@
 
-all: $(STAMP)/figures $(STAMP)/user_study $(STAMP)/significance
+# 10. De-circularized causal audit (07): re-audit the §9 plans under an FCM fitted
+#     on a disjoint fold, so CAC/MINT causal validity is tested out-of-sample.
+#     Reads the saved results/counterfactuals_*.joblib from the comparison.
+$(STAMP)/decircular: $(STAMP)/compare
+	$(PY) experiments/07_decircular_audit.py
+	@touch $@
+
+# 11. Known-ground-truth causal audit (08): two synthetic worlds whose SCM is known
+#     in closed form, so declared actions are scored through the TRUE equations
+#     rather than the FCM the method optimised against. Trains its own synth black
+#     boxes (additive), so it only needs models/metrics.json to exist first.
+$(STAMP)/known_scm: $(STAMP)/models
+	$(PY) experiments/08_known_scm.py
+	@touch $@
+
+all: $(STAMP)/figures $(STAMP)/user_study $(STAMP)/significance $(STAMP)/decircular $(STAMP)/known_scm
 	@echo "Pipeline complete. Tables in paper/tables/, figures in paper/figures/."
 
 # Named entry points the audit's gap-closure plan asks for, so a reader can run
@@ -96,7 +112,7 @@ all: $(STAMP)/figures $(STAMP)/user_study $(STAMP)/significance
 #                      so a quick check never overwrites publication artifacts
 #   make significance  just the seed-repeated significance study + its tables
 #   make research      the full deterministic study (alias for `all`)
-.PHONY: prepare smoke significance research
+.PHONY: prepare smoke significance research decircular known_scm
 prepare: $(STAMP)/cost
 	@echo "Inputs ready: models/, data/processed/, SCMs, cost models."
 
@@ -108,6 +124,12 @@ smoke:
 
 significance: $(STAMP)/significance
 	@echo "Significance tables in paper/tables/ (significance.tex, significance_tests.tex)."
+
+decircular: $(STAMP)/decircular
+	@echo "De-circularized audit in paper/tables/ (decircular_audit.tex)."
+
+known_scm: $(STAMP)/known_scm
+	@echo "Known-ground-truth audit in paper/tables/ (known_scm.tex)."
 
 research: all
 
@@ -151,12 +173,14 @@ clean-all: clean
 	@echo "Cleaned models and processed data too."
 
 help:
-	@echo "Targets: all | research | prepare | smoke | significance | paper | test | app | clean | clean-all"
+	@echo "Targets: all | research | prepare | smoke | significance | decircular | known_scm | paper | test | app | clean | clean-all"
 	@echo "  make all          - run the full deterministic pipeline (data..figures..significance)"
 	@echo "  make research     - alias for 'all' (the full study)"
 	@echo "  make prepare      - data -> models -> SCMs -> cost models (experiment inputs only)"
 	@echo "  make smoke        - fast 10-record comparison into results/smoke (never touches publication artifacts)"
 	@echo "  make significance - seed-repeated significance study + its two paper tables"
+	@echo "  make decircular   - de-circularized causal audit (07): re-audit plans under an independent FCM"
+	@echo "  make known_scm    - known-ground-truth causal audit (08): synthetic worlds, true-SCM auditor"
 	@echo "  make paper        - build the canonical paper/main.pdf (needs TeX Live; depends on the full artifact set)"
 	@echo "  make test         - run the test suite"
 	@echo "  make app          - launch the Streamlit demo over stored results"

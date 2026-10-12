@@ -240,9 +240,12 @@ def _loaders() -> Mapping[str, Callable[[], tuple[pd.DataFrame, DatasetSpec]]]:
     from src.data.load_diabetes import load_diabetes
     from src.data.load_german import load_german
     from src.data.load_heloc import load_heloc
+    from src.data.load_synth_block import load_synth_block
+    from src.data.load_synth_reach import load_synth_reach
 
     return {"adult": load_adult, "german": load_german, "heloc": load_heloc,
-            "diabetes": load_diabetes}
+            "diabetes": load_diabetes, "synth_reach": load_synth_reach,
+            "synth_block": load_synth_block}
 
 
 def dataset_spec(dataset: str) -> DatasetSpec:
@@ -255,6 +258,8 @@ def dataset_spec(dataset: str) -> DatasetSpec:
         "german": "src.data.load_german",
         "heloc": "src.data.load_heloc",
         "diabetes": "src.data.load_diabetes",
+        "synth_reach": "src.data.load_synth_reach",
+        "synth_block": "src.data.load_synth_block",
     }
     if dataset not in modules:
         raise KeyError(f"unknown dataset {dataset!r}; expected one of {list(modules)}")

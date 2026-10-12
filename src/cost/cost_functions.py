@@ -586,11 +586,53 @@ def _diabetes_costs(spec: DatasetSpec) -> dict[str, CostFunction]:  # noqa: ARG0
 #: Dataset -> builder.  Each builder returns §7.1's ``COST_MODELS`` mapping for
 #: that dataset; they take the :class:`DatasetSpec` so the level vectors above
 #: are validated against the loader's declared level *order* on every build.
+def _synth_reach_costs(spec: DatasetSpec) -> dict[str, CostFunction]:
+    """Cost model for the synthetic ``synth_reach`` world (Workstream C).
+
+    Immutable ``age`` carries the 10.0 "infinite" effort (the admissibility
+    penalty is added by :class:`CostModel` on top); the four actionable levers
+    are priced linearly in their own units, with ``training`` an ordinal ladder.
+    This world exists to show reachability, so the levers are deliberately cheap.
+    """
+    return {
+        "age": constant_cost(10.0),
+        "experience": linear_cost(0.05),
+        "training": categorical_cost(
+            levels=spec.get("training").levels or (),
+            jump_cost=(0.40, 0.50, 0.60), ordered=True,
+        ),
+        "income": linear_cost(0.02),
+        "savings": linear_cost(0.03),
+    }
+
+
+def _synth_block_costs(spec: DatasetSpec) -> dict[str, CostFunction]:
+    """Cost model for the synthetic ``synth_block`` world (Workstream C).
+
+    Same shape and effort scale as :func:`_synth_reach_costs`; the two worlds
+    differ in their SCM and target rule, not in how actions are priced, so the
+    honest non-recourse cases in ``synth_block`` are a fact about the graph
+    rather than an artefact of a harsher cost model.
+    """
+    return {
+        "age": constant_cost(10.0),
+        "experience": linear_cost(0.05),
+        "training": categorical_cost(
+            levels=spec.get("training").levels or (),
+            jump_cost=(0.40, 0.50, 0.60), ordered=True,
+        ),
+        "income": linear_cost(0.02),
+        "savings": linear_cost(0.03),
+    }
+
+
 COST_MODELS = {
     "adult": _adult_costs,
     "german": _german_costs,
     "heloc": _heloc_costs,
     "diabetes": _diabetes_costs,
+    "synth_reach": _synth_reach_costs,
+    "synth_block": _synth_block_costs,
 }
 
 

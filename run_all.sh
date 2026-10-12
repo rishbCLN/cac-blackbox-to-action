@@ -23,36 +23,42 @@ BUILD_PAPER=0
 
 step() { echo; echo "===== $* ====="; }
 
-step "1/10  Train black boxes (downloads + preprocesses data on first run)"
+step "1/12  Train black boxes (downloads + preprocesses data on first run)"
 "$PY" experiments/01_train_blackbox.py
 
-step "2/10  Validate structural causal models (writes scm_* tables + figures)"
+step "2/12  Validate structural causal models (writes scm_* tables + figures)"
 "$PY" -m src.scm.validate_scm
 
-step "3/10  Build cost / actionability models (writes cost_model_* tables)"
+step "3/12  Build cost / actionability models (writes cost_model_* tables)"
 "$PY" -m src.cost.cost_functions
 
-step "4/10  Compare every method on every dataset (main results)"
+step "4/12  Compare every method on every dataset (main results)"
 "$PY" experiments/02_compare_methods.py
 
-step "5/10  Significance (seed-repeated comparison + paired tests + tables)"
+step "5/12  Significance (seed-repeated comparison + paired tests + tables)"
 "$PY" experiments/06_significance.py
 
-step "6/10  Objective ablation"
+step "6/12  Objective ablation"
 "$PY" experiments/03_ablation.py
 
-step "7/10  Robustness (budget, k, model transfer, graph misspecification)"
+step "7/12  Robustness (budget, k, model transfer, graph misspecification)"
 "$PY" experiments/04_robustness.py
 
-step "8/10  Qualitative cases (the per-applicant advice)"
+step "8/12  Qualitative cases (the per-applicant advice)"
 "$PY" experiments/05_qualitative.py
 
-step "9/10  Figures (result figures + recourse plans)"
+step "9/12  Figures (result figures + recourse plans)"
 "$PY" -m src.viz.plot_results
 "$PY" -m src.viz.plot_counterfactuals
 
-step "10/10  User-study analysis (synthetic responses)"
+step "10/12  User-study analysis (synthetic responses)"
 "$PY" user_study/analysis.py
+
+step "11/12  De-circularized causal audit (re-audit plans under an independent FCM)"
+"$PY" experiments/07_decircular_audit.py
+
+step "12/12  Known-ground-truth causal audit (synthetic worlds, true-SCM auditor)"
+"$PY" experiments/08_known_scm.py
 
 if [[ "$BUILD_PAPER" == "1" ]]; then
   # Canonical manuscript: paper/main.tex, which \input's the tables and figures
