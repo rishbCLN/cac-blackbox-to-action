@@ -49,6 +49,15 @@ paper/*.fls
 paper/*.synctex.gz
 paper/main.pdf
 
+# IEEE Access build intermediates and local verification tooling.
+/tmp/paper-tools/
+/tmp/pytest-access/
+/tmp/pdfs/
+/output/pdf/*.aux
+/output/pdf/*.log
+/output/pdf/*.out
+/output/pdf/*.xdv
+
 # --- os -------------------------------------------------------------------
 .DS_Store
 Thumbs.db
