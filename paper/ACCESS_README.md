@@ -9,12 +9,15 @@ and the untracked `rhino.tex` were not modified.
 
 - `main.tex`: manuscript, equations, workflow diagram, and inline bibliography.
 - `output/pdf/main.pdf`: compiled manuscript after layout verification.
+- `main.pdf`: identical convenient copy of the final compiled manuscript.
 - `output/ieee-access-source.zip`: complete LaTeX source bundle for upload.
 - `paper/generated/access/`: generated values, tables, and vector/result plots.
 - `paper/verification/`: source hashes, fresh pytest XML, verified and replayed
   headline CSVs, corrected applicant statistics, and discrepancy reports.
 - `paper/build_access_evidence.py`: rebuilds the paper's measured values from
   the existing experiment artifacts. It does not overwrite those artifacts.
+- `paper/verify_and_build_manuscript.py`: checks that the prose revision
+  preserves the locked numerical and technical material, then builds the PDF.
 - `paper/ieee-access/`: unmodified official class, font files, and journal assets.
 
 ## Rebuild the evidence
@@ -72,6 +75,38 @@ Alternatively, upload `main.tex`, `.latexmkrc`, and the complete
 `paper/ieee-access/` and `paper/generated/access/` directories, retaining their
 paths. Set the root `main.tex` as the main document and use pdfLaTeX. The
 generated inputs are included, so a Python run is not needed on Overleaf.
+
+## Prose revision and preservation checks
+
+The manuscript now uses plain language and shorter sentences, including its
+headings and captions. It retains the measured results, equations, cited
+sources, table data, plots, and stated limitations. The original pre-edit lock
+is `paper/verification/wording_lock.json`. A second lock,
+`paper/verification/plain_language_lock.json`, was captured after the original
+checks passed and before the plain-language edit. It allows caption wording
+to change while still locking all numeric literals, mathematics, measurement
+macros, citations, and the rest of the float code. Both locks are retained.
+To check the latest lock and
+rebuild the PDF and portable upload bundle, run:
+
+```powershell
+python paper/verify_and_build_manuscript.py --build --bundle
+```
+
+With no options, the script only checks preservation and writes its JSON
+report. It compares numeric literals, measurement macros, inline mathematics,
+display equations, citations, float structure, inputs, labels, and the preamble
+against the baseline. It also checks 110 immutable evidence, generated, and
+template files. `--capture` and `--capture-plain-language` are one-time pre-edit
+operations and refuse to overwrite existing locks. Do not recapture merely
+to make a failed check disappear. The script uses the plain-language lock
+when present; the older lock remains as a record of the stricter earlier edit.
+
+This is not a plagiarism detector or an automatic paraphrasing tool. It has no
+Turnitin access and neither calculates nor promises a similarity percentage.
+No external similarity report has been obtained. The checks cannot prove that
+wording is free of unattributed borrowing or that identical values still have
+the correct interpretation; citation and scientific review remain necessary.
 
 ## Evidence corrections reflected in the manuscript
 
