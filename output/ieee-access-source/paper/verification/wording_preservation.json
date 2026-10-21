@@ -1,0 +1,25 @@
+{
+  "checked_at_utc": "2026-10-19T16:10:52.293752+00:00",
+  "passed": true,
+  "lock_file": "paper/verification/plain_language_lock.json",
+  "caption_wording_editable": true,
+  "baseline_main_sha256": "94f2f3c344e3845acbbfc6ee24d1299fde2147d8f2cd89a213bd00d1ce410536",
+  "revised_main_sha256": "538609eaadc49482ae9674ec62d0dad5e9b5f61c90b7d1b6848603174be57d2c",
+  "prose_source_changed": true,
+  "preserved_document_groups": [
+    "numeric_literals",
+    "measurement_macros",
+    "inline_math",
+    "citations",
+    "inputs",
+    "labels",
+    "protected_blocks",
+    "preamble_sha256"
+  ],
+  "unchanged_locked_files": 110,
+  "turnitin_checked": false,
+  "similarity_percentage": null,
+  "qualification": "No similarity score or plagiarism-free guarantee is claimed. Syntactic preservation checks do not replace semantic or attribution review.",
+  "compiled_pdf": "output/pdf/main.pdf",
+  "compiled_pdf_sha256": "66aa04c85c2df40a78888f6fd54318a07f02e50e2449c1214b13450dcce07e56"
+}
