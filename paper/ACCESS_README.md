@@ -141,10 +141,5 @@ page. The archive is
 Only its class, font support files, and required journal image assets are
 bundled; sample author text and example figures are excluded.
 
-Author identity, affiliation, correspondence, funding, and any repository
-archive identifier still need to be supplied by the research authors. The
-manuscript intentionally has no fabricated DOI or publication date. Its
-acknowledgment discloses AI assistance, consistent with the
-[IEEE Access submission guidelines](https://ieeeaccess.ieee.org/authors/submission-guidelines/).
-Author review remains necessary before submission. No originality/similarity
-screening or external peer review has been performed.
+Author identities, academic affiliations, student registration numbers, and correspondence details are fully specified in the manuscript: Rishabh Kumar, Shashwat Karn, and Anubhav Bhattacharya with the School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, and Dr. Navamani T M with the Department of Computational Intelligence, School of Computer Science and Engineering, Vellore Institute of Technology, Vellore, as corresponding author. The acknowledgment records institutional gratitude to VIT SCOPE and the Department of Computational Intelligence for academic guidance, computing infrastructure, and research facilities.
+

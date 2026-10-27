@@ -1,0 +1,84 @@
+=== PAGE 3 (9 annotations) ===
+Subtype: /Link, Rect: [221.203, 166.386, 226.184, 173.129], Contents: None
+Subtype: /Link, Rect: [237.949, 166.386, 242.93, 173.129], Contents: None
+Subtype: /Link, Rect: [114.078, 130.407, 119.059, 137.264], Contents: None
+Subtype: /Link, Rect: [130.676, 130.407, 135.657, 137.264], Contents: None
+Subtype: /Link, Rect: [210.429, 101.19, 215.41, 107.933], Contents: None
+Subtype: /Link, Rect: [229.282, 101.076, 234.263, 107.933], Contents: None
+Subtype: /Link, Rect: [353.894, 171.694, 358.875, 178.551], Contents: None
+Subtype: /Link, Rect: [371.684, 171.694, 376.666, 178.551], Contents: None
+Subtype: /Link, Rect: [448.043, 147.678, 453.024, 154.64], Contents: None
+=== PAGE 4 (19 annotations) ===
+Subtype: /Link, Rect: [205.648, 665.853, 215.611, 672.71], Contents: None
+Subtype: /Link, Rect: [227.541, 665.967, 237.504, 672.71], Contents: None
+Subtype: /Link, Rect: [330.921, 688.609, 337.556, 695.352], Contents: None
+Subtype: /Link, Rect: [359.051, 676.654, 369.004, 683.397], Contents: None
+Subtype: /Link, Rect: [317.024, 652.629, 327.535, 659.486], Contents: None
+Subtype: /Link, Rect: [368.617, 640.674, 375.81, 647.531], Contents: None
+Subtype: /Link, Rect: [507.777, 628.719, 518.288, 635.576], Contents: None
+Subtype: /Link, Rect: [425.207, 604.809, 439.035, 611.666], Contents: None
+Subtype: /Link, Rect: [349.825, 522.178, 354.806, 528.921], Contents: None
+Subtype: /Link, Rect: [507.046, 450.393, 512.027, 457.135], Contents: None
+Subtype: /Link, Rect: [488.361, 402.458, 493.343, 409.315], Contents: None
+Subtype: /Link, Rect: [313.324, 378.547, 318.305, 385.404], Contents: None
+Subtype: /Link, Rect: [331.003, 366.706, 340.966, 373.449], Contents: None
+Subtype: /Link, Rect: [407.446, 354.637, 417.408, 361.494], Contents: None
+Subtype: /Link, Rect: [423.541, 199.279, 428.523, 206.241], Contents: None
+Subtype: /Link, Rect: [453.978, 175.473, 458.959, 182.33], Contents: None
+Subtype: /Link, Rect: [438.339, 127.653, 443.321, 134.51], Contents: None
+Subtype: /Link, Rect: [406.315, 115.697, 411.297, 122.554], Contents: None
+Subtype: /Link, Rect: [490.097, 115.812, 495.078, 122.554], Contents: None
+=== PAGE 5 (13 annotations) ===
+Subtype: /Link, Rect: [104.417, 664.772, 108.402, 670.166], Contents: None
+Subtype: /Link, Rect: [105.285, 654.638, 109.27, 660.124], Contents: None
+Subtype: /Link, Rect: [97.1, 644.596, 101.085, 650.082], Contents: None
+Subtype: /Link, Rect: [100.639, 634.554, 104.624, 640.039], Contents: None
+Subtype: /Link, Rect: [80.49, 624.511, 84.475, 629.997], Contents: None
+Subtype: /Link, Rect: [108.457, 444.161, 118.419, 451.018], Contents: None
+Subtype: /Link, Rect: [202.445, 444.275, 212.408, 451.018], Contents: None
+Subtype: /Link, Rect: [262.166, 420.251, 272.129, 427.108], Contents: None
+Subtype: /Link, Rect: [39.488, 408.295, 49.45, 415.153], Contents: None
+Subtype: /Link, Rect: [106.778, 396.455, 116.741, 403.197], Contents: None
+Subtype: /Link, Rect: [418.701, 578.472, 423.682, 585.215], Contents: None
+Subtype: /Link, Rect: [503.065, 366.53, 508.046, 373.492], Contents: None
+Subtype: /Link, Rect: [327.192, 178.469, 332.173, 185.211], Contents: None
+=== PAGE 6 (1 annotations) ===
+Subtype: /Link, Rect: [524.999, 370.845, 529.065, 376.058], Contents: None
+=== PAGE 7 (9 annotations) ===
+Subtype: /Link, Rect: [489.706, 546.012, 494.687, 552.755], Contents: None
+Subtype: /Link, Rect: [382.279, 533.943, 387.26, 540.8], Contents: None
+Subtype: /Link, Rect: [526.125, 386.931, 536.087, 393.788], Contents: None
+Subtype: /Link, Rect: [387.665, 360.119, 397.628, 367.161], Contents: None
+Subtype: /Link, Rect: [410.039, 360.119, 420.001, 367.161], Contents: None
+Subtype: /Link, Rect: [426.81, 312.298, 436.773, 319.341], Contents: None
+Subtype: /Link, Rect: [391.475, 276.433, 401.438, 283.475], Contents: None
+Subtype: /Link, Rect: [397.528, 240.719, 407.49, 247.61], Contents: None
+Subtype: /Link, Rect: [332.919, 190.033, 337.901, 196.776], Contents: None
+=== PAGE 8 (4 annotations) ===
+Subtype: /Link, Rect: [131.513, 238.72, 136.494, 245.763], Contents: None
+Subtype: /Link, Rect: [92.687, 155.034, 97.668, 162.076], Contents: None
+Subtype: /Link, Rect: [321.764, 385.604, 326.745, 392.461], Contents: None
+Subtype: /Link, Rect: [439.99, 373.763, 444.971, 380.506], Contents: None
+=== PAGE 9 (3 annotations) ===
+Subtype: /Link, Rect: [61.781, 384.78, 66.763, 391.637], Contents: None
+Subtype: /Link, Rect: [59.835, 80.164, 64.816, 86.907], Contents: None
+Subtype: /Link, Rect: [323.128, 177.007, 328.11, 183.865], Contents: None
+=== PAGE 10 (4 annotations) ===
+Subtype: /Link, Rect: [62.322, 260.137, 67.304, 266.994], Contents: None
+Subtype: /Link, Rect: [323.823, 342.351, 328.805, 349.208], Contents: None
+Subtype: /Link, Rect: [331.226, 199.245, 336.207, 206.102], Contents: None
+Subtype: /Link, Rect: [366.067, 103.855, 371.048, 110.817], Contents: None
+=== PAGE 11 (2 annotations) ===
+Subtype: /Link, Rect: [80.164, 96.603, 90.675, 103.46], Contents: None
+Subtype: /Link, Rect: [453.316, 56.035, 458.298, 62.997], Contents: None
+=== PAGE 12 (5 annotations) ===
+Subtype: /Link, Rect: [138.203, 56.254, 148.165, 62.997], Contents: None
+Subtype: /Link, Rect: [426.755, 701.719, 436.718, 708.576], Contents: None
+Subtype: /Link, Rect: [450.005, 701.833, 459.968, 708.576], Contents: None
+Subtype: /Link, Rect: [379.552, 480.04, 384.533, 486.898], Contents: None
+Subtype: /Link, Rect: [463.742, 408.205, 468.723, 415.167], Contents: None
+=== PAGE 13 (4 annotations) ===
+Subtype: /Link, Rect: [261.084, 252.164, 277.938, 258.943], Contents: None
+Subtype: /Link, Rect: [53.782, 244.759, 124.442, 249.977], Contents: None
+Subtype: /Link, Rect: [187.019, 227.756, 277.938, 234.535], Contents: None
+Subtype: /Link, Rect: [53.782, 218.79, 177.272, 225.568], Contents: None

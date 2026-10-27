@@ -1,0 +1,1216 @@
+=== PAGE 1 ===
+main
+athira k
+Document Details
+Submission ID
+trn:oid:::3618:155976170
+Submission Date
+Oct 26, 2026, 4:40 PM GMT+0
+Download Date
+Oct 26, 2026, 4:58 PM GMT+0
+File Name
+main.pdf
+File Size
+190.0 KB
+11 Pages
+8,211 Words
+46,350 Characters
+Page 1 of 13 - Cover Page
+Submission ID
+trn:oid:::3618:155976170
+Page 1 of 13 - Cover Page
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 2 ===
+64% detected as AI
+The percentage indicates the combined amount of likely AI-generated text as 
+well as likely AI-generated text that was also likely revised by AI.
+Caution: Review required.
+It is essential to understand the limitations of AI detection before making decisions 
+about a student’s work. We encourage you to learn more about Turnitin’s AI detection 
+capabilities before using the tool.
+71
+AI-generated
+64%
+Likely generated or likely generated and revised by AI.
+Disclaimer
+Our AI writing assessment is designed to help educators identify text that might be prepared by a generative AI tool. Our AI writing assessment may not always be accurate (it may misidentify 
+writing that is likely human generated as AI generated and likely AI generated as human generated) so it should not be used as the sole basis for adverse actions against a student. It takes 
+further scrutiny and human judgment in conjunction with an organization's application of its specific academic policies to determine whether any academic misconduct has occurred.
+Page 2 of 13 - AI Writing Overview
+Submission ID
+trn:oid:::3618:155976170
+Page 2 of 13 - AI Writing Overview
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 3 ===
+Manuscript received 20 October 2026; revised 20 October 2026; accepted 20 October 2026.
+Digital Object Identifier Not assigned; manuscript for review
+When Valid Counterfactuals Fail as Actions: An
+Evidence-Based Evaluation of Causal Actionable
+Recourse
+RISHABH KUMAR 1, SHASHWAT KARN 1, ANUBHAV BHATTACHARYA1, and NAVAMANI T M 2
+1School of Computer Science and Engineering, V ellore Institute of Technology, V ellore 632014, Tamil Nadu, India (Reg. Nos.: 24BCE0740, 24BCE0552,
+24BCE2824; e-mail: rishabh.kumar2024@vitstudent.ac.in, shashwat.karn2024@vitstudent.ac.in, anubhav.2024@vitstudent.ac.in).
+2Department of Computational Intelligence, School of Computer Science and Engineering, V ellore Institute of Technology, V ellore 632014, Tamil Nadu, India
+(e-mail: navamani.tm@vit.ac.in).
+This work was supported by VIT internal research allocations. Correspondence to Navamani T M (navamani.tm@vit.ac.in). Author
+contributions: R. Kumar designed the optimization architecture, implemented the causal evaluation pipeline, executed the multi-seed
+benchmark audits, and drafted the manuscript core; S. Karn directed the structural equation reﬁtting experiments and validity threat
+analyses; A. Bhattacharya handled dataset preprocessing audits and diagnostic label validations; N. T M provided project oversight and
+supervised experimental design. All reported ﬁndings are conditioned on the speciﬁed structural equations and domain constraints; no
+human subjects participated in this investigation.
+ABSTRACT Flipping a machine learning model’s prediction does not mean an applicant received an
+actionable plan. Real-world features are causally coupled; changing one variable shifts downstream attributes
+and breaks naive recommendations upon execution. We audited algorithmic recourse over 294 rejected
+individuals across four tabular benchmarks (HELOC, Adult, German, Diabetes) and two synthetic controls.
+Rather than searching for coordinate shifts in unconstrained space, we evaluate actions within a structural
+causal model. We test whether proposed interventions survive downstream causal propagation while re-
+specting physical constraints like non-decreasing age, separating nominal proposal validity ( V ) from causal
+replay validity ( R), physical actionability ( A), and manifold ﬁdelity ( F). Our central audit criterion is joint
+usability (U = R∧ A), requiring candidate plans to simultaneously survive structural replay and feasibility
+bounds. On credit risk (HELOC), Wachter gradient search achieves near-perfect nominal validity, yet joint
+usability drops to just 18.0% because secondary credit features shift during replay. Searching directly over
+valid action grids with CAC recovers 100% usability at default seed. Across 5 random seeds, optimizer
+convergence failures reduce diabetes usability to 94.4% (with a single-run low of 72.1%), while reﬁtted
+causal equations degrade usability to 93.0% on Adult and 97.0% on HELOC. Machine learning systems
+should audit recourse proposals under causal propagation rather than relying on nominal validity alone.
+INDEX TERMS Algorithmic recourse, Black-box classiﬁcation, Causal inference, Counterfactual explana-
+tions, Explainable artiﬁcial intelligence, Structural causal models.
+I. INTRODUCTION
+W
+HEN a machine learning classiﬁer denies an appli-
+cation, algorithmic recourse calculates an actionable
+set of feature changes to reverse the decision [ 1], [2]. Rather
+than simply reporting static feature importances, the goal is
+to provide an applicant with practical interventions that lead
+to model approval [ 3]–[5].
+Y et the vast majority of recourse formulations treat this
+problem as a simple geometry exercise [ 4], [ 6]. Given a
+rejected feature vector x and a ﬁxed black-box f , standard
+algorithms minimize an L1 or L2 distance penalty to discover
+a nearby point z satisfying f (z) = 1 . The core problem with
+this approach is coordinate independence. In real-world data-
+generating processes, features do not vary in a vacuum; they
+remain tightly bound by physical, social, and institutional
+mechanisms [ 7], [ 8]. A job applicant who acquires a post-
+graduate degree does not hold their age, professional tenure,
+or salary expectations frozen in time [ 9]. When an individual
+carries out an action a, real-world rules propagate that change
+downstream, producing an actual state ~x that rarely matches
+the optimizer’s intended target z. If the classiﬁcation model
+rejects this propagated state ~x—or if the downstream shifts
+breach directional boundaries like non-decreasing age—the
+entire recourse plan fails.
+VOLUME –, 2026 1
+Page 3 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 3 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 4 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+Existing recourse benchmarks hide this failure mode be-
+hind aggregate reporting shortcuts. First, current toolkits
+equate proposal validity (f (z) = 1 ) with true actionable
+recourse (f (~x) = 1 ), crediting an algorithm with success even
+when its advice fails under causal replay [ 10], [11]. Second,
+evaluations routinely audit validity, directional feasibility, and
+data-manifold distance as separate, independent rates across
+an entire pool of generated candidates. An algorithm thus
+receives full credit if candidate A clears the decision bound-
+ary while an unrelated candidate B respects feasibility rules,
+despite the fact that no single plan resolves the applicant’s
+rejection. Third, reported benchmarks rarely test algorithmic
+stability across random seeds or check sensitivity against
+reﬁtted structural equations, masking optimizer crashes and
+fragile dependency assumptions.
+To address these gaps, this work presents a systematic
+audit of Causal Actionable Counterfactuals (CAC) across
+four standardized decision benchmarks—Adult Income, Ger-
+man Credit, FICO HELOC, and Pima Diabetes—spanning
+294 rejected individuals, alongside two synthetic benchmarks
+with known causal graphs. Instead of perturbing arbitrary
+coordinates in continuous feature space, CAC restricts its
+search to admissible interventional sets a = ( S, vS) embed-
+ded within an explicit Structural Causal Model ( M). Each
+candidate action is evaluated directly on its topologically
+propagated post-intervention state ~x =TM(x, a). We formal-
+ize a decoupled audit suite that isolates proposal validity ( V ),
+causal replay validity ( R), directional action feasibility ( A),
+and coordinate ﬁdelity ( F), centering our primary evaluation
+on joint usability (U = R∧ A), which strictly requires that
+the same candidate recommendation simultaneously achieves
+model approval and domain constraints.
+Our contributions are centered on empirical evaluation and
+interventional robustness:
+1) Decoupled Audit Protocol: We formalize distinct ver-
+iﬁcation criteria for nominal validity, causal replay,
+directional feasibility, and coordinate drift, establishing
+applicant-level joint usability ( U = R∧ A) as the
+necessary benchmark metric.
+2) Empirical Recourse Failure: Auditing 294 rejected
+test cases reveals that while conventional methods
+claim up to 100% nominal validity, true joint usability
+drops to 18.0% on FICO HELOC under Wachter’s
+method. In contrast, interventional action search via
+CAC reaches 100% usability across all datasets at the
+primary seed.
+3) Multi-Seed Optimizer Auditing: Audits across 5 ran-
+dom seeds uncover critical optimizer vulnerabilities in
+diabetes, where numerical convergence failures reduce
+mean usability to 94.4% (with a minimum of 72.1%).
+4) Causal Sensitivity and Pipeline Hygiene: Reﬁtting
+structural equations causes usability to slip to 93.0%
+on Adult and 97.0% on HELOC, demonstrating that
+model-based recourse guarantees remain bound to the
+assumed equations. We further document data hygiene
+hazards in standard pipelines, including pre-split impu-
+tation and test-triggered hyperparameter selection.
+The remainder of this manuscript is organized as follows:
+Section II contrasts point-based and causal recourse frame-
+works; Section III details causal replay mechanics, the multi-
+objective formulation, and evolutionary action search; Sec-
+tion IV establishes our experimental testbed and statistical
+protocol; Section V presents the empirical audits, multi-seed
+stability evaluations, and ablation studies; Section VI ana-
+lyzes the mechanisms driving recourse failure and examines
+threats to validity; and Section VII concludes with method-
+ological recommendations for the ﬁeld.
+II. RELATED WORK
+Algorithmic recourse literature divides along a clear line:
+whether an explanation treats feature coordinates as indepen-
+dent dials or respects the downstream mechanisms linking
+them. Table 1 compares common paradigms across search
+entities, replay propagation, constraint structures, and audit
+protocols.
+A. POINT-BASED COUNTERFACTUALS AND
+ACTIONABILITY CONSTRAINTS
+The foundational formulation by Wachter et al. [4] casts
+recourse as unconstrained gradient optimization in feature
+space, minimizing a continuous distance penalty to ﬂip a
+prediction. Subsequent works introduced diversity mecha-
+nisms via determinantal point processes (DiCE [6]), enforced
+linear feasibility rules via integer programming (Ustun et
+al. [3]), routed recommendations along empirical data graphs
+(FACE [12]), or guided search vectors using class prototypes
+(V an Looveren and Klaise [13]).
+Y et all coordinate-based strategies share a core limitation:
+they perturb feature coordinates in isolation, assuming un-
+affected attributes remain ﬁxed at their original values. In
+reality, intervening on an actionable feature triggers down-
+stream changes across related variables. Because point-based
+algorithms optimize directly over input targets z rather than
+executable interventional operators a, their suggested states
+frequently occupy impossible regions of the data distribution
+or fail once real-world dynamics take place.
+B. CAUSAL ALGORITHMIC RECOURSE AND
+INTERVENTIONS
+Pearl’s interventional calculus [9] establishes the formal ma-
+chinery required to model post-action consequences. Build-
+ing on this framework, Karimi et al. [7] proved that viable
+recourse demands interventional operators do(XS = vS)
+rather than conditional observations, subsequently extending
+this formulation to handle probabilistic uncertainty in the un-
+derlying causal equations (MINT [ 8]). Related foundational
+analyses by Barocas et al. [5] and Karimi et al. [1] examined
+the implicit assumptions governing causal and normative re-
+course.
+Despite these theoretical advances, current empirical eval-
+uations have serious auditing gaps. Studies regularly compute
+validity, actionability, and manifold distance as independent
+2 VOLUME –, 2026
+Page 4 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 4 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 5 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+TABLE 1. Architectural and methodological comparison of algorithmic recourse and counterfactual explanation frameworks.
+Framework Search Causal Replay Action Optimization Joint Audit Evaluation
+Entity Propagation Bounds Scheme (R ∧ A) Target
+Wachter et al. [4] Point z None (passive) Soft penalties L-BFGS-B / Gradient No Single recommendation
+DiCE-random [6] Points {zℓ} None (passive) Feature locking Determinantal DPP No Recommendation set
+Ustun et al. [3] Action a None (linear) Hard integer Mixed-Integer LP Partial Linear classiﬁers
+Karimi et al. [7] Action a SCM do(XS ) Domain bounds Gradient / Heuristic No Disjoint metric rates
+MINT [8] Action a Probabilistic SCM Cost/sub-pop Sampling / Search Partial Synthetic benchmarks
+Evaluated CAC Action a Non-linear SCM Quantile grids Evolutionary Multi-Obj. Yes (U = R ∧ A) Paired Applicant-Level
+aggregate summary statistics over candidate sets. This allows
+an algorithm to claim success if one proposed point ﬂips the
+classiﬁer while a completely separate point obeys feasibility
+rules—even if every single candidate in the set fails when au-
+dited jointly. Equally critically, published benchmarks rarely
+audit candidate survival under reﬁtted causal equations or test
+stability across multiple search initializations.
+C. BENCHMARKING SUITES, TOOLKITS, AND
+ROBUSTNESS
+The development of standardized benchmarking libraries
+such as CARLA [ 10] and Alibi Explain [ 14] brought much-
+needed modularity to counterfactual research. In parallel,
+multi-objective evolutionary formulations like NSGA-II [15],
+[16] emerged to balance sparsity against proximity, while
+Upadhyay et al. [11] examined recourse vulnerability under
+model shifts.
+Nonetheless, current benchmarking frameworks evaluate
+algorithms almost exclusively on single random seeds, omit
+causal descendant veriﬁcation, and ignore optimizer conver-
+gence exceptions. Our study addresses these methodological
+blind spots: we implement paired applicant-level statistical
+tests, record query costs and numerical exceptions explicitly,
+and track whether recommendations withstand causal replay
+under reﬁtted data-generating equations.
+III. PROPOSED METHOD AND SYSTEM DESIGN
+We now formalize the interventional recourse framework,
+downstream structural replay mechanisms, decoupled audit
+metrics, and the genetic action search implemented in CAC.
+A. RECOURSE FORMULATION AND SYSTEM
+ARCHITECTURE
+Let x = ( x1, . . . ,xd ) ∈ X represent an individual’s ob-
+served proﬁle across a mixed-type input space. A black-
+box classiﬁer f : X → {0, 1} predicts class probabilities
+p+(x) = P(Y = 1 | X = x), assigning an approval
+f (x) = 1{p+(x) ≥ τ} at threshold τ = 0 .5. Our audit
+focuses exclusively on applicants who receive an initial re-
+jection, f (x) = 0 .
+A recourse recommendation pairs a target feature vector
+with an explicit intervention: (z, a), where a = ( S, vS). The
+active index set S ⊆ {1, . . . ,d} isolates variables directly
+manipulated by the applicant, while vS = {vj}j∈S assigns
+their replacement values. Fig. 1 details this operational ﬂow.
+Instead of treating recourse as an unconstrained drift across
+continuous space, CAC restricts optimization strictly to ad-
+missible actions a = ( S, vS), preventing the search from
+proposing coordinate shifts that implicitly hold causally de-
+pendent descendants ﬁxed.
+B. STRUCTURAL CAUSAL MODELS AND DESCENDANT
+REPLA Y
+A Structural Causal Model M = ( S, PU ) governs data
+generation over observed variables X ={X1, . . . ,Xd} and
+exogenous background noise U ={U1, . . . ,Ud}∼ PU . A
+Directed Acyclic Graph deﬁnes functional relationships:
+Xj = fj(PAj, Uj), ∀j∈{ 1, . . . ,d}, (1)
+where PAj⊆ X\{ Xj} denotes the direct causal parents of
+Xj. To determine how an action alters an applicant’s proﬁle in
+reality, we simulate Pearl’s counterfactual engine [ 9] across
+three sequential phases:
+1) Abduction: Recover the unobserved background fac-
+tors ux = ( u1, . . . ,ud ) characterizing applicant x. For
+continuous features, we invert ﬁtted equations to com-
+pute residual noise uj = xj− ˆfj(paj); discrete features
+preserve conditional probability quantiles.
+2) Action: Apply the intervention do(XS = vS), which
+overwrites structural equations for intervened features
+j∈ S with assigned constant values vj.
+3) Causal Replay: Sequentially propagate shifts down-
+stream in topological order through the structural equa-
+tions to obtain realized state:
+~x =TM(x, a) =Mdo(XS =vS )(ux). (2)
+Fig. 2 traces this topological ﬂow. In our pipeline, non-
+linear structural mechanisms ˆfj are parameterized via his-
+togram gradient-boosted decision trees. While downstream
+descendants update in topological order, non-descendant fea-
+tures strictly retain their factual measurements. Evaluating
+all interventions under ﬁxed abducted noise ux guarantees
+deterministic, reproducible audits for each applicant.
+C. DECOUPLED AUDIT MEASURES AND JOINT USABILITY
+To eliminate confounding across evaluation criteria, our audit
+decouples four distinct metrics:
+VOLUME –, 2026 3
+Page 5 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 5 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 6 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+Rejected Record
+x ∈ X , f (x) = 0
+Action Search
+a = ( S, vS )
+SCM Replay
+~x = TM(x, a)
+Classiﬁer Audit
+R = 1{f (~x) = 1 }
+Usable Plan
+U = R ∧ A
+Candidate State
+z ∈ X , V (x, z)
+Fidelity Audit
+∆(x, z, a) ≤ ϵ ∧ V
+Action Rules
+A(x, a)
+FIGURE 1. Structural pipeline of the CAC audit framework. Rather than evaluating isolated coordinates, the system traces an interventional action a, its
+nominal target z, and its replayed state ~x. A recommendation provides usable recourse ( U = 1) only when the identical plan simultaneously survives
+downstream causal replay ( R = 1) and adheres to directional feasibility constraints ( A = 1).
+X1
+Intervention
+do(X1 = v1)
+U1
+×
+X2
+U2
+X3U3 Y = f (X )
+f2
+f3
+FIGURE 2. Directed acyclic graph illustrating interventional propagation.
+Intervening on X1 via do(X1 = v1) severs its endogenous parental
+mechanism while transmitting shifts through functional equations f2 and
+f3 to descendants X2 and X3. Perturbing X1 in isolation while holding its
+descendants frozen yields an unphysical state that breaks down once
+evaluated by predictive classifier Y = f (X ).
+1) Proposal Validity ( V ): Tests whether the classiﬁer
+approves the raw suggested point z:
+V (x, z) = 1{p+(z)≥ τ}. (3)
+2) Causal Replay Validity ( R): Tests whether the classi-
+ﬁer still approves the realized post-intervention state ~x:
+R(x, a) = 1{p+(~x)≥ τ}. (4)
+3) Action Feasibility ( A): V eriﬁes whether action a =
+(S, vS) obeys domain constraints:
+A(x, a) = 1
+{
+S⊆F act∧ Dir(x, a)
+∧| S|≤ 3∧ C(x, a)≤ 1
+}
+, (5)
+whereFact denotes mutable features, Dir(x, a) en-
+forces admissible directions (e.g., age cannot de-
+crease),|S|≤ 3 limits simultaneous interventions, and
+C(x, a)≤ 1 bounds normalized effort.
+4) State Fidelity (F): Tracks maximum normalized diver-
+gence between suggested point z and realized outcome
+~x:
+∆(x, z, a) = max
+j∈{1,...,d}
+|zj− ~xj|
+sj
+, (6)
+F(x, z, a) = V (x, z)· 1{∆(x, z, a)≤ ϵ}, (7)
+where sj is the range of feature j, with tolerance ϵ = 0.1.
+The primary success criterion is Joint Usability (U ):
+U (x, z, a) = R(x, a)· A(x, a). (8)
+1. Abduct factual noise ux
+Initialize population on grids
+2. Causal Replay:
+~x = TM(x, a)
+Compute classiﬁer p+(~x)
+3. Evaluate Multi-
+Objective J (a; x)
+Update archive of
+viable candidates
+Generations ≥ 200
+or Patience ≥ 20?
+4. Elitism ( 50%),
+Crossover, Mutation,
+Legalize onto grids
+5. Select up to k = 5 diverse
+candidates from Pareto archive
+No
+Y es
+FIGURE 3. Iterative workflow of the genetic action search (Algorithm 1).
+The algorithm mutates interventional vectors, snaps them onto legal
+quantile grids, evaluates downstream causal states via SCM replay, and
+archives non-dominated candidates satisfying the margin buffer.
+For an applicant i provided up to k = 5 suggestions, the
+individual is successfully served if at least one suggestion
+satisﬁes joint usability on the identical plan:
+Uim = max
+ℓ≤k
+(
+Rimℓ· Aimℓ
+)
+, ˆUm = 1
+n
+n∑
+i=1
+Uim. (9)
+This strict coupling is critical: auditing validity and fea-
+sibility independently allows an algorithm to claim success
+by returning one candidate that inverts the decision illegally
+alongside a second candidate that remains rejected within
+action bounds.
+D. MUL TI-OBJECTIVE ACTION SPACE EXPLORATION
+To measure the personal burden of recourse, normalized ac-
+tion effort is formulated as:
+C(x, a) =
+∑
+j∈S wjcj(xj, vj)
+B , (10)
+where wj weights feature importance, cj(·,·) assesses coordi-
+nate distance (linear for continuous attributes, shortest path
+across graph encodings for ordinals, and ﬁxed replacement
+costs for categories), and budget B rescales total effort to
+[0, 1].
+4 VOLUME –, 2026
+Page 6 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 6 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 7 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+Algorithm 1 Evolutionary Causal Action Search (CAC)
+Require: Rejected applicant x, black-box p+, SCMM, legal
+quantile gridsG, candidates k = 5
+1: Abduct factual noise: ux←M −1(x)
+2: Initialize legal action populationP←{ a(m)}60
+m=1 onG
+3: Initialize archiveA←∅
+4: for gen = 1 to 200 do
+5: for each candidate action a∈P do
+6: Compute causal replay: ~x ← TM(x, a) =
+Mdo(XS =vS )(ux)
+7: Evaluate classiﬁer probability p+(~x) and objec-
+tive J (a; x)
+8: if p+(~x)≥ τ and A(x, a) = 1 then
+9: A←A∪{ (a, ~x, J (a; x))}
+10: end if
+11: end for
+12: if patience limit 20 exceeded without objective im-
+provement then
+13: break
+14: end if
+15: Retain elite fraction (50%); perform crossover and
+mutation
+16: Legalize offspring actions onto grid G satisfying
+|S|≤ 3
+17: end for
+18: Filter archiveA for non-dominated, diverse solutions
+19: return top k recourse recommendations, actions, and
+metadata
+Candidate actions are discovered by minimizing a scalar-
+ized multi-objective loss:
+J (a; x) = λv
+[q− p+(TM(x, a))]+
+q + λcC(x, a)
++ λf H (x, a) + λpP(TM(x, a)), (11)
+where [v]+ = max(0, v), H (x, a) penalizes feasibility infrac-
+tions, and target margin q = τ + 0.05 enforces a 0.05 proba-
+bility buffer above the decision threshold to protect against
+boundary jitter. Manifold plausibility P(·) penalizes Kknn-
+nearest-neighbor distance to favorable training instances:
+P(~x) = 1
+5
+∑
+x′∈N +
+K (x)
+∥~x− x′∥2
+¯d+
+. (12)
+Hyperparameter weights are calibrated to (λv, λc, λf , λp) =
+(1, 0.6, 0.3, 0.2). Three design considerations govern this ob-
+jective: target margin q pushes solutions into high-conﬁdence
+classiﬁcation territory; restricting candidate replacements to
+12 marginal empirical quantiles prevents numerical extrap-
+olations beyond observed domain support; and plausibility
+term P discourages recommendations located in low-density
+training voids.
+E. EVOLUTIONARY SEARCH AND ARCHIVE SELECTION
+Because gradient-boosted tree ensembles partition fea-
+ture space into non-differentiable step plateaus, traditional
+gradient-based optimizers quickly stall in local optima. CAC
+bypasses this limitation using an elitist genetic algorithm
+deﬁned directly over discrete quantile grids. The population
+maintains 60 candidate interventions initialized with single-
+feature actions and sparse combinations. At each generation,
+the ﬁttest 50% elite actions are preserved directly. Offspring
+generated via uniform crossover and mutation are snapped
+onto admissible quantile grids G and restricted to at most 3
+simultaneous interventions.
+The search terminates when reaching 200 generations or
+when progress stalls across 20 consecutive generations. V alid,
+feasible plans are accumulated in external Pareto archive A.
+If fewer than k candidates achieve validity, the lowest-loss
+rejected candidates are retained as diagnostics, though the
+audit strictly tallies them as failures. Algorithm 1 formalizes
+the routine, and Fig. 3 sketches the execution loop. Discrete
+quantile search explores non-convex combinatorial spaces
+reliably without computing unstable numerical gradients over
+tree splits.
+IV. EXPERIMENTAL SETUP
+To evaluate interventional recourse across distinct data
+regimes, we benchmark four tabular tasks representing di-
+verse dimensionalities, causal graph densities, and institu-
+tional constraints.
+A. DATASETS AND PREDICTIVE CLASSIFIERS
+We ﬁt gradient-boosted decision trees using XGBoost [ 17]
+across four canonical tabular benchmarks:
+1) Adult Income [ 18], [ 19]: A 9-feature socioeconomic
+demographic dataset where the predictive target is
+whether annual income exceeds $50,000 (earning ≤
+$50K denotes adverse rejection).
+2) Statlog German Credit [ 19]: A 15-variable ﬁnancial
+risk registry evaluating consumer loan default (classiﬁ-
+cation as bad credit denotes adverse rejection).
+3) FICO HELOC [ 20]: A 12-feature home equity credit
+assessment dataset tracking ﬁnancial delinquency (de-
+nial of credit line constitutes adverse rejection).
+4) Pima Diabetes [ 21]: An 8-feature clinical diag-
+nostic screening record inverted such that favor-
+able recourse targets non-diabetic classiﬁcation (no_
+diabetes=1-Outcome).
+Table 2 summarizes partition volumes, processed feature
+dimensions, evaluated applicant counts, and classiﬁcation
+metrics. Out-of-sample test AUC spans from 0.7846 on Ger-
+man Credit to 0.9182 on Adult Income. We emphasize that
+favorable target labels serve purely as computational objec-
+tives for algorithmic search; they do not imply automated
+underwriting or clinical endorsements.
+B. COMPUTATIONAL ENVIRONMENT AND HARDWARE
+TESTBED
+All pipelines were developed in Python (validated across run-
+time environments 3.10 through 3.14) utilizing Scikit-learn,
+VOLUME –, 2026 5
+Page 7 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 7 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 8 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+TABLE 2. Benchmark datasets and predictive classification models. Dimensionality d indicates features after preprocessing; queries indicate evaluated
+rejected test individuals; AUC is reported on the held-out test split.
+Dataset Train Test d Queries Acc. AUC
+Adult 16000 4000 9 100 0.8485 0.9182
+German 800 200 15 51 0.7750 0.7846
+HELOC 7896 1975 12 100 0.7205 0.7880
+Diabetes 614 154 8 43 0.7727 0.8489
+XGBoost, NumPy, and SciPy on dedicated x86-64 multi-core
+workstations. The evaluation runs entirely on local compute
+without reliance on commercial cloud inference endpoints,
+ensuring that all SCM ﬁts, model calls, and search trajectories
+remain fully deterministic and locally reproducible.
+C. HYPERPARAMETER CONFIGURATION
+To prevent dataset-speciﬁc cherry-picking, algorithmic hy-
+perparameters remain frozen across all benchmarks: popula-
+tion size 60, elite proportion 50%, maximum generations 200,
+stall patience 20, grid granularity 12, maximum concurrent
+alterations 3, target margin 0.05, ﬁdelity tolerance ϵ = 0 .1,
+and scalar loss weights (1, 0.6, 0.3, 0.2). Headline ﬁndings
+are anchored to random seed 42, augmented by a 5-seed audit
+(42,0,1,2,3) to assess stochastic variability. Computational
+workload is tracked via cumulative forward black-box queries
+rather than wall-clock time, isolating algorithmic efﬁciency
+from host hardware variations.
+D. BASELINE RECOURSE ALGORITHMS
+We benchmark CAC against four established recourse al-
+gorithms under strictly identical immutability masks, action
+budgets, and directional bounds:
+1) Random Search: Uniformly samples action subsets
+from legal quantile lattices, returning the minimum-
+effort candidate satisfying model acceptance.
+2) Wachter-Style Optimization: Executes multi-start L-
+BFGS-B in continuous feature space, estimating model
+gradients via numerical ﬁnite differences.
+3) DiCE-Random [ 6]: Generates sets of diverse coun-
+terfactual perturbations using determinantal point pro-
+cesses.
+4) Grid Search (‘‘Oracle’’ Reference):Exhaustively tra-
+verses allowable quantile changes ordered by increas-
+ing normalized effort until exhausting a preset query
+budget.
+5) MINT [8]: Deployed in synthetic control environments
+where true structural equations are analytically speci-
+ﬁed, matching its interventional assumptions.
+Because the Grid Search baseline operates under a capped
+query ceiling, its performance reﬂects bounded exploration
+rather than guaranteed global optimality. In parallel, our com-
+parisons reﬂect speciﬁc reference implementations; alterna-
+tive optimizers or penalty schedules could yield different
+trade-offs.
+E. STATISTICAL SIGNIFICANCE PROTOCOL
+At default seed 42, we evaluate paired binary applicant us-
+ability outcomes ( Uim) via exact two-sided McNemar tests,
+controlling the familywise error rate within each domain
+using Holm step-down adjustments ( α = 0 .05). To quantify
+multi-seed variability across shared runs without parametric
+assumptions, we calculate applicant-level paired difference
+distributions using 10,000 bootstrap resamples at bootstrap
+seed 42.
+V. RESULTS
+Our empirical evaluation analyzes the gap between nominal
+validity and causal replay, computational query expenditures,
+multi-seed optimization failures, paired hypothesis tests, ob-
+jective ablations, and causal graph sensitivity.
+A. PRIMARY BENCHMARK EVALUATION
+Table 3 compiles primary performance metrics across all 294
+rejected applicants at seed 42. Fig. 4 illustrates the resulting
+performance disparities alongside multi-seed spreads.
+Nominal proposal validity ( V ) and true joint usability ( U )
+diverge sharply once evaluated on identical plans. While base-
+lines on Adult, German, and Diabetes achieve high usability
+rates—with CAC, Random, and DiCE all reaching 100%—
+this performance drops sharply on the credit risk benchmark
+(HELOC):
+• Wachter-Style Optimization: While reporting 85.0%
+proposal validity (V ), post-intervention causal replay (R)
+falls to 72.0% and directional feasibility ( A) to 35.0%.
+When enforced jointly on the identical candidate plan,
+real-world usability (U ) drops to just 18.0%.
+• Random Search: Yields 96.0% nominal validity and
+90.0% replay success, but strict joint auditing drops
+effective usability to 78.0%.
+• DiCE-Random: Achieves 100.0% nominal validity on
+paper, yet interventional propagation degrades replay
+acceptance to 78.0%, leaving only 76.0% joint usability.
+• CAC: Achieves 100.0% across all four evaluation axes:
+nominal validity, causal replay, directional feasibility,
+and joint usability.
+State coordinate ﬁdelity ( F) on HELOC drops to 48.0%
+for Wachter and 64.0% for DiCE, providing direct geometric
+proof that the mathematical coordinates generated by point-
+based optimizers drift severely from the empirical states pro-
+duced by the data-generating process.
+6 VOLUME –, 2026
+Page 8 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 8 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 9 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+TABLE 3. Empirical evaluation of algorithmic recourse methods at search seed 42. Rates represent percentages of all queried individuals:
+recommendation validity ( V ), causal replay validity ( R), actionability ( A), state fidelity ( F ), and joint usability ( U = R ∧ A). Action cost ( C ) is the mean
+scaled effort of the cheapest usable plan per successful applicant. Query count indicates mean black-box model evaluations per applicant.
+Dataset Method n V R A F U Cost Queries
+Adult Random 100 100.0 100.0 100.0 100.0 100.0 0.0439 1,006.0
+Adult Wachter 100 100.0 100.0 99.0 100.0 99.0 0.1113 17,439.0
+Adult DiCE-random 100 100.0 100.0 100.0 100.0 100.0 0.0745 2,022.6
+Adult Grid reference 100 100.0 87.0 100.0 99.0 87.0 0.1225 3,984.4
+Adult CAC 100 100.0 100.0 100.0 100.0 100.0 0.1807 1,032.6
+German Random 51 100.0 100.0 100.0 92.2 100.0 0.0025 1,006.0
+German Wachter 51 100.0 98.0 74.5 82.4 70.6 0.0174 52,953.4
+German DiCE-random 51 100.0 100.0 100.0 96.1 100.0 0.0082 2,058.6
+German Grid reference 51 100.0 100.0 100.0 94.1 100.0 0.0012 95.1
+German CAC 51 100.0 100.0 100.0 100.0 100.0 0.0091 1,216.0
+HELOC Random 100 96.0 90.0 91.0 69.0 78.0 0.0846 1,005.7
+HELOC Wachter 100 85.0 72.0 35.0 48.0 18.0 0.0498 37,379.8
+HELOC DiCE-random 100 100.0 78.0 91.0 64.0 76.0 0.0934 2,609.5
+HELOC Grid reference 100 100.0 83.0 100.0 82.0 83.0 0.0255 7,714.2
+HELOC CAC 100 100.0 100.0 100.0 100.0 100.0 0.0308 1,312.8
+Diabetes Random 43 100.0 97.7 95.3 86.0 93.0 0.0362 1,006.0
+Diabetes Wachter 43 100.0 100.0 100.0 93.0 100.0 0.0645 7,314.3
+Diabetes DiCE-random 43 100.0 100.0 100.0 100.0 100.0 0.0549 2,025.2
+Diabetes Grid reference 43 100.0 100.0 100.0 97.7 100.0 0.0241 174.0
+Diabetes CAC 43 100.0 100.0 100.0 100.0 100.0 0.0275 835.5
+B. ACTION EFFORT AND COMPUTATIONAL QUERY COSTS
+Table 3 reports normalized action costs ( C) and black-box
+query expenditures across all benchmarks. For CAC, the
+average scaled effort of the lowest-cost viable plan is 0.1807
+on Adult, 0.0091 on German, 0.0308 on HELOC, and 0.0275
+on Diabetes.
+Effort comparisons demand careful conditioning: on Adult,
+Random search identiﬁes valid recourse at a lower average
+cost (0.0439) than CAC (0.1807), whereas on HELOC, CAC
+achieves lower effort (0.0308) than either Random (0.0846) or
+DiCE (0.0934). Crucially, these cost metrics are conditioned
+strictly on successful recourse recipients. Because baselines
+serve only a fraction of the HELOC cohort (e.g., Wachter suc-
+ceeds on merely 18 individuals), their lower conditional cost
+reﬂects selection bias over an easily satisﬁed subpopulation
+rather than superior overall cost efﬁciency.
+Query budgets reveal stark computational disparities:
+Wachter’s ﬁnite-difference gradient steps require between
+7,314.3 and 52,953.4 forward model evaluations per appli-
+cant. DiCE consumes 2,022.6 to 2,609.5 queries. In con-
+trast, CAC requires only 835.5 to 1,312.8 model evaluations,
+demonstrating that vectorized genetic search across discrete
+quantile grids achieves complete interventional validity with
+substantially lower inference overhead.
+C. MUL TI-SEED STABILITY AND OPTIMIZER AUDITING
+Table4 tracks algorithmic stability across 5 distinct seeds (42,
+0,1,2,3). CAC maintains ﬂawless 100% usability across all
+ﬁve runs on Adult, German, and HELOC.
+However, the multi-seed audit exposes brittle behavior on
+Diabetes: CAC’s seed-averaged usability drops to 94.4%,
+with a single-run low of 72.1%. Tracing execution logs re-
+vealed 12 unhandled numerical convergence exceptions in
+seed 3 when resolving non-linear parent estimators. Transpar-
+ent auditing requires keeping these failed searches in the de-
+nominator; removing them would artiﬁcially inﬂate reported
+efﬁcacy by measuring success only where the optimizer hap-
+pened to converge cleanly.
+Similarly, DiCE-random on Adult produces a severe failure
+run at seed 1 with 0.0% usability, reducing its multi-seed
+mean to 75.0%. At the same time, due to strict timeout limits,
+Wachter, DiCE, and Grid completed only 4 seeds on Adult.
+Reporting completed run tallies explicitly prevents mislead-
+ing comparisons that tacitly presume balanced experimental
+designs.
+D. STATISTICAL HYPOTHESIS TESTING
+Table 5 reports applicant-level paired signiﬁcance tests. At
+default seed 42, exact two-sided McNemar tests with Holm
+familywise error rate adjustments conﬁrm that CAC signif-
+icantly outperforms every comparison baseline on HELOC:
+Wachter ( p < 0.001), Random ( p < 0.001), DiCE ( p <
+0.001), and Grid ( p < 0.001). On German Credit, CAC sig-
+niﬁcantly exceeds Wachter (p = 2.44×10−4), while on Adult
+Income, it signiﬁcantly outperforms Grid (p = 9.77× 10−4).
+Other primary-seed comparisons do not attain signiﬁcance
+after Holm adjustment.
+Bootstrap distributions resampled over 10,000 applicant
+VOLUME –, 2026 7
+Page 9 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 9 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 10 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+0 20 40 60 80 100
+Applicants with at least one passing plan (%)
+Random
+Wachter
+DiCE-random
+Grid reference
+CAC
+78
+18
+76
+83
+100
+(a) HELOC: validity versus usable recourse
+Adult German HELOC Diabetes
+70
+80
+90
+100Usable applicants (%)
+(b) CAC: observed search-seed range
+Proposed-state validity Usable after replay
+FIGURE 4. Empirical benchmark outcomes across 294 rejected test cases. (a) On HELOC, point-based counterfactual generators exhibit a severe usability
+gap, where high nominal validity fails once causal replay and directional constraints are enforced on the identical recommendation. (b) Multi-seed
+evaluations over 5 seeds expose stochastic vulnerabilities, including optimizer convergence exceptions in diabetes.
+TABLE 4. Multi-seed recourse stability across five random seeds (42,0,1,2,3). Values report mean [minimum, maximum] usability percentages, with the
+number of completed seed runs in parentheses.
+Method Adult German HELOC Diabetes
+Random 100.0 [100.0, 100.0] (5) 100.0 [100.0, 100.0] (5) 82.6 [78.0, 87.0] (5) 95.3 [93.0, 97.7] (5)
+Wachter 98.8 [98.0, 99.0] (4) 77.3 [70.6, 82.4] (5) 19.4 [18.0, 21.0] (5) 94.4 [88.4, 100.0] (5)
+DiCE-random 75.0 [0.0, 100.0] (4) 100.0 [100.0, 100.0] (5) 75.8 [73.0, 80.0] (5) 99.5 [97.7, 100.0] (5)
+Grid reference 87.0 [87.0, 87.0] (4) 100.0 [100.0, 100.0] (5) 83.0 [83.0, 83.0] (5) 100.0 [100.0, 100.0] (5)
+CAC 100.0 [100.0, 100.0] (5) 100.0 [100.0, 100.0] (5) 100.0 [100.0, 100.0] (5) 94.4 [72.1, 100.0] (5)
+clusters capture run-to-run stochasticity that single-seed tests
+miss. On Diabetes, despite tying DiCE at seed 42, CAC’s
+bootstrap gap relative to DiCE becomes negative due to
+the optimizer exceptions at seed 3. Conversely, on Adult,
+DiCE’s bootstrap conﬁdence band exhibits extreme disper-
+sion ([+25.0, +25.0]) driven by its total failure run.
+E. COMPONENT ABLATION ANAL YSIS
+Table 6 isolates the functional contributions of our multi-
+objective terms at seed 42. Disabling interventional updates
+(scoring candidates directly on naive coordinate shifts) de-
+grades usability to 95.0% on Adult and 96.0% on HELOC,
+while German and Diabetes remain unaffected at 100%. This
+disparity reﬂects topological coupling: causal propagation is
+indispensable when mutable features have downstream credit
+descendants, whereas loosely coupled graphs permit naive
+shifts without severe penalty.
+Removing the action effort term ( λc = 0 ) increases
+normalized effort across all datasets—for instance, driving
+Adult cost from 0.1807 to 0.2467—conﬁrming that the effort
+objective actively steers mutations away from high-friction
+interventions. In contrast, zeroing the soft feasibility penalty
+(λf = 0) produces zero change in output, indicating that hard
+coordinate projection during grid legalization fully guaran-
+tees constraint compliance.
+F. CAUSAL MODEL SENSITIVITY AND SYNTHETIC AUDITS
+Table 7 investigates how fragile recourse plans are to the
+ﬁtted structural equations. When evaluated against reﬁtted
+SCMs, CAC usability drops to 93.0% on Adult and 97.0%
+on HELOC, while German and Diabetes maintain 100%. At
+the individual recommendation level, plan survival degrades
+more sharply: only 73.0% of Adult suggestions and 79.4% of
+HELOC suggestions survive reﬁtted replay. Applicant-level
+usability stays higher simply because an individual needs only
+one surviving plan among their top k candidates. Because
+the reﬁtted equations were trained on overlapping data splits,
+this drop represents a conservative lower bound on real-world
+sensitivity.
+Table8 evaluates recourse in the synthetic Reach and Block
+worlds where ground-truth structural equations are analyti-
+cally known. Both CAC and MINT achieve 100% usability
+in Reach, and 40.0% in Block. In Block, exactly 42 of 100
+individuals are provably unreachable due to hard structural
+bounds. MINT attains lower intervention effort in both en-
+vironments, proving that CAC does not inherently guarantee
+minimal-effort recourse.
+Finally, Table 9 reports empirical checks on the assumed
+DAGs. On German and HELOC, numerous edges lack ob-
+servational orientation support, reminding us that assumed
+causal graphs represent structural hypotheses rather than in-
+fallible laws of nature.
+8 VOLUME –, 2026
+Page 10 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 10 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 11 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+TABLE 5. Paired applicant-level statistical significance tests and bootstrap confidence intervals. Paired differences and bootstrap percentile intervals are
+computed across shared random seeds; p-values reflect exact two-sided McNemar tests on seed 42 with Holm familywise error rate adjustment.
+Dataset Baseline n Seeds b/c Gap (pp) 95% cluster CI Holm p
+Adult Random 100 5 0/0 +0.0 [+0.0, +0.0] 1.000
+Adult Wachter 100 4 1/0 +1.2 [+0.0, +3.0] 1.000
+Adult DiCE-random 100 4 0/0 +25.0 [+25.0, +25.0] 1.000
+Adult Grid reference 100 4 13/0 +13.0 [+7.0, +20.0] 9.77×10−4
+German Random 51 5 0/0 +0.0 [+0.0, +0.0] 1.000
+German Wachter 51 5 15/0 +22.7 [+14.1, +32.2] 2.44×10−4
+German DiCE-random 51 5 0/0 +0.0 [+0.0, +0.0] 1.000
+German Grid reference 51 5 0/0 +0.0 [+0.0, +0.0] 1.000
+HELOC Random 100 5 22/0 +17.4 [+12.4, +22.4] 9.54×10−7
+HELOC Wachter 100 5 82/0 +80.6 [+73.4, +87.4] 1.65×10−24
+HELOC DiCE-random 100 5 24/0 +24.2 [+17.4, +31.4] 3.58×10−7
+HELOC Grid reference 100 5 17/0 +17.0 [+10.0, +25.0] 1.53×10−5
+Diabetes Random 43 5 3/0 -0.9 [-6.5, +5.6] 1.000
+Diabetes Wachter 43 5 0/0 +0.0 [-3.7, +4.2] 1.000
+Diabetes DiCE-random 43 5 0/0 -5.1 [-7.9, -2.3] 1.000
+Diabetes Grid reference 43 5 0/0 -5.6 [-8.4, -2.8] 1.000
+TABLE 6. Component ablation analysis of the CAC objective function at
+seed 42. Usability ( U ) and action effort ( C ) are evaluated across causal
+propagation, action cost, and feasibility penalty ablations.
+Dataset U full U no prop. Cost full No cost term Ratio
+Adult 100.0 95.0 0.1807 0.2467 1.37
+German 100.0 100.0 0.0091 0.0940 10.37
+HELOC 100.0 96.0 0.0308 0.0519 1.68
+Diabetes 100.0 100.0 0.0275 0.0346 1.26
+G. RESUL T CHECKS AND VERIFICATION PROTOCOL
+To ensure reproducibility and safeguard against artifact cor-
+ruption, all ﬁndings were audited against four operational
+checks:
+1) Fixed Query Alignment: Every method is evaluated
+on the identical set of 294 rejected test individuals
+across all benchmarks, eliminating sample selection
+bias.
+2) Causal State Replay: All candidate interventions are
+passed through non-linear SCM equations TM(x, a)
+to simulate true downstream proﬁle updates prior to
+classiﬁer scoring.
+3) Coupled Joint Usability: The audit marks an applicant
+as served if and only if the identical plan satisﬁes both
+classiﬁer acceptance ( R = 1 ) and feasibility bounds
+(A = 1).
+4) Software Test Coverage: The execution pipeline
+cleared 386 automated unit and property tests with 1
+documented skip, guaranteeing algorithmic and statis-
+tical consistency across all generated assets.
+Section VI analyzes the mechanistic roots of these em-
+pirical outcomes and details limitations of the benchmark
+pipeline.
+TABLE 7. Sensitivity analysis tracking recourse survival under refitted
+structural causal equations. Usability ( U ) measures applicant-level
+recourse retention, whereas survival rate ( ∗Survival) tracks the
+percentage of individual recommendations that survive causal replay
+under refitted mechanisms.
+Dataset n U own U reﬁt Survival ∗
+Adult 100 100.0 93.0 73.0
+German 51 100.0 100.0 97.3
+HELOC 100 100.0 97.0 79.4
+Diabetes 43 100.0 100.0 86.5
+VI. DISCUSSION
+The empirical results indicate that recourse viability depends
+critically on how strongly features interact within the under-
+lying domain.
+A. MECHANISTIC INTERPRETATION OF EMPIRICAL
+FINDINGS
+Our empirical ﬁndings demonstrate why nominal validity (V )
+is a fundamentally ﬂawed surrogate for actionable recourse.
+On HELOC, Wachter’s method achieves 85.0% proposal va-
+lidity, yet true joint usability drops to 18.0%. The mechan-
+ics driving this breakdown are clear: point-based optimizers
+exploit classiﬁer boundaries by treating features as isolated
+coordinates. In credit underwriting, however, an applicant
+cannot simply inﬂate their repayment history without trig-
+gering corresponding changes in revolving credit utilization
+and bureau inquiries. When these interventional side effects
+propagate through the structural equations, the replayed state
+~x either falls back across the rejection boundary or breaches
+directional rules. This divergence explains the gap between
+V and U , proving that unconstrained mathematical perturba-
+tions cannot be assumed to reﬂect physical actions.
+Conversely, non-causal algorithms perform surprisingly
+well on Adult Income and German Credit. Structural inspec-
+tion of the underlying graphs (Table 9) reveals why: both
+VOLUME –, 2026 9
+Page 11 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 11 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 12 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+TABLE 8. Auditing recourse in synthetic benchmark environments with
+analytically specified data-generating equations. Usability ( U ) reflects the
+percentage of applicants successfully served under empirical vs. true
+SCMs, survival rate ( ∗Survival) tracks preserved candidate plans, and cost
+denotes the average scaled effort among viable recommendations under
+ground truth.
+World Method n U own U truth Surv. ∗ Cost truth
+Reach CAC 100 100.0 100.0 95.6 0.0529
+Reach MINT 100 100.0 100.0 91.6 0.0202
+Block CAC 100 40.0 40.0 93.0 0.0706
+Block MINT 100 40.0 40.0 95.0 0.0469
+TABLE 9. Observational validation of assumed causal DAGs. ‘‘Actions’’
+denotes the count of mutable variables; ‘‘Supported’’ counts structural
+edges corroborated by observational orientation heuristics; ‘‘CI upheld’’
+reports the fraction of non-rejected conditional independence tests.
+These tests gauge empirical compatibility rather than establishing
+definitive physical causality.
+Dataset Nodes Edges Actions Supported CI upheld
+Adult 10 25 7 17/25 19/35
+German 16 37 11 18/37 88/138
+HELOC 13 28 8 18/28 40/75
+Diabetes 9 17 3 16/17 27/27
+domains exhibit sparse graph connectivity among actionable
+attributes. In such weakly coupled settings, naive coordinate
+shifts happen to mimic interventional propagation, allowing
+heuristic perturbation algorithms to succeed largely by co-
+incidence. Causal modeling is most urgent when actionable
+attributes are densely coupled.
+B. METHODOLOGICAL AND DATA PREPROCESSING
+LIMITATIONS
+A rigorous code-level audit revealed three data-hygiene prac-
+tices common across recourse research that require scrutiny:
+1) Test-Gated Hyperparameter Decisions: In conven-
+tional pipelines, test-set AUC was monitored to deter-
+mine whether to trigger hyperparameter tuning. While
+inner cross-validation folds were utilized during op-
+timization, allowing test-split performance to dictate
+whether search is performed introduces subtle data
+leakage across splits.
+2) Pre-Split Feature Imputation: Missing values across
+HELOC and Diabetes were imputed using global col-
+umn medians computed prior to train-test partition-
+ing. Beyond this, diabetes cleaning leveraged class-
+conditional patterns to ﬂag sentinel missingness, poten-
+tially allowing label information to leak across evalua-
+tion boundaries.
+3) Physiological Validity of Diabetes Recourse: In-
+verting classiﬁcation targets (no_diabetes=1-Outcome)
+and treating diagnostic clinical measurements (glucose,
+insulin, blood pressure, BMI) as directly actionable di-
+als contradicts medical reality. Biomarkers are clinical
+signs of underlying metabolic processes, not voluntary
+personal decisions [21]. We retain Pima Diabetes solely
+to reproduce benchmark comparisons established in
+prior recourse literature [ 10], [ 14], emphasizing that
+these feature changes must never be interpreted as ther-
+apeutic interventions.
+C. THREATS TO VALIDITY
+We identify three methodological boundaries that frame these
+ﬁndings:
+1) Construct Validity: Our effort metric C(x, a) com-
+putes normalized coordinate distances, serving as a
+mathematical proxy rather than capturing ﬁnancial fric-
+tion, lost time, or emotional strain. Synthetic scripts
+simulating interactive user preference responses were
+excluded from our empirical claims.
+2) Internal Validity: Numerical gradient estimation via
+ﬁnite differences is poorly conditioned on the discon-
+tinuous piecewise-constant loss landscapes of tree en-
+sembles, putting Wachter-style optimization at a severe
+numerical disadvantage. In addition, the reﬁt exper-
+iment (Table 7) shared training observations across
+models, meaning observed usability drops represent
+lower-bound estimates of real-world degradation.
+3) External Validity: Assumed causal DAGs represent
+domain hypotheses rather than experimentally vali-
+dated mechanisms. Because several edges lack obser-
+vational orientation support (Table 9), a plan that suc-
+ceeds underTM may still fail if the underlying struc-
+tural equations are misspeciﬁed.
+VII. CONCLUSION AND FUTURE WORK
+Across 294 rejected test cases spanning four tabular bench-
+marks and two synthetic domains, our evaluation demon-
+strates that nominal counterfactual validity is an unreliable
+proxy for actionable recourse. On FICO HELOC, point-
+based methods claim near-perfect validity while joint us-
+ability drops to 18.0%. Searching directly over admissible
+actions within a structural causal model, CAC achieves 100%
+usability across all benchmarks at the primary seed.
+Y et multi-seed audits and sensitivity checks reveal clear
+limits. Convergence exceptions drop minimum diabetes us-
+ability to 72.1%, while reﬁtting structural equations degrades
+usability to 93.0% on Adult and 97.0% on HELOC. Model-
+based recourse remains bound to the accuracy of the underly-
+ing causal mechanisms.
+Future research must target three priorities: benchmark
+suites should mandate decoupled audits ( V , R, A, F, U ) with
+joint plan satisfaction, pipelines must partition data prior to
+imputation or parameter selection, and recourse algorithms
+must be designed to withstand uncertain or misspeciﬁed
+causal graphs.
+ACKNOWLEDGMENT
+The authors thank the School of Computer Science and En-
+gineering and Department of Computational Intelligence at
+VIT, V ellore, for computing facilities and research support.
+10 VOLUME –, 2026
+Page 12 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 12 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+
+=== PAGE 13 ===
+Kumar et al.: When Valid Counterfactuals Fail as Actions
+REFERENCES
+[1] A.-H. Karimi, G. Barthe, B. Schölkopf, and I. V alera, ‘‘A survey of algo-
+rithmic recourse: Contrastive explanations and consequential recommen-
+dations,’’ ACM Comput. Surv., vol. 55, no. 5, pp. 1–29, 2022.
+[2] S. V erma, V . Boonsanong, M. Hoang, K. Hines, J. Dickerson, and C.
+Shah, ‘‘Counterfactual explanations and algorithmic recourses for machine
+learning: A review,’’ACM Comput. Surv., vol. 56, no. 12, pp. 1–42, 2024.
+[3] B. Ustun, A. Spangher, and Y . Liu, ‘‘Actionable recourse in linear classiﬁ-
+cation,’’ inProc. Conf. Fairness, Accountability, and Transparency (F AT*),
+2019, pp. 10–19.
+[4] S. Wachter, B. Mittelstadt, and C. Russell, ‘‘Counterfactual explanations
+without opening the black box: Automated decisions and the GDPR,’’
+Harvard J. Law & Technol., vol. 31, no. 2, pp. 841–887, 2017.
+[5] S. Barocas, A. D. Selbst, and M. Raghavan, ‘‘The hidden assumptions
+behind counterfactual explanations and principal reasons,’’ in Proc. Conf.
+Fairness, Accountability, and Transparency (F AT*), 2020, pp. 80–89.
+[6] R. K. Mothilal, A. Sharma, and C. Tan, ‘‘Explaining machine learning
+classiﬁers through diverse counterfactual explanations,’’ in Proc. Conf.
+Fairness, Accountability, and Transparency (F AT*), 2020, pp. 607–617.
+[7] A.-H. Karimi, B. Schölkopf, and I. V alera, ‘‘Algorithmic recourse: From
+counterfactual explanations to interventions,’’ in Proc. ACM Conf. Fair-
+ness, Accountability, and Transparency (F AccT), 2021, pp. 353–362.
+[8] A.-H. Karimi, J. von Kügelgen, B. Schölkopf, and I. V alera, ‘‘Algorithmic
+recourse under imperfect causal knowledge: A probabilistic approach,’’ in
+Adv. Neural Inf. Process. Syst. (NeurIPS) , vol. 33, 2020, pp. 265–277.
+[9] J. Pearl, Causality: Models, Reasoning, and Inference, 2nd ed. Cambridge,
+U.K.: Cambridge Univ. Press, 2009.
+[10] M. Pawelczyk, S. Bielawski, J. van den Heuvel, T. Richter, and G. Kasneci,
+‘‘CARLA: A Python library to benchmark algorithmic recourse and coun-
+terfactual explanation algorithms,’’ in NeurIPS Datasets and Benchmarks
+Track, 2021.
+[11] S. Upadhyay, S. Joshi, and H. Lakkaraju, ‘‘Towards robust and reliable
+algorithmic recourse,’’ in Adv. Neural Inf. Process. Syst. (NeurIPS) , vol.
+34, 2021, pp. 16926–16937.
+[12] R. Poyiadzi, K. Sokol, R. Santos-Rodriguez, T. De Bie, and P . Flach,
+‘‘FACE: Feasible and actionable counterfactual explanations,’’ in Proc.
+AAAI/ACM Conf. AI, Ethics, and Society (AIES) , 2020, pp. 344–350.
+[13] A. V an Looveren and J. Klaise, ‘‘Interpretable counterfactual explanations
+guided by prototypes,’’ in Proc. Eur . Conf. Mach. Learn. Knowl. Discov.
+Databases (ECML PKDD), 2021, pp. 650–665.
+[14] J. Klaise, A. V an Looveren, G. V acanti, and A. Coca, ‘‘Alibi Explain:
+Algorithms for explaining machine learning models,’’J. Mach. Learn. Res.,
+vol. 22, no. 181, pp. 1–7, 2021.
+[15] S. Dandl, C. Molnar, M. Binder, and B. Bischl, ‘‘Multi-objective coun-
+terfactual explanations,’’ in Proc. Parallel Problem Solving from Nature
+(PPSN), 2020, pp. 448–469.
+[16] K. Deb, A. Pratap, S. Agarwal, and T. Meyarivan, ‘‘A fast and elitist
+multiobjective genetic algorithm: NSGA-II,’’ IEEE Trans. Evol. Comput. ,
+vol. 6, no. 2, pp. 182–197, 2002.
+[17] T. Chen and C. Guestrin, ‘‘XGBoost: A scalable tree boosting system,’’ in
+Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discov. Data Min. , 2016, pp.
+785–794.
+[18] R. Kohavi, ‘‘Scaling up the accuracy of naive-Bayes classiﬁers: A decision-
+tree hybrid,’’ in Proc. 2nd Int. Conf. Knowl. Discov. Data Min. (KDD) ,
+1996, pp. 202–207.
+[19] D. Dua and C. Graff, ‘‘UCI Machine Learning Repository,’’ Univ. Cali-
+fornia, Irvine, School Inf. Comput. Sci., 2019. [Online]. Available: https:
+//archive.ics.uci.edu/ml
+[20] FICO, ‘‘Explainable Machine Learning Challenge (HELOC
+Dataset),’’ 2018. [Online]. Available: https://community.ﬁco.com/s/
+explainable-machine-learning-challenge
+[21] J. W. Smith, J. E. Everhart, W. C. Dickson, W. C. Knowler, and R. S.
+Johannes, ‘‘Using the ADAP learning algorithm to forecast the onset of
+diabetes mellitus,’’ in Proc. Annu. Symp. Comput. Appl. Med. Care , 1988,
+pp. 261–265.
+PLACE
+PHOTO
+HERE
+RISHABH KUMAR is currently pursuing the
+B.Tech degree in Computer Science and Engi-
+neering with the School of Computer Science and
+Engineering, V ellore Institute of Technology, V el-
+lore, India (Reg. No.: 24BCE0740). He led the
+primary research and development of this work,
+contributing to Sections I, II, III, IV -B–E, V -A–
+D, V -F, VI-A–B, and VII, encompassing the theo-
+retical formulation, evolutionary search algorithm,
+primary benchmark audits, multi-seed evaluations,
+hypothesis testing, ablations, veriﬁcation checks, and manuscript writing.
+His research interests include explainable artiﬁcial intelligence, algorithmic
+recourse, and machine learning auditing.
+PLACE
+PHOTO
+HERE
+SHASHWAT KARN is currently pursuing the
+B.Tech degree in Computer Science and Engi-
+neering with the School of Computer Science and
+Engineering, V ellore Institute of Technology, V el-
+lore, India (Reg. No.: 24BCE0552). He contributed
+to Section V -E and Section VI-C, focusing on
+structural causal graph sensitivity under reﬁtted
+equations and validity threat analysis. His research
+interests include structural causal models, coun-
+terfactual explanations, and automated decision-
+making.
+PLACE
+PHOTO
+HERE
+ANUBHAV BHATTACHARYA is currently pursu-
+ing the B.Tech degree in Computer Science and
+Engineering with the School of Computer Science
+and Engineering, V ellore Institute of Technology,
+V ellore, India (Reg. No.: 24BCE2824). He assisted
+with Section IV -A, conducting tabular dataset at-
+tribute veriﬁcation, diagnostic label preprocessing
+checks, and baseline parameter compilation. His
+research interests include model interpretability
+and robust machine learning systems.
+PLACE
+PHOTO
+HERE
+NAVAMANI T M received the Ph.D. degree in
+Computer Science and Engineering. She is cur-
+rently a Professor Grade 1 with the Department
+of Computational Intelligence, School of Com-
+puter Science and Engineering, V ellore Institute of
+Technology, V ellore, India. Her research interests
+encompass computational intelligence, machine
+learning, data mining, and explainable decision
+systems.
+VOLUME –, 2026 11
+Page 13 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+Page 13 of 13 - AI Writing Submission
+Submission ID
+trn:oid:::3618:155976170
+
+

@@ -1,0 +1,1057 @@
+=== PAGE 1: 0 cyan highlight boxes ===
+=== PAGE 2: 1 cyan highlight boxes ===
+[BOX Rect(306.0, 76.0, 579.0, 132.0)] Caution: Review required.
+It is essential to understand the limitations of AI detection before making decisions 
+about a student’s work. We encourage you to learn more about Turnitin’s AI detection 
+capabilities before using the tool.
+---
+=== PAGE 3: 24 cyan highlight boxes ===
+[BOX Rect(136.8000030517578, 285.78460693359375, 448.0615234375, 292.4307556152344)] All reported findings are conditioned on the specified structural equations and domain constraints; no
+---
+[BOX Rect(36.0, 294.6461486816406, 185.53846740722656, 301.8461608886719)] human subjects participated in this investigation.
+---
+[BOX Rect(45.41538619995117, 331.20001220703125, 471.8769226074219, 341.72308349609375)] ABSTRACT
+Flipping a machine learning model’s prediction does not mean an applicant received an
+---
+[BOX Rect(45.41538619995117, 344.4923095703125, 471.8769226074219, 353.3538513183594)] actionable plan. Real-world features are causally coupled; changing one variable shifts downstream attributes
+---
+[BOX Rect(45.41538619995117, 356.6769104003906, 471.8769226074219, 365.5384521484375)] and breaks naive recommendations upon execution. We audited algorithmic recourse over 294 rejected
+---
+[BOX Rect(45.41538619995117, 368.30767822265625, 471.8769226074219, 377.1692199707031)] individuals across four tabular benchmarks (HELOC, Adult, German, Diabetes) and two synthetic controls.
+---
+[BOX Rect(45.41538619995117, 380.4923095703125, 471.8769226074219, 389.3538513183594)] Rather than searching for coordinate shifts in unconstrained space, we evaluate actions within a structural
+---
+[BOX Rect(45.41538619995117, 392.1230773925781, 471.8769226074219, 401.5384521484375)] causal model. We test whether proposed interventions survive downstream causal propagation while re-
+---
+[BOX Rect(45.41538619995117, 404.30767822265625, 471.8769226074219, 413.1692199707031)] specting physical constraints like non-decreasing age, separating nominal proposal validity (V) from causal
+---
+[BOX Rect(45.41538619995117, 416.4923095703125, 333.9692077636719, 425.3538513183594)] replay validity (R), physical actionability (A), and manifold fidelity (F).
+---
+[BOX Rect(79.19999694824219, 440.30767822265625, 471.87689208984375, 449.1692199707031)] On credit risk (HELOC), Wachter gradient search achieves near-perfect nominal validity, yet joint
+---
+[BOX Rect(45.41538619995117, 451.9384460449219, 471.8769226074219, 460.79998779296875)] usability drops to just 18.0% because secondary credit features shift during replay. Searching directly over
+---
+[BOX Rect(45.41538619995117, 464.1230773925781, 328.4307556152344, 472.984619140625)] valid action grids with CAC recovers 100% usability at default seed.
+---
+[BOX Rect(366.0923156738281, 487.9384460449219, 471.8769226074219, 496.79998779296875)] Machine learning systems
+---
+[BOX Rect(45.41538619995117, 500.1230773925781, 456.9230651855469, 508.984619140625)] should audit recourse proposals under causal propagation rather than relying on nominal validity alone.
+---
+[BOX Rect(386.03076171875, 613.6615600585938, 539.4461669921875, 622.5230712890625)] A job applicant who acquires a post-
+---
+[BOX Rect(297.4153747558594, 625.2923583984375, 539.4461669921875, 634.1538696289062)] graduate degree does not hold their age, professional tenure,
+---
+[BOX Rect(297.4153747558594, 637.4769287109375, 539.4461669921875, 646.3384399414062)] or salary expectations frozen in time [9]. When an individual
+---
+[BOX Rect(297.4153747558594, 649.1077270507812, 539.4461669921875, 657.96923828125)] carries out an action a, real-world rules propagate that change
+---
+[BOX Rect(297.4153747558594, 661.2923583984375, 539.4461669921875, 670.1538696289062)] downstream, producing an actual state �x that rarely matches
+---
+[BOX Rect(297.4153747558594, 672.9230346679688, 539.4461669921875, 682.3384399414062)] the optimizer’s intended target z. If the classification model
+---
+[BOX Rect(297.4153747558594, 660.1846313476562, 539.4461669921875, 697.2922973632812)] downstream, producing an actual state �x that rarely matches
+the optimizer’s intended target z. If the classification model
+rejects this propagated state �x—or if the downstream shifts
+breach directional boundaries like non-decreasing age—the
+---
+[BOX Rect(297.4153747558594, 697.2923583984375, 539.4461669921875, 706.1538696289062)] breach directional boundaries like non-decreasing age—the
+---
+[BOX Rect(297.4153747558594, 708.923095703125, 398.21539306640625, 717.7846069335938)] entire recourse plan fails.
+---
+=== PAGE 4: 78 cyan highlight boxes ===
+[BOX Rect(45.96923065185547, 62.58462905883789, 278.03076171875, 71.4461669921875)] Existing recourse benchmarks hide this failure mode be-
+---
+[BOX Rect(36.0, 74.21536254882812, 278.03076171875, 83.076904296875)] hind aggregate reporting shortcuts. First, current toolkits
+---
+[BOX Rect(36.0, 85.84613800048828, 278.03076171875, 95.81536865234375)] equate proposal validity (f (z) = 1) with true actionable
+---
+[BOX Rect(36.0, 97.47693634033203, 278.03076171875, 107.4461669921875)] recourse (f (�x) = 1), crediting an algorithm with success even
+---
+[BOX Rect(36.0, 110.21536254882812, 278.03076171875, 119.076904296875)] when its advice fails under causal replay [10], [11]. Second,
+---
+[BOX Rect(36.0, 97.47689819335938, 278.03076171875, 134.5845947265625)] recourse (f (�x) = 1), crediting an algorithm with success even
+when its advice fails under causal replay [10], [11]. Second,
+evaluations routinely audit validity, directional feasibility, and
+data-manifold distance as separate, independent rates across
+---
+[BOX Rect(36.0, 134.03073120117188, 278.03076171875, 142.89227294921875)] data-manifold distance as separate, independent rates across
+---
+[BOX Rect(36.0, 146.21536254882812, 278.03076171875, 155.076904296875)] an entire pool of generated candidates. An algorithm thus
+---
+[BOX Rect(36.0, 157.84616088867188, 278.03076171875, 166.70770263671875)] receives full credit if candidate A clears the decision bound-
+---
+[BOX Rect(36.0, 170.03073120117188, 278.03076171875, 178.89227294921875)] ary while an unrelated candidate B respects feasibility rules,
+---
+[BOX Rect(36.0, 181.66151428222656, 278.03076171875, 191.076904296875)] despite the fact that no single plan resolves the applicant’s
+---
+[BOX Rect(36.0, 193.84616088867188, 278.03076171875, 202.70770263671875)] rejection. Third, reported benchmarks rarely test algorithmic
+---
+[BOX Rect(36.0, 206.03073120117188, 278.03076171875, 214.89227294921875)] stability across random seeds or check sensitivity against
+---
+[BOX Rect(36.0, 217.66152954101562, 278.03076171875, 226.5230712890625)] refitted structural equations, masking optimizer crashes and
+---
+[BOX Rect(36.0, 229.84616088867188, 166.15383911132812, 238.70770263671875)] fragile dependency assumptions.
+---
+[BOX Rect(45.96923065185547, 241.47689819335938, 278.03076171875, 250.33843994140625)] To address these gaps, this work presents a systematic
+---
+[BOX Rect(36.0, 253.10769653320312, 278.03076171875, 261.96923828125)] audit of Causal Actionable Counterfactuals (CAC) across
+---
+[BOX Rect(36.0, 265.29229736328125, 278.03076171875, 274.1538391113281)] four standardized decision benchmarks—Adult Income, Ger-
+---
+[BOX Rect(36.0, 276.9230651855469, 278.03076171875, 286.33843994140625)] man Credit, FICO HELOC, and Pima Diabetes—spanning
+---
+[BOX Rect(36.0, 289.1076965332031, 278.03076171875, 297.96923828125)] 294 rejected individuals, alongside two synthetic benchmarks
+---
+[BOX Rect(36.0, 301.29229736328125, 278.03076171875, 310.1538391113281)] with known causal graphs. Instead of perturbing arbitrary
+---
+[BOX Rect(36.0, 312.9230651855469, 278.03076171875, 321.78460693359375)] coordinates in continuous feature space, CAC restricts its
+---
+[BOX Rect(36.0, 324.5538330078125, 278.03076171875, 334.5230712890625)] search to admissible interventional sets a = (S, vS) embed-
+---
+[BOX Rect(36.0, 336.1846008300781, 278.03076171875, 346.7076721191406)] ded within an explicit Structural Causal Model (M). Each
+---
+[BOX Rect(36.0, 348.9230651855469, 278.03076171875, 357.78460693359375)] candidate action is evaluated directly on its topologically
+---
+[BOX Rect(36.0, 359.9999694824219, 230.95384216308594, 371.076904296875)] propagated post-intervention state �x = TM(x, a).
+---
+[BOX Rect(45.96923065185547, 528.3692016601562, 278.03076171875, 537.7846069335938)] 2) Empirical Recourse Failure: Auditing 294 rejected
+---
+[BOX Rect(60.369232177734375, 540.5538940429688, 278.03076171875, 549.4154052734375)] test cases reveals that while conventional methods
+---
+[BOX Rect(60.369232177734375, 552.7384643554688, 278.03076171875, 561.5999755859375)] claim up to 100% nominal validity, true joint usability
+---
+[BOX Rect(60.369232177734375, 564.3692626953125, 278.03076171875, 573.2307739257812)] drops to 18.0% on FICO HELOC under Wachter’s
+---
+[BOX Rect(60.369232177734375, 576.5538940429688, 278.03076171875, 585.4154052734375)] method. In contrast, interventional action search via
+---
+[BOX Rect(60.369232177734375, 588.1845703125, 278.03076171875, 597.5999755859375)] CAC reaches 100% usability across all datasets at the
+---
+[BOX Rect(60.369232177734375, 600.3692626953125, 114.64615631103516, 609.2307739257812)] primary seed.
+---
+[BOX Rect(45.96923065185547, 612.0, 278.03076171875, 621.4154052734375)] 3) Multi-Seed Optimizer Auditing: Audits across 5 ran-
+---
+[BOX Rect(60.369232177734375, 624.1846313476562, 278.03076171875, 633.046142578125)] dom seeds uncover critical optimizer vulnerabilities in
+---
+[BOX Rect(60.369232177734375, 636.3692626953125, 278.03076171875, 645.2307739257812)] diabetes, where numerical convergence failures reduce
+---
+[BOX Rect(60.369232177734375, 648.0, 273.6000061035156, 656.8615112304688)] mean usability to 94.4% (with a minimum of 72.1%).
+---
+[BOX Rect(140.12307739257812, 707.8154296875, 278.03076171875, 716.6769409179688)] We further document data hygiene
+---
+[BOX Rect(60.369232177734375, 720.0, 278.03076171875, 728.8615112304688)] hazards in standard pipelines, including pre-split impu-
+---
+[BOX Rect(321.78460693359375, 62.58462905883789, 522.2769165039062, 71.4461669921875)] tation and test-triggered hyperparameter selection.
+---
+[BOX Rect(307.3846130371094, 75.32308197021484, 539.4461669921875, 84.73846435546875)] The remainder of this manuscript is organized as follows:
+---
+[BOX Rect(297.4153747558594, 87.50765991210938, 539.4461669921875, 96.36920166015625)] Section II contrasts point-based and causal recourse frame-
+---
+[BOX Rect(297.4153747558594, 99.69229125976562, 539.4461669921875, 108.5538330078125)] works; Section III details causal replay mechanics, the multi-
+---
+[BOX Rect(297.4153747558594, 111.32308959960938, 539.4461669921875, 120.18463134765625)] objective formulation, and evolutionary action search; Sec-
+---
+[BOX Rect(297.4153747558594, 123.50765991210938, 539.4461669921875, 132.36920166015625)] tion IV establishes our experimental testbed and statistical
+---
+[BOX Rect(297.4153747558594, 135.13844299316406, 539.4461669921875, 144.5538330078125)] protocol; Section V presents the empirical audits, multi-seed
+---
+[BOX Rect(297.4153747558594, 147.32308959960938, 539.4461669921875, 156.18463134765625)] stability evaluations, and ablation studies; Section VI ana-
+---
+[BOX Rect(297.4153747558594, 159.50765991210938, 539.4461669921875, 168.36920166015625)] lyzes the mechanisms driving recourse failure and examines
+---
+[BOX Rect(297.4153747558594, 171.13845825195312, 539.4461669921875, 180.0)] threats to validity; and Section VII concludes with method-
+---
+[BOX Rect(297.4153747558594, 183.32308959960938, 455.26153564453125, 192.18463134765625)] ological recommendations for the field.
+---
+[BOX Rect(297.4153747558594, 218.21536254882812, 539.4461669921875, 227.076904296875)] Algorithmic recourse literature divides along a clear line:
+---
+[BOX Rect(297.4153747558594, 229.8461456298828, 539.4461669921875, 239.26153564453125)] whether an explanation treats feature coordinates as indepen-
+---
+[BOX Rect(297.4153747558594, 242.03073120117188, 539.4461669921875, 250.89227294921875)] dent dials or respects the downstream mechanisms linking
+---
+[BOX Rect(297.4153747558594, 254.21536254882812, 539.4461669921875, 263.076904296875)] them. Table 1 compares common paradigms across search
+---
+[BOX Rect(297.4153747558594, 265.84613037109375, 539.4461669921875, 274.7076721191406)] entities, replay propagation, constraint structures, and audit
+---
+[BOX Rect(297.4153747558594, 278.03076171875, 337.29229736328125, 286.8923034667969)] protocols.
+---
+[BOX Rect(297.4153747558594, 325.6615295410156, 539.4461669921875, 334.5230712890625)] The foundational formulation by Wachter et al. [4] casts
+---
+[BOX Rect(297.4153747558594, 337.84613037109375, 539.4461669921875, 346.7076721191406)] recourse as unconstrained gradient optimization in feature
+---
+[BOX Rect(297.4153747558594, 349.4768981933594, 539.4461669921875, 358.33843994140625)] space, minimizing a continuous distance penalty to flip a
+---
+[BOX Rect(297.4153747558594, 361.6615295410156, 539.4461669921875, 370.5230712890625)] prediction. Subsequent works introduced diversity mecha-
+---
+[BOX Rect(297.4153747558594, 373.29229736328125, 539.4461669921875, 382.7076721191406)] nisms via determinantal point processes (DiCE [6]), enforced
+---
+[BOX Rect(297.4153747558594, 385.4768981933594, 539.4461669921875, 394.33843994140625)] linear feasibility rules via integer programming (Ustun et
+---
+[BOX Rect(297.4153747558594, 397.6615295410156, 539.4461669921875, 406.5230712890625)] al. [3]), routed recommendations along empirical data graphs
+---
+[BOX Rect(297.4153747558594, 409.29229736328125, 539.4461669921875, 418.1538391113281)] (FACE [12]), or guided search vectors using class prototypes
+---
+[BOX Rect(297.4153747558594, 421.4768981933594, 426.4615478515625, 430.33843994140625)] (Van Looveren and Klaise [13]).
+---
+[BOX Rect(307.3846130371094, 433.1076965332031, 539.4461669921875, 441.96923828125)] Yet all coordinate-based strategies share a core limitation:
+---
+[BOX Rect(297.4153747558594, 445.29229736328125, 539.4461669921875, 454.1538391113281)] they perturb feature coordinates in isolation, assuming un-
+---
+[BOX Rect(297.4153747558594, 456.9230651855469, 539.4461669921875, 465.78460693359375)] affected attributes remain fixed at their original values. In
+---
+[BOX Rect(297.4153747558594, 469.1076965332031, 539.4461669921875, 477.96923828125)] reality, intervening on an actionable feature triggers down-
+---
+[BOX Rect(297.4153747558594, 480.73846435546875, 539.4461669921875, 490.1538391113281)] stream changes across related variables. Because point-based
+---
+[BOX Rect(297.4153747558594, 492.9230651855469, 539.4461669921875, 501.78460693359375)] algorithms optimize directly over input targets z rather than
+---
+[BOX Rect(297.4153747558594, 505.1076965332031, 539.4461669921875, 513.96923828125)] executable interventional operators a, their suggested states
+---
+[BOX Rect(297.4153747558594, 516.7384643554688, 539.4461669921875, 525.5999755859375)] frequently occupy impossible regions of the data distribution
+---
+[BOX Rect(297.4153747558594, 528.923095703125, 472.4307556152344, 537.7846069335938)] or fail once real-world dynamics take place.
+---
+[BOX Rect(297.4153747558594, 576.5538940429688, 539.4461669921875, 585.4154052734375)] Pearl’s interventional calculus [9] establishes the formal ma-
+---
+[BOX Rect(297.4153747558594, 588.7384643554688, 510.6461486816406, 597.5999755859375)] chinery required to model post-action consequences.
+---
+[BOX Rect(435.8769226074219, 707.8154296875, 539.4461669921875, 716.6769409179688)] Studies regularly compute
+---
+[BOX Rect(297.4153747558594, 720.0, 539.4461669921875, 728.8615112304688)] validity, actionability, and manifold distance as independent
+---
+=== PAGE 5: 65 cyan highlight boxes ===
+[BOX Rect(36.0, 62.0307731628418, 65.35384368896484, 69.23077392578125)] TABLE 1.
+---
+[BOX Rect(69.23076629638672, 62.0307731628418, 444.18463134765625, 69.23077392578125)] Architectural and methodological comparison of algorithmic recourse and counterfactual explanation frameworks.
+---
+[BOX Rect(55.38461685180664, 112.98458099365234, 111.32307434082031, 119.6307373046875)] Wachter et al. [4]
+---
+[BOX Rect(127.38461303710938, 112.98458099365234, 149.5384521484375, 119.6307373046875)] Point z
+---
+[BOX Rect(55.38461685180664, 121.84616088867188, 156.73846435546875, 130.70770263671875)] DiCE-random [6]
+Points {zℓ}
+---
+[BOX Rect(55.38461685180664, 132.9230499267578, 103.56922912597656, 140.123046875)] Ustun et al. [3]
+---
+[BOX Rect(55.38461685180664, 142.8922882080078, 107.44615173339844, 150.09228515625)] Karimi et al. [7]
+---
+[BOX Rect(232.61538696289062, 122.95387268066406, 282.4615478515625, 130.15386962890625)] Feature locking
+---
+[BOX Rect(237.60000610351562, 132.9230499267578, 277.4769287109375, 140.123046875)] Hard integer
+---
+[BOX Rect(232.06153869628906, 142.8922882080078, 283.015380859375, 150.09228515625)] Domain bounds
+---
+[BOX Rect(297.96923828125, 142.8922882080078, 361.1076965332031, 150.09228515625)] Gradient / Heuristic
+---
+[BOX Rect(300.1846008300781, 152.8615264892578, 358.8923034667969, 160.0615234375)] Sampling / Search
+---
+[BOX Rect(290.76922607421875, 162.8307647705078, 368.30767822265625, 170.03076171875)] Evolutionary Multi-Obj.
+---
+[BOX Rect(448.0615234375, 142.8922882080078, 513.4153442382812, 150.09228515625)] Disjoint metric rates
+---
+[BOX Rect(89.16922760009766, 245.35385131835938, 278.03076171875, 254.21539306640625)] Equally critically, published benchmarks rarely
+---
+[BOX Rect(36.0, 257.5384216308594, 278.03076171875, 266.39996337890625)] audit candidate survival under refitted causal equations or test
+---
+[BOX Rect(36.0, 269.1692199707031, 218.76922607421875, 278.5845947265625)] stability across multiple search initializations.
+---
+[BOX Rect(36.0, 320.1230773925781, 278.03076171875, 328.984619140625)] The development of standardized benchmarking libraries
+---
+[BOX Rect(36.0, 331.75384521484375, 278.03076171875, 340.6153869628906)] such as CARLA [10] and Alibi Explain [14] brought much-
+---
+[BOX Rect(36.0, 343.9384460449219, 278.03076171875, 352.79998779296875)] needed modularity to counterfactual research. In parallel,
+---
+[BOX Rect(36.0, 355.5692443847656, 278.03076171875, 364.984619140625)] multi-objective evolutionary formulations like NSGA-II [15],
+---
+[BOX Rect(36.0, 367.75384521484375, 278.03076171875, 376.6153869628906)] [16] emerged to balance sparsity against proximity, while
+---
+[BOX Rect(36.0, 379.9384460449219, 278.03076171875, 388.79998779296875)] Upadhyay et al. [11] examined recourse vulnerability under
+---
+[BOX Rect(36.0, 391.5692138671875, 87.5076904296875, 400.4307556152344)] model shifts.
+---
+[BOX Rect(45.96923065185547, 404.30767822265625, 278.03076171875, 413.1692199707031)] Nonetheless, current benchmarking frameworks evaluate
+---
+[BOX Rect(36.0, 415.9384460449219, 278.03076171875, 424.79998779296875)] algorithms almost exclusively on single random seeds, omit
+---
+[BOX Rect(36.0, 428.1230773925781, 278.03076171875, 436.984619140625)] causal descendant verification, and ignore optimizer conver-
+---
+[BOX Rect(36.0, 439.75384521484375, 278.03076171875, 449.1692199707031)] gence exceptions. Our study addresses these methodological
+---
+[BOX Rect(36.0, 451.9384460449219, 278.03076171875, 460.79998779296875)] blind spots: we implement paired applicant-level statistical
+---
+[BOX Rect(36.0, 464.1230773925781, 278.03076171875, 472.984619140625)] tests, record query costs and numerical exceptions explicitly,
+---
+[BOX Rect(36.0, 475.75384521484375, 278.03076171875, 484.6153869628906)] and track whether recommendations withstand causal replay
+---
+[BOX Rect(36.0, 487.9384460449219, 197.72308349609375, 496.79998779296875)] under refitted data-generating equations.
+---
+[BOX Rect(36.0, 525.6000366210938, 278.03076171875, 534.4615478515625)] We now formalize the interventional recourse framework,
+---
+[BOX Rect(36.0, 537.2307739257812, 278.03076171875, 546.09228515625)] downstream structural replay mechanisms, decoupled audit
+---
+[BOX Rect(36.0, 549.4154052734375, 275.26153564453125, 558.2769165039062)] metrics, and the genetic action search implemented in CAC.
+---
+[BOX Rect(36.0, 598.7077026367188, 278.03076171875, 609.7846069335938)] Let x = (x1, . . . , xd) ∈X represent an individual’s ob-
+---
+[BOX Rect(36.0, 612.0, 236.4923095703125, 620.8615112304688)] served profile across a mixed-type input space.
+---
+[BOX Rect(238.7076873779297, 646.892333984375, 278.03076171875, 657.4154052734375)] Our audit
+---
+[BOX Rect(36.0, 659.6307983398438, 278.03076171875, 668.4923095703125)] focuses exclusively on applicants who receive an initial re-
+---
+[BOX Rect(36.0, 670.7077026367188, 106.8923110961914, 680.6769409179688)] jection, f (x) = 0.
+---
+[BOX Rect(45.96923065185547, 684.0, 278.03076171875, 692.8615112304688)] A recourse recommendation pairs a target feature vector
+---
+[BOX Rect(36.0, 695.076904296875, 278.03076171875, 705.5999755859375)] with an explicit intervention: (z, a), where a = (S, vS). The
+---
+[BOX Rect(36.0, 706.7077026367188, 145.10769653320312, 717.2307739257812)] active index set S ⊆{1, .
+---
+[BOX Rect(155.63076782226562, 706.7077026367188, 278.03076171875, 717.2307739257812)] , d} isolates variables directly
+---
+[BOX Rect(36.0, 718.892333984375, 278.03076171875, 729.96923828125)] manipulated by the applicant, while vS = {vj}j∈S assigns
+---
+[BOX Rect(297.4153747558594, 197.72305297851562, 539.4461669921875, 206.5845947265625)] their replacement values. Fig. 1 details this operational flow.
+---
+[BOX Rect(297.4153747558594, 209.3538360595703, 539.4461669921875, 218.76922607421875)] Instead of treating recourse as an unconstrained drift across
+---
+[BOX Rect(297.4153747558594, 221.53842163085938, 539.4461669921875, 230.39996337890625)] continuous space, CAC restricts optimization strictly to ad-
+---
+[BOX Rect(297.4153747558594, 232.6153564453125, 539.4461669921875, 243.138427734375)] missible actions a = (S, vS), preventing the search from
+---
+[BOX Rect(297.4153747558594, 245.35385131835938, 539.4461669921875, 254.21539306640625)] proposing coordinate shifts that implicitly hold causally de-
+---
+[BOX Rect(297.4153747558594, 257.5384216308594, 404.86151123046875, 266.39996337890625)] pendent descendants fixed.
+---
+[BOX Rect(297.4153747558594, 306.83074951171875, 539.4461669921875, 317.9076843261719)] A Structural Causal Model M = (S, PU) governs data
+---
+[BOX Rect(297.4153747558594, 319.015380859375, 490.70770263671875, 330.0923156738281)] generation over observed variables X = {X1, .
+---
+[BOX Rect(532.2461547851562, 330.6461486816406, 539.4461669921875, 341.72308349609375)] A
+---
+[BOX Rect(297.4153747558594, 343.9384460449219, 522.8307495117188, 352.79998779296875)] Directed Acyclic Graph defines functional relationships:
+---
+[BOX Rect(346.1538391113281, 363.8769226074219, 462.4615478515625, 374.3999938964844)] Xj = fj(PAj, Uj),
+∀j ∈{1, .
+---
+[BOX Rect(297.4153747558594, 384.36920166015625, 539.4461669921875, 395.4461364746094)] where PAj ⊆X \ {Xj} denotes the direct causal parents of
+---
+[BOX Rect(297.4153747558594, 397.6615295410156, 539.4461669921875, 407.076904296875)] Xj. To determine how an action alters an applicant’s profile in
+---
+[BOX Rect(297.4153747558594, 409.29229736328125, 539.4461669921875, 418.1538391113281)] reality, we simulate Pearl’s counterfactual engine [9] across
+---
+[BOX Rect(297.4153747558594, 421.4768981933594, 392.1230773925781, 430.33843994140625)] three sequential phases:
+---
+[BOX Rect(307.3846130371094, 436.4307556152344, 539.4461669921875, 445.29229736328125)] 1) Abduction: Recover the unobserved background fac-
+---
+[BOX Rect(321.78460693359375, 447.5076599121094, 539.4461669921875, 458.5845947265625)] tors ux = (u1, . . . , ud) characterizing applicant x. For
+---
+[BOX Rect(321.78460693359375, 460.24615478515625, 539.4461669921875, 469.1076965332031)] continuous features, we invert fitted equations to com-
+ˆ
+---
+[BOX Rect(321.78460693359375, 469.107666015625, 539.4461669921875, 482.9538269042969)] continuous features, we invert fitted equations to com-
+pute residual noise uj = xj −ˆfj(paj); discrete features
+---
+[BOX Rect(321.78460693359375, 484.0615539550781, 490.1538391113281, 493.4769287109375)] preserve conditional probability quantiles.
+---
+=== PAGE 6: 30 cyan highlight boxes ===
+[BOX Rect(123.43439483642578, 244.7132568359375, 146.11181640625, 267.39068603515625)] X1
+---
+[BOX Rect(175.015380859375, 163.9384765625, 523.3846435546875, 171.69232177734375)] A recommendation provides usable recourse (U = 1) only when the identical plan simultaneously survives
+---
+[BOX Rect(36.0, 172.24615478515625, 333.96923828125, 180.0)] downstream causal replay (R = 1) and adheres to directional feasibility constraints (A = 1).
+---
+[BOX Rect(72.55384826660156, 331.1999816894531, 272.4923095703125, 338.9538269042969)] Directed acyclic graph illustrating interventional propagation.
+---
+[BOX Rect(36.0, 340.0615234375, 248.12307739257812, 347.81536865234375)] Intervening on X1 via do(X1 = v1) severs its endogenous parental
+---
+[BOX Rect(36.0, 348.3692321777344, 275.26153564453125, 356.1230773925781)] mechanism while transmitting shifts through functional equations f2 and
+---
+[BOX Rect(36.0, 356.6769104003906, 129.046142578125, 364.4307556152344)] f3 to descendants X2 and X3.
+---
+[BOX Rect(331.20001220703125, 380.4922790527344, 409.8461608886719, 387.6922912597656)] Select up to k = 5 diverse
+---
+[BOX Rect(322.8923034667969, 389.35382080078125, 410.953857421875, 395.4461364746094)] candidates from Pareto archive
+---
+[BOX Rect(297.4153747558594, 406.5230712890625, 329.5384521484375, 413.72308349609375)] FIGURE 3.
+---
+[BOX Rect(297.4153747558594, 414.83074951171875, 521.169189453125, 422.03076171875)] The algorithm mutates interventional vectors, snaps them onto legal
+---
+[BOX Rect(297.4153747558594, 423.138427734375, 530.5845947265625, 430.33843994140625)] quantile grids, evaluates downstream causal states via SCM replay, and
+---
+[BOX Rect(297.4153747558594, 431.4461364746094, 508.4307556152344, 439.1999816894531)] archives non-dominated candidates satisfying the margin buffer.
+---
+[BOX Rect(297.4153747558594, 460.79998779296875, 539.4461669921875, 470.76922607421875)] For an applicant i provided up to k = 5 suggestions, the
+---
+[BOX Rect(297.4153747558594, 473.5384521484375, 539.4461669921875, 482.3999938964844)] individual is successfully served if at least one suggestion
+---
+[BOX Rect(297.4153747558594, 485.7230529785156, 474.6461486816406, 494.5845947265625)] satisfies joint usability on the identical plan:
+---
+[BOX Rect(480.1846008300781, 499.5692138671875, 483.5076904296875, 505.6615295410156)] n
+�
+---
+[BOX Rect(328.984619140625, 508.984619140625, 463.015380859375, 519.5076904296875)] Uim = max
+ℓ≤k
+�
+Rimℓ· Aimℓ
+�
+,
+�Um =
+---
+[BOX Rect(307.3846130371094, 535.0154418945312, 539.4461669921875, 543.876953125)] This strict coupling is critical: auditing validity and fea-
+---
+[BOX Rect(297.4153747558594, 546.6461791992188, 539.4461669921875, 555.5076904296875)] sibility independently allows an algorithm to claim success
+---
+[BOX Rect(297.4153747558594, 558.830810546875, 539.4461669921875, 567.6923217773438)] by returning one candidate that inverts the decision illegally
+---
+[BOX Rect(297.4153747558594, 570.4615478515625, 539.4461669921875, 579.876953125)] alongside a second candidate that remains rejected within
+---
+[BOX Rect(297.4153747558594, 582.6461791992188, 355.5692138671875, 591.5076904296875)] action bounds.
+---
+[BOX Rect(297.4153747558594, 618.6461791992188, 539.4461669921875, 627.5076904296875)] To measure the personal burden of recourse, normalized ac-
+---
+[BOX Rect(297.4153747558594, 630.830810546875, 406.5230712890625, 639.6923217773438)] tion effort is formulated as:
+�
+---
+[BOX Rect(361.6615295410156, 643.015380859375, 471.32305908203125, 661.2922973632812)] C(x, a) =
+�
+j∈S wjcj(xj, vj)
+B
+---
+[BOX Rect(297.4153747558594, 671.2615356445312, 539.4461669921875, 681.7846069335938)] where wj weights feature importance, cj(·, ·) assesses coordi-
+---
+[BOX Rect(297.4153747558594, 684.0, 539.4461669921875, 692.8615112304688)] nate distance (linear for continuous attributes, shortest path
+---
+[BOX Rect(297.4153747558594, 696.1846313476562, 539.4461669921875, 705.046142578125)] across graph encodings for ordinals, and fixed replacement
+---
+[BOX Rect(297.4153747558594, 707.8154296875, 539.4461669921875, 716.6769409179688)] costs for categories), and budget B rescales total effort to
+---
+=== PAGE 7: 60 cyan highlight boxes ===
+[BOX Rect(36.0, 72.55381774902344, 278.03076171875, 83.6307373046875)] Require: Rejected applicant x, black-box p+, SCM M, legal
+---
+[BOX Rect(53.16923141479492, 84.73847198486328, 189.41539001464844, 94.70770263671875)] quantile grids G, candidates k = 5
+---
+[BOX Rect(102.46154022216797, 523.3846435546875, 278.03076171875, 534.4615478515625)] Manifold plausibility P(·) penalizes Kknn-
+---
+[BOX Rect(36.0, 536.6769409179688, 263.6307678222656, 545.5384521484375)] nearest-neighbor distance to favorable training instances:
+---
+[BOX Rect(95.81538391113281, 557.7230834960938, 125.16922760009766, 567.6923217773438)] P(�x) =
+---
+[BOX Rect(105.23076629638672, 599.2615356445312, 278.03076171875, 609.2307739257812)] Three design considerations govern this ob-
+---
+[BOX Rect(36.0, 612.0, 278.03076171875, 620.8615112304688)] jective: target margin q pushes solutions into high-confidence
+---
+[BOX Rect(36.0, 624.1846313476562, 278.03076171875, 633.046142578125)] classification territory; restricting candidate replacements to
+---
+[BOX Rect(36.0, 635.8153686523438, 278.03076171875, 645.2307739257812)] 12 marginal empirical quantiles prevents numerical extrap-
+---
+[BOX Rect(36.0, 648.0, 278.03076171875, 656.8615112304688)] olations beyond observed domain support; and plausibility
+---
+[BOX Rect(36.0, 660.1846313476562, 278.03076171875, 669.046142578125)] term P discourages recommendations located in low-density
+---
+[BOX Rect(36.0, 671.8154296875, 93.5999984741211, 680.6769409179688)] training voids.
+---
+[BOX Rect(36.0, 707.8154296875, 278.03076171875, 716.6769409179688)] Because gradient-boosted tree ensembles partition fea-
+---
+[BOX Rect(36.0, 720.0, 278.03076171875, 728.8615112304688)] ture space into non-differentiable step plateaus, traditional
+---
+[BOX Rect(297.4153747558594, 62.58462905883789, 539.4461669921875, 71.4461669921875)] gradient-based optimizers quickly stall in local optima. CAC
+---
+[BOX Rect(297.4153747558594, 74.21536254882812, 539.4461669921875, 83.076904296875)] bypasses this limitation using an elitist genetic algorithm
+---
+[BOX Rect(297.4153747558594, 86.39999389648438, 539.4461669921875, 95.26153564453125)] defined directly over discrete quantile grids. The population
+---
+[BOX Rect(297.4153747558594, 98.0307846069336, 539.4461669921875, 107.4461669921875)] maintains 60 candidate interventions initialized with single-
+---
+[BOX Rect(297.4153747558594, 110.21536254882812, 539.4461669921875, 119.076904296875)] feature actions and sparse combinations. At each generation,
+---
+[BOX Rect(297.4153747558594, 121.84615325927734, 539.4461669921875, 131.26153564453125)] the fittest 50% elite actions are preserved directly. Offspring
+---
+[BOX Rect(297.4153747558594, 134.03073120117188, 539.4461669921875, 142.89227294921875)] generated via uniform crossover and mutation are snapped
+---
+[BOX Rect(297.4153747558594, 145.107666015625, 539.4461669921875, 155.6307373046875)] onto admissible quantile grids G and restricted to at most 3
+---
+[BOX Rect(297.4153747558594, 157.84616088867188, 407.076904296875, 166.70770263671875)] simultaneous interventions.
+---
+[BOX Rect(307.3846130371094, 170.58462524414062, 539.4461669921875, 179.4461669921875)] The search terminates when reaching 200 generations or
+---
+[BOX Rect(297.4153747558594, 182.21536254882812, 539.4461669921875, 191.076904296875)] when progress stalls across 20 consecutive generations. Valid,
+---
+[BOX Rect(297.4153747558594, 193.29229736328125, 539.4461669921875, 203.81536865234375)] feasible plans are accumulated in external Pareto archive A.
+---
+[BOX Rect(297.4153747558594, 206.03077697753906, 539.4461669921875, 215.4461669921875)] If fewer than k candidates achieve validity, the lowest-loss
+---
+[BOX Rect(297.4153747558594, 218.21536254882812, 539.4461669921875, 227.076904296875)] rejected candidates are retained as diagnostics, though the
+---
+[BOX Rect(297.4153747558594, 229.8461456298828, 539.4461669921875, 239.26153564453125)] audit strictly tallies them as failures. Algorithm 1 formalizes
+---
+[BOX Rect(297.4153747558594, 242.03073120117188, 539.4461669921875, 250.89227294921875)] the routine, and Fig. 3 sketches the execution loop. Discrete
+---
+[BOX Rect(297.4153747558594, 254.21536254882812, 539.4461669921875, 263.076904296875)] quantile search explores non-convex combinatorial spaces
+---
+[BOX Rect(297.4153747558594, 265.84613037109375, 539.4461669921875, 274.7076721191406)] reliably without computing unstable numerical gradients over
+---
+[BOX Rect(297.4153747558594, 278.03076171875, 338.3999938964844, 286.8923034667969)] tree splits.
+---
+[BOX Rect(297.4153747558594, 315.1384582519531, 539.4461669921875, 324.0)] To evaluate interventional recourse across distinct data
+---
+[BOX Rect(297.4153747558594, 326.76922607421875, 539.4461669921875, 336.1846008300781)] regimes, we benchmark four tabular tasks representing di-
+---
+[BOX Rect(297.4153747558594, 338.9538269042969, 539.4461669921875, 347.81536865234375)] verse dimensionalities, causal graph densities, and institu-
+---
+[BOX Rect(297.4153747558594, 351.1384582519531, 368.30767822265625, 360.0)] tional constraints.
+---
+[BOX Rect(297.4153747558594, 389.35382080078125, 539.4461669921875, 398.2153625488281)] We fit gradient-boosted decision trees using XGBoost [17]
+---
+[BOX Rect(297.4153747558594, 400.984619140625, 465.78460693359375, 409.8461608886719)] across four canonical tabular benchmarks:
+---
+[BOX Rect(321.78460693359375, 415.9384460449219, 539.4461669921875, 424.79998779296875)] Adult Income [18], [19]: A 9-feature socioeconomic
+---
+[BOX Rect(321.78460693359375, 427.5692443847656, 539.4461669921875, 436.984619140625)] demographic dataset where the predictive target is
+---
+[BOX Rect(321.78460693359375, 438.6461486816406, 539.4461669921875, 449.1692199707031)] whether annual income exceeds $50,000 (earning ≤
+---
+[BOX Rect(321.78460693359375, 450.83074951171875, 453.5999755859375, 460.79998779296875)] $50K denotes adverse rejection).
+---
+[BOX Rect(321.78460693359375, 463.5692138671875, 539.4461669921875, 472.4307556152344)] Statlog German Credit [19]: A 15-variable financial
+---
+[BOX Rect(321.78460693359375, 475.75384521484375, 539.4461669921875, 484.6153869628906)] risk registry evaluating consumer loan default (classifi-
+---
+[BOX Rect(321.78460693359375, 487.3846130371094, 507.87689208984375, 496.79998779296875)] cation as bad credit denotes adverse rejection).
+---
+[BOX Rect(321.78460693359375, 499.5692138671875, 539.4461669921875, 508.4307556152344)] FICO HELOC [20]: A 12-feature home equity credit
+---
+[BOX Rect(321.78460693359375, 511.7538146972656, 539.4461669921875, 520.6153564453125)] assessment dataset tracking financial delinquency (de-
+---
+[BOX Rect(321.78460693359375, 523.3846435546875, 511.20001220703125, 532.2461547851562)] nial of credit line constitutes adverse rejection).
+---
+[BOX Rect(321.78460693359375, 535.5692749023438, 539.4461669921875, 544.4307861328125)] Pima Diabetes [21]: An 8-feature clinical diag-
+---
+[BOX Rect(321.78460693359375, 547.2000122070312, 539.4461669921875, 556.0615234375)] nostic screening record inverted such that favor-
+---
+[BOX Rect(321.78460693359375, 559.3846435546875, 539.4461669921875, 568.2461547851562)] able recourse targets non-diabetic classification (no_
+---
+[BOX Rect(321.78460693359375, 571.015380859375, 411.5076904296875, 580.4307861328125)] diabetes=1-Outcome).
+---
+[BOX Rect(307.3846130371094, 585.96923828125, 539.4461669921875, 594.8307495117188)] Table 2 summarizes partition volumes, processed feature
+---
+[BOX Rect(297.4153747558594, 598.1538696289062, 539.4461669921875, 607.015380859375)] dimensions, evaluated applicant counts, and classification
+---
+[BOX Rect(297.4153747558594, 609.7846069335938, 539.4461669921875, 619.2000122070312)] metrics. Out-of-sample test AUC spans from 0.7846 on Ger-
+---
+[BOX Rect(297.4153747558594, 621.96923828125, 539.4461669921875, 630.8307495117188)] man Credit to 0.9182 on Adult Income. We emphasize that
+---
+[BOX Rect(297.4153747558594, 634.1538696289062, 539.4461669921875, 643.015380859375)] favorable target labels serve purely as computational objec-
+---
+[BOX Rect(297.4153747558594, 645.7846069335938, 539.4461669921875, 654.6461181640625)] tives for algorithmic search; they do not imply automated
+---
+[BOX Rect(297.4153747558594, 657.96923828125, 451.38458251953125, 666.8307495117188)] underwriting or clinical endorsements.
+---
+=== PAGE 8: 47 cyan highlight boxes ===
+[BOX Rect(36.0, 280.24615478515625, 278.03076171875, 289.1076965332031)] perparameters remain frozen across all benchmarks: popula-
+---
+[BOX Rect(36.0, 291.32305908203125, 278.03076171875, 301.29229736328125)] tion size 60, elite proportion 50%, maximum generations 200,
+---
+[BOX Rect(36.0, 303.5076904296875, 278.03076171875, 313.4769287109375)] stall patience 20, grid granularity 12, maximum concurrent
+---
+[BOX Rect(36.0, 315.1384582519531, 278.03076171875, 325.1076965332031)] alterations 3, target margin 0.05, fidelity tolerance ϵ = 0.1,
+---
+[BOX Rect(36.0, 327.32305908203125, 278.03076171875, 337.29229736328125)] and scalar loss weights (1, 0.6, 0.3, 0.2). Headline findings
+---
+[BOX Rect(36.0, 340.0615234375, 278.03076171875, 348.9230651855469)] are anchored to random seed 42, augmented by a 5-seed audit
+---
+[BOX Rect(36.0, 351.6922912597656, 278.03076171875, 360.5538330078125)] (42,0,1,2,3) to assess stochastic variability. Computational
+---
+[BOX Rect(36.0, 363.8769226074219, 278.03076171875, 372.73846435546875)] workload is tracked via cumulative forward black-box queries
+---
+[BOX Rect(36.0, 375.5076904296875, 278.03076171875, 384.3692321777344)] rather than wall-clock time, isolating algorithmic efficiency
+---
+[BOX Rect(36.0, 387.6922912597656, 157.84616088867188, 396.5538330078125)] from host hardware variations.
+---
+[BOX Rect(36.0, 426.4615173339844, 278.03076171875, 435.32305908203125)] We benchmark CAC against four established recourse al-
+---
+[BOX Rect(36.0, 438.0923156738281, 278.03076171875, 447.5076904296875)] gorithms under strictly identical immutability masks, action
+---
+[BOX Rect(36.0, 450.27691650390625, 165.60000610351562, 459.1384582519531)] budgets, and directional bounds:
+---
+[BOX Rect(45.96923065185547, 465.78460693359375, 278.03076171875, 474.6461486816406)] 1) Random Search: Uniformly samples action subsets
+---
+[BOX Rect(60.369232177734375, 477.4153747558594, 278.03076171875, 486.27691650390625)] from legal quantile lattices, returning the minimum-
+---
+[BOX Rect(60.369232177734375, 489.5999755859375, 240.36923217773438, 498.4615173339844)] effort candidate satisfying model acceptance.
+---
+[BOX Rect(45.96923065185547, 501.23077392578125, 278.03076171875, 510.0923156738281)] 2) Wachter-Style Optimization: Executes multi-start L-
+---
+[BOX Rect(60.369232177734375, 513.4154052734375, 278.03076171875, 522.2769165039062)] BFGS-B in continuous feature space, estimating model
+---
+[BOX Rect(60.369232177734375, 525.046142578125, 226.5230712890625, 534.4615478515625)] gradients via numerical finite differences.
+---
+[BOX Rect(60.369232177734375, 537.2307739257812, 278.03076171875, 546.09228515625)] DiCE-Random [6]: Generates sets of diverse coun-
+---
+[BOX Rect(60.369232177734375, 549.4154052734375, 278.03076171875, 558.2769165039062)] terfactual perturbations using determinantal point pro-
+---
+[BOX Rect(60.369232177734375, 561.0462036132812, 88.06153869628906, 569.90771484375)] cesses.
+---
+[BOX Rect(60.369232177734375, 573.2307739257812, 278.03076171875, 582.09228515625)] Grid Search (‘‘Oracle’’ Reference): Exhaustively tra-
+---
+[BOX Rect(60.369232177734375, 584.8615112304688, 278.03076171875, 594.2769165039062)] verses allowable quantile changes ordered by increas-
+---
+[BOX Rect(60.369232177734375, 597.0462036132812, 278.03076171875, 605.90771484375)] ing normalized effort until exhausting a preset query
+---
+[BOX Rect(60.369232177734375, 609.2307739257812, 89.72307586669922, 618.09228515625)] budget.
+---
+[BOX Rect(60.369232177734375, 620.861572265625, 278.03076171875, 629.7230834960938)] MINT [8]: Deployed in synthetic control environments
+---
+[BOX Rect(60.369232177734375, 633.0462036132812, 278.03076171875, 641.90771484375)] where true structural equations are analytically speci-
+---
+[BOX Rect(60.369232177734375, 644.6768798828125, 242.03077697753906, 654.09228515625)] fied, matching its interventional assumptions.
+---
+[BOX Rect(45.96923065185547, 660.1846313476562, 278.03076171875, 669.046142578125)] Because the Grid Search baseline operates under a capped
+---
+[BOX Rect(36.0, 671.8153686523438, 278.03076171875, 681.2307739257812)] query ceiling, its performance reflects bounded exploration
+---
+[BOX Rect(36.0, 684.0, 278.03076171875, 692.8615112304688)] rather than guaranteed global optimality. In parallel, our com-
+---
+[BOX Rect(36.0, 696.1846313476562, 278.03076171875, 705.046142578125)] parisons reflect specific reference implementations; alterna-
+---
+[BOX Rect(36.0, 707.8154296875, 278.03076171875, 716.6769409179688)] tive optimizers or penalty schedules could yield different
+---
+[BOX Rect(36.0, 720.0, 76.984619140625, 728.8615112304688)] trade-offs.
+---
+[BOX Rect(297.4153747558594, 194.95382690429688, 539.4461669921875, 203.81536865234375)] At default seed 42, we evaluate paired binary applicant us-
+---
+[BOX Rect(297.4153747558594, 207.13844299316406, 539.4461669921875, 216.5538330078125)] ability outcomes (Uim) via exact two-sided McNemar tests,
+---
+[BOX Rect(297.4153747558594, 218.76919555664062, 539.4461669921875, 227.6307373046875)] controlling the familywise error rate within each domain
+---
+[BOX Rect(297.4153747558594, 230.3999786376953, 539.4461669921875, 239.81536865234375)] using Holm step-down adjustments (α = 0.05). To quantify
+---
+[BOX Rect(297.4153747558594, 242.58462524414062, 539.4461669921875, 251.4461669921875)] multi-seed variability across shared runs without parametric
+---
+[BOX Rect(297.4153747558594, 254.76919555664062, 539.4461669921875, 263.6307373046875)] assumptions, we calculate applicant-level paired difference
+---
+[BOX Rect(297.4153747558594, 266.3999938964844, 539.4461669921875, 275.81536865234375)] distributions using 10,000 bootstrap resamples at bootstrap
+---
+[BOX Rect(297.4153747558594, 278.5845947265625, 330.09228515625, 287.4461364746094)] seed 42.
+---
+[BOX Rect(297.4153747558594, 316.24615478515625, 539.4461669921875, 325.1076965332031)] Our empirical evaluation analyzes the gap between nominal
+---
+[BOX Rect(297.4153747558594, 327.8769226074219, 539.4461669921875, 336.73846435546875)] validity and causal replay, computational query expenditures,
+---
+[BOX Rect(297.4153747558594, 340.0615234375, 539.4461669921875, 348.9230651855469)] multi-seed optimization failures, paired hypothesis tests, ob-
+---
+[BOX Rect(297.4153747558594, 351.69232177734375, 479.076904296875, 361.1076965332031)] jective ablations, and causal graph sensitivity.
+---
+=== PAGE 9: 48 cyan highlight boxes ===
+[BOX Rect(124.06153869628906, 330.6461486816406, 215.44615173339844, 338.3999938964844)] Diabetes
+Grid reference
+---
+[BOX Rect(36.0, 391.015380859375, 278.03076171875, 400.4307556152344)] Table 3 reports normalized action costs (C) and black-box
+---
+[BOX Rect(36.0, 403.1999816894531, 278.03076171875, 412.0615234375)] query expenditures across all benchmarks. For CAC, the
+---
+[BOX Rect(36.0, 415.3846130371094, 278.03076171875, 424.24615478515625)] average scaled effort of the lowest-cost viable plan is 0.1807
+---
+[BOX Rect(36.0, 427.015380859375, 278.03076171875, 435.8769226074219)] on Adult, 0.0091 on German, 0.0308 on HELOC, and 0.0275
+---
+[BOX Rect(36.0, 439.1999816894531, 85.84615325927734, 448.0615234375)] on Diabetes.
+---
+[BOX Rect(45.96923065185547, 451.9384460449219, 278.03076171875, 460.79998779296875)] Effort comparisons demand careful conditioning: on Adult,
+---
+[BOX Rect(36.0, 464.1230773925781, 278.03076171875, 472.984619140625)] Random search identifies valid recourse at a lower average
+---
+[BOX Rect(36.0, 475.75384521484375, 278.03076171875, 484.6153869628906)] cost (0.0439) than CAC (0.1807), whereas on HELOC, CAC
+---
+[BOX Rect(36.0, 487.9384460449219, 278.03076171875, 496.79998779296875)] achieves lower effort (0.0308) than either Random (0.0846) or
+---
+[BOX Rect(36.0, 499.5692443847656, 278.03076171875, 508.984619140625)] DiCE (0.0934). Crucially, these cost metrics are conditioned
+---
+[BOX Rect(36.0, 511.7538146972656, 278.03076171875, 520.6153564453125)] strictly on successful recourse recipients. Because baselines
+---
+[BOX Rect(36.0, 523.9384765625, 278.03076171875, 532.7999877929688)] serve only a fraction of the HELOC cohort (e.g., Wachter suc-
+---
+[BOX Rect(36.0, 535.5692749023438, 278.03076171875, 544.4307861328125)] ceeds on merely 18 individuals), their lower conditional cost
+---
+[BOX Rect(36.0, 547.7538452148438, 278.03076171875, 556.6153564453125)] reflects selection bias over an easily satisfied subpopulation
+---
+[BOX Rect(36.0, 559.3846435546875, 206.58460998535156, 568.2461547851562)] rather than superior overall cost efficiency.
+---
+[BOX Rect(45.96923065185547, 572.6769409179688, 278.03076171875, 581.5384521484375)] Query budgets reveal stark computational disparities:
+---
+[BOX Rect(36.0, 584.3076782226562, 278.03076171875, 593.169189453125)] Wachter’s finite-difference gradient steps require between
+---
+[BOX Rect(36.0, 596.4923095703125, 278.03076171875, 605.3538208007812)] 7,314.3 and 52,953.4 forward model evaluations per appli-
+---
+[BOX Rect(36.0, 608.123046875, 278.03076171875, 617.5384521484375)] cant. DiCE consumes 2,022.6 to 2,609.5 queries. In con-
+---
+[BOX Rect(36.0, 620.3076782226562, 278.03076171875, 629.169189453125)] trast, CAC requires only 835.5 to 1,312.8 model evaluations,
+---
+[BOX Rect(36.0, 632.4923095703125, 278.03076171875, 641.3538208007812)] demonstrating that vectorized genetic search across discrete
+---
+[BOX Rect(36.0, 644.1231079101562, 278.03076171875, 652.984619140625)] quantile grids achieves complete interventional validity with
+---
+[BOX Rect(36.0, 656.3076782226562, 192.1846160888672, 665.169189453125)] substantially lower inference overhead.
+---
+[BOX Rect(36.0, 696.1846313476562, 277.4769287109375, 705.046142578125)] Table 4 tracks algorithmic stability across 5 distinct seeds (42,
+---
+[BOX Rect(36.0, 707.8154296875, 278.03076171875, 716.6769409179688)] 0,1,2,3). CAC maintains flawless 100% usability across all
+---
+[BOX Rect(36.0, 720.0, 203.26153564453125, 728.8615112304688)] five runs on Adult, German, and HELOC.
+---
+[BOX Rect(307.3846130371094, 377.1692199707031, 539.4461669921875, 386.03076171875)] However, the multi-seed audit exposes brittle behavior on
+---
+[BOX Rect(297.4153747558594, 389.35382080078125, 539.4461669921875, 398.2153625488281)] Diabetes: CAC’s seed-averaged usability drops to 94.4%,
+---
+[BOX Rect(297.4153747558594, 400.984619140625, 539.4461669921875, 410.3999938964844)] with a single-run low of 72.1%. Tracing execution logs re-
+---
+[BOX Rect(297.4153747558594, 413.1692199707031, 539.4461669921875, 422.03076171875)] vealed 12 unhandled numerical convergence exceptions in
+---
+[BOX Rect(297.4153747558594, 425.35382080078125, 539.4461669921875, 434.2153625488281)] seed 3 when resolving non-linear parent estimators. Transpar-
+---
+[BOX Rect(297.4153747558594, 436.984619140625, 539.4461669921875, 445.8461608886719)] ent auditing requires keeping these failed searches in the de-
+---
+[BOX Rect(297.4153747558594, 449.1692199707031, 539.4461669921875, 458.03076171875)] nominator; removing them would artificially inflate reported
+---
+[BOX Rect(297.4153747558594, 460.79998779296875, 539.4461669921875, 470.2153625488281)] efficacy by measuring success only where the optimizer hap-
+---
+[BOX Rect(297.4153747558594, 472.984619140625, 403.1999816894531, 481.8461608886719)] pened to converge cleanly.
+---
+[BOX Rect(307.3846130371094, 486.27691650390625, 539.4461669921875, 495.1384582519531)] Similarly, DiCE-random on Adult produces a severe failure
+---
+[BOX Rect(297.4153747558594, 498.4615173339844, 539.4461669921875, 507.32305908203125)] run at seed 1 with 0.0% usability, reducing its multi-seed
+---
+[BOX Rect(297.4153747558594, 510.0923156738281, 539.4461669921875, 518.953857421875)] mean to 75.0%. At the same time, due to strict timeout limits,
+---
+[BOX Rect(297.4153747558594, 522.2769165039062, 539.4461669921875, 531.138427734375)] Wachter, DiCE, and Grid completed only 4 seeds on Adult.
+---
+[BOX Rect(297.4153747558594, 533.90771484375, 539.4461669921875, 542.7692260742188)] Reporting completed run tallies explicitly prevents mislead-
+---
+[BOX Rect(297.4153747558594, 546.0923461914062, 539.4461669921875, 554.953857421875)] ing comparisons that tacitly presume balanced experimental
+---
+[BOX Rect(297.4153747558594, 557.7230224609375, 330.09228515625, 567.138427734375)] designs.
+---
+[BOX Rect(297.4153747558594, 599.2615356445312, 525.5999755859375, 608.123046875)] Table 5 reports applicant-level paired significance tests.
+---
+[BOX Rect(421.4769287109375, 657.96923828125, 539.4461669921875, 667.9384765625)] On German Credit, CAC sig-
+---
+[BOX Rect(297.4153747558594, 668.4922485351562, 539.4461669921875, 680.123046875)] nificantly exceeds Wachter (p = 2.44×10−4), while on Adult
+---
+[BOX Rect(297.4153747558594, 680.123046875, 539.4461669921875, 692.3076782226562)] Income, it significantly outperforms Grid (p = 9.77×10−4).
+---
+[BOX Rect(307.3846130371094, 720.0, 539.4461669921875, 728.8615112304688)] Bootstrap distributions resampled over 10,000 applicant
+---
+=== PAGE 10: 47 cyan highlight boxes ===
+[BOX Rect(106.10208129882812, 85.97335815429688, 277.509033203125, 93.47544860839844)] 78
+---
+[BOX Rect(106.10208129882812, 109.41740417480469, 257.86865234375, 116.91950988769531)] 18
+---
+[BOX Rect(106.10208129882812, 132.8614501953125, 284.6510009765625, 140.36355590820312)] 76
+---
+[BOX Rect(106.10208129882812, 156.30551147460938, 284.6510009765625, 163.80760192871094)] 83
+---
+[BOX Rect(106.10208129882812, 179.74954223632812, 284.6510009765625, 187.25164794921875)] 100
+---
+[BOX Rect(147.3230743408203, 527.8153686523438, 278.03076171875, 536.6768798828125)] Disabling interventional updates
+---
+[BOX Rect(36.0, 540.0, 278.03076171875, 548.8615112304688)] (scoring candidates directly on naive coordinate shifts) de-
+---
+[BOX Rect(36.0, 551.6307983398438, 278.03076171875, 560.4923095703125)] grades usability to 95.0% on Adult and 96.0% on HELOC,
+---
+[BOX Rect(36.0, 563.8153686523438, 278.03076171875, 572.6768798828125)] while German and Diabetes remain unaffected at 100%. This
+---
+[BOX Rect(36.0, 575.4461059570312, 278.03076171875, 584.8615112304688)] disparity reflects topological coupling: causal propagation is
+---
+[BOX Rect(36.0, 587.6307983398438, 278.03076171875, 596.4923095703125)] indispensable when mutable features have downstream credit
+---
+[BOX Rect(36.0, 599.8153686523438, 278.03076171875, 608.6768798828125)] descendants, whereas loosely coupled graphs permit naive
+---
+[BOX Rect(36.0, 611.4461669921875, 151.75384521484375, 620.3076782226562)] shifts without severe penalty.
+---
+[BOX Rect(45.96923065185547, 622.5230712890625, 278.03076171875, 633.046142578125)] Removing the action effort term (λc
+=
+0) increases
+---
+[BOX Rect(36.0, 635.2615356445312, 278.03076171875, 644.123046875)] normalized effort across all datasets—for instance, driving
+---
+[BOX Rect(36.0, 646.892333984375, 278.03076171875, 655.7538452148438)] Adult cost from 0.1807 to 0.2467—confirming that the effort
+---
+[BOX Rect(36.0, 659.0769653320312, 278.03076171875, 667.9384765625)] objective actively steers mutations away from high-friction
+---
+[BOX Rect(36.0, 670.7077026367188, 278.03076171875, 679.5692138671875)] interventions. In contrast, zeroing the soft feasibility penalty
+---
+[BOX Rect(36.0, 682.3384399414062, 278.03076171875, 692.3076782226562)] (λf = 0) produces zero change in output, indicating that hard
+---
+[BOX Rect(36.0, 694.5230712890625, 278.03076171875, 703.9384765625)] coordinate projection during grid legalization fully guaran-
+---
+[BOX Rect(36.0, 706.7077026367188, 144.55384826660156, 715.5692138671875)] tees constraint compliance.
+---
+[BOX Rect(297.4153747558594, 433.6615295410156, 539.4461669921875, 442.5230712890625)] Table 7 investigates how fragile recourse plans are to the
+---
+[BOX Rect(297.4153747558594, 445.84613037109375, 539.4461669921875, 454.7076721191406)] fitted structural equations. When evaluated against refitted
+---
+[BOX Rect(297.4153747558594, 457.4768981933594, 539.4461669921875, 466.33843994140625)] SCMs, CAC usability drops to 93.0% on Adult and 97.0%
+---
+[BOX Rect(297.4153747558594, 469.6615295410156, 539.4461669921875, 478.5230712890625)] on HELOC, while German and Diabetes maintain 100%. At
+---
+[BOX Rect(297.4153747558594, 481.29229736328125, 539.4461669921875, 490.7076721191406)] the individual recommendation level, plan survival degrades
+---
+[BOX Rect(297.4153747558594, 493.4768981933594, 539.4461669921875, 502.33843994140625)] more sharply: only 73.0% of Adult suggestions and 79.4% of
+---
+[BOX Rect(297.4153747558594, 505.6615295410156, 539.4461669921875, 514.5230712890625)] HELOC suggestions survive refitted replay. Applicant-level
+---
+[BOX Rect(297.4153747558594, 517.2922973632812, 539.4461669921875, 526.15380859375)] usability stays higher simply because an individual needs only
+---
+[BOX Rect(297.4153747558594, 529.4769287109375, 539.4461669921875, 538.3384399414062)] one surviving plan among their top k candidates. Because
+---
+[BOX Rect(297.4153747558594, 541.1077270507812, 539.4461669921875, 549.96923828125)] the refitted equations were trained on overlapping data splits,
+---
+[BOX Rect(297.4153747558594, 553.2922973632812, 539.4461669921875, 562.15380859375)] this drop represents a conservative lower bound on real-world
+---
+[BOX Rect(297.4153747558594, 564.9230346679688, 340.0615234375, 574.3384399414062)] sensitivity.
+---
+[BOX Rect(307.3846130371094, 576.5538330078125, 539.4461669921875, 585.96923828125)] Table 8 evaluates recourse in the synthetic Reach and Block
+---
+[BOX Rect(297.4153747558594, 588.7384643554688, 539.4461669921875, 597.5999755859375)] worlds where ground-truth structural equations are analyti-
+---
+[BOX Rect(297.4153747558594, 600.923095703125, 539.4461669921875, 609.7846069335938)] cally known. Both CAC and MINT achieve 100% usability
+---
+[BOX Rect(297.4153747558594, 612.5538940429688, 539.4461669921875, 621.4154052734375)] in Reach, and 40.0% in Block. In Block, exactly 42 of 100
+---
+[BOX Rect(297.4153747558594, 624.7384643554688, 539.4461669921875, 633.5999755859375)] individuals are provably unreachable due to hard structural
+---
+[BOX Rect(297.4153747558594, 636.3692016601562, 539.4461669921875, 645.7846069335938)] bounds. MINT attains lower intervention effort in both en-
+---
+[BOX Rect(297.4153747558594, 648.5538940429688, 539.4461669921875, 657.4154052734375)] vironments, proving that CAC does not inherently guarantee
+---
+[BOX Rect(297.4153747558594, 660.1845703125, 394.8923034667969, 669.5999755859375)] minimal-effort recourse.
+---
+[BOX Rect(307.3846130371094, 671.8153686523438, 539.4461669921875, 681.2307739257812)] Finally, Table 9 reports empirical checks on the assumed
+---
+[BOX Rect(297.4153747558594, 684.0, 539.4461669921875, 692.8615112304688)] DAGs. On German and HELOC, numerous edges lack ob-
+---
+[BOX Rect(297.4153747558594, 696.1846313476562, 539.4461669921875, 705.046142578125)] servational orientation support, reminding us that assumed
+---
+[BOX Rect(297.4153747558594, 707.8154296875, 539.4461669921875, 716.6769409179688)] causal graphs represent structural hypotheses rather than in-
+---
+[BOX Rect(297.4153747558594, 720.0, 387.1384582519531, 728.8615112304688)] fallible laws of nature.
+---
+=== PAGE 11: 38 cyan highlight boxes ===
+[BOX Rect(69.23076629638672, 62.0307731628418, 536.123046875, 69.23077392578125)] Paired applicant-level statistical significance tests and bootstrap confidence intervals. Paired differences and bootstrap percentile intervals are
+---
+[BOX Rect(36.0, 70.33845520019531, 508.984619140625, 77.5384521484375)] computed across shared random seeds; p-values reflect exact two-sided McNemar tests on seed 42 with Holm familywise error rate adjustment.
+---
+[BOX Rect(156.73846435546875, 338.3999938964844, 255.87692260742188, 345.6000061035156)] Cost full No cost term
+Ratio
+---
+[BOX Rect(36.0, 451.3846130371094, 278.03076171875, 460.24615478515625)] ruption, all findings were audited against four operational
+---
+[BOX Rect(36.0, 463.015380859375, 65.9076919555664, 471.8769226074219)] checks:
+---
+[BOX Rect(45.96923065185547, 481.84613037109375, 278.03076171875, 490.7076721191406)] 1) Fixed Query Alignment: Every method is evaluated
+---
+[BOX Rect(60.369232177734375, 493.4768981933594, 278.03076171875, 502.33843994140625)] on the identical set of 294 rejected test individuals
+---
+[BOX Rect(60.369232177734375, 505.6615295410156, 278.03076171875, 514.5230712890625)] across all benchmarks, eliminating sample selection
+---
+[BOX Rect(60.369232177734375, 517.292236328125, 79.19999694824219, 526.7076416015625)] bias.
+---
+[BOX Rect(45.96923065185547, 577.1077270507812, 278.03076171875, 585.96923828125)] 3) Coupled Joint Usability: The audit marks an applicant
+---
+[BOX Rect(60.369232177734375, 589.2922973632812, 278.03076171875, 598.15380859375)] as served if and only if the identical plan satisfies both
+---
+[BOX Rect(60.369232177734375, 600.3692016601562, 278.03076171875, 610.3384399414062)] classifier acceptance (R = 1) and feasibility bounds
+---
+[BOX Rect(60.369232177734375, 612.5538330078125, 94.15384674072266, 622.5230712890625)] (A = 1).
+---
+[BOX Rect(45.96923065185547, 625.2922973632812, 278.03076171875, 634.15380859375)] 4) Software Test Coverage: The execution pipeline
+---
+[BOX Rect(60.369232177734375, 636.923095703125, 278.03076171875, 645.7846069335938)] cleared 386 automated unit and property tests with 1
+---
+[BOX Rect(60.369232177734375, 649.1077270507812, 278.03076171875, 657.96923828125)] documented skip, guaranteeing algorithmic and statis-
+---
+[BOX Rect(60.369232177734375, 660.7384033203125, 235.93846130371094, 670.15380859375)] tical consistency across all generated assets.
+---
+[BOX Rect(297.4153747558594, 444.1846008300781, 539.4461669921875, 453.046142578125)] The empirical results indicate that recourse viability depends
+---
+[BOX Rect(297.4153747558594, 456.3692321777344, 539.4461669921875, 465.23077392578125)] critically on how strongly features interact within the under-
+---
+[BOX Rect(297.4153747558594, 468.0, 352.79998779296875, 477.4153747558594)] lying domain.
+---
+[BOX Rect(297.4153747558594, 516.7384643554688, 539.4461669921875, 525.5999755859375)] Our empirical findings demonstrate why nominal validity (V)
+---
+[BOX Rect(297.4153747558594, 528.923095703125, 539.4461669921875, 537.7846069335938)] is a fundamentally flawed surrogate for actionable recourse.
+---
+[BOX Rect(297.4153747558594, 540.5538940429688, 539.4461669921875, 549.4154052734375)] On HELOC, Wachter’s method achieves 85.0% proposal va-
+---
+[BOX Rect(297.4153747558594, 552.7384643554688, 539.4461669921875, 561.5999755859375)] lidity, yet true joint usability drops to 18.0%. The mechan-
+---
+[BOX Rect(297.4153747558594, 564.3692626953125, 539.4461669921875, 573.2307739257812)] ics driving this breakdown are clear: point-based optimizers
+---
+[BOX Rect(297.4153747558594, 576.5538940429688, 539.4461669921875, 585.4154052734375)] exploit classifier boundaries by treating features as isolated
+---
+[BOX Rect(297.4153747558594, 588.1845703125, 539.4461669921875, 597.5999755859375)] coordinates. In credit underwriting, however, an applicant
+---
+[BOX Rect(297.4153747558594, 600.3692626953125, 539.4461669921875, 609.2307739257812)] cannot simply inflate their repayment history without trig-
+---
+[BOX Rect(297.4153747558594, 612.5538940429688, 539.4461669921875, 621.4154052734375)] gering corresponding changes in revolving credit utilization
+---
+[BOX Rect(297.4153747558594, 624.1846313476562, 539.4461669921875, 633.046142578125)] and bureau inquiries. When these interventional side effects
+---
+[BOX Rect(297.4153747558594, 636.3692626953125, 539.4461669921875, 645.2307739257812)] propagate through the structural equations, the replayed state
+---
+[BOX Rect(297.4153747558594, 648.0, 539.4461669921875, 657.4154052734375)] �x either falls back across the rejection boundary or breaches
+---
+[BOX Rect(297.4153747558594, 660.1846313476562, 539.4461669921875, 669.046142578125)] directional rules. This divergence explains the gap between
+---
+[BOX Rect(297.4153747558594, 647.4461669921875, 539.4461669921875, 684.5538330078125)] �x either falls back across the rejection boundary or breaches
+directional rules. This divergence explains the gap between
+V and U, proving that unconstrained mathematical perturba-
+tions cannot be assumed to reflect physical actions.
+---
+[BOX Rect(297.4153747558594, 684.0, 501.78460693359375, 692.8615112304688)] tions cannot be assumed to reflect physical actions.
+---
+[BOX Rect(307.3846130371094, 696.1846313476562, 539.4461669921875, 705.046142578125)] Conversely, non-causal algorithms perform surprisingly
+---
+[BOX Rect(297.4153747558594, 707.8154296875, 539.4461669921875, 716.6769409179688)] well on Adult Income and German Credit. Structural inspec-
+---
+[BOX Rect(297.4153747558594, 720.0, 539.4461669921875, 728.8615112304688)] tion of the underlying graphs (Table 9) reveals why: both
+---
+=== PAGE 12: 69 cyan highlight boxes ===
+[BOX Rect(69.23076629638672, 199.9384765625, 266.3999938964844, 207.69232177734375)] Observational validation of assumed causal DAGs. ‘‘Actions’’
+---
+[BOX Rect(36.0, 208.24615478515625, 266.953857421875, 216.0)] denotes the count of mutable variables; ‘‘Supported’’ counts structural
+---
+[BOX Rect(36.0, 217.10768127441406, 270.27691650390625, 224.30767822265625)] edges corroborated by observational orientation heuristics; ‘‘CI upheld’’
+---
+[BOX Rect(36.0, 225.4153594970703, 258.6461486816406, 232.6153564453125)] reports the fraction of non-rejected conditional independence tests.
+---
+[BOX Rect(36.0, 233.7230987548828, 251.44615173339844, 240.923095703125)] These tests gauge empirical compatibility rather than establishing
+---
+[BOX Rect(36.0, 242.03077697753906, 127.93846130371094, 249.23077392578125)] definitive physical causality.
+---
+[BOX Rect(36.0, 346.7076721191406, 278.03076171875, 355.5692138671875)] domains exhibit sparse graph connectivity among actionable
+---
+[BOX Rect(36.0, 358.8923034667969, 278.03076171875, 367.75384521484375)] attributes. In such weakly coupled settings, naive coordinate
+---
+[BOX Rect(36.0, 370.5230712890625, 278.03076171875, 379.9384460449219)] shifts happen to mimic interventional propagation, allowing
+---
+[BOX Rect(36.0, 382.7076721191406, 278.03076171875, 391.5692138671875)] heuristic perturbation algorithms to succeed largely by co-
+---
+[BOX Rect(36.0, 394.8923034667969, 278.03076171875, 403.75384521484375)] incidence. Causal modeling is most urgent when actionable
+---
+[BOX Rect(36.0, 406.5230712890625, 157.29229736328125, 415.3846130371094)] attributes are densely coupled.
+---
+[BOX Rect(36.0, 455.26153564453125, 278.03076171875, 464.1230773925781)] A rigorous code-level audit revealed three data-hygiene prac-
+---
+[BOX Rect(36.0, 466.8923034667969, 276.3692321777344, 475.75384521484375)] tices common across recourse research that require scrutiny:
+---
+[BOX Rect(45.96923065185547, 480.73846435546875, 278.03076171875, 489.6000061035156)] 1) Test-Gated Hyperparameter Decisions: In conven-
+---
+[BOX Rect(60.369232177734375, 492.9230651855469, 278.03076171875, 501.78460693359375)] tional pipelines, test-set AUC was monitored to deter-
+---
+[BOX Rect(60.369232177734375, 504.5538635253906, 278.03076171875, 513.4154052734375)] mine whether to trigger hyperparameter tuning. While
+---
+[BOX Rect(60.369232177734375, 516.7384643554688, 278.03076171875, 525.5999755859375)] inner cross-validation folds were utilized during op-
+---
+[BOX Rect(60.369232177734375, 528.3692016601562, 278.03076171875, 537.7846069335938)] timization, allowing test-split performance to dictate
+---
+[BOX Rect(60.369232177734375, 540.5538940429688, 278.03076171875, 549.4154052734375)] whether search is performed introduces subtle data
+---
+[BOX Rect(60.369232177734375, 552.7384643554688, 144.0, 561.5999755859375)] leakage across splits.
+---
+[BOX Rect(45.96923065185547, 564.3692626953125, 278.03076171875, 573.2307739257812)] 2) Pre-Split Feature Imputation: Missing values across
+---
+[BOX Rect(60.369232177734375, 576.5538940429688, 278.03076171875, 585.4154052734375)] HELOC and Diabetes were imputed using global col-
+---
+[BOX Rect(60.369232177734375, 588.1845703125, 278.03076171875, 597.5999755859375)] umn medians computed prior to train-test partition-
+---
+[BOX Rect(60.369232177734375, 600.3692626953125, 278.03076171875, 609.2307739257812)] ing. Beyond this, diabetes cleaning leveraged class-
+---
+[BOX Rect(60.369232177734375, 612.0, 278.03076171875, 621.4154052734375)] conditional patterns to flag sentinel missingness, poten-
+---
+[BOX Rect(60.369232177734375, 624.1846313476562, 278.03076171875, 633.046142578125)] tially allowing label information to leak across evalua-
+---
+[BOX Rect(60.369232177734375, 636.3692626953125, 124.61538696289062, 645.2307739257812)] tion boundaries.
+---
+[BOX Rect(45.96923065185547, 648.0, 278.03076171875, 656.8615112304688)] 3) Physiological Validity of Diabetes Recourse: In-
+---
+[BOX Rect(60.369232177734375, 660.1846313476562, 278.03076171875, 669.046142578125)] verting classification targets (no_diabetes=1-Outcome)
+---
+[BOX Rect(60.369232177734375, 671.8153686523438, 278.03076171875, 681.2307739257812)] and treating diagnostic clinical measurements (glucose,
+---
+[BOX Rect(60.369232177734375, 684.0, 278.03076171875, 692.8615112304688)] insulin, blood pressure, BMI) as directly actionable di-
+---
+[BOX Rect(60.369232177734375, 696.1846313476562, 278.03076171875, 705.046142578125)] als contradicts medical reality. Biomarkers are clinical
+---
+[BOX Rect(60.369232177734375, 707.8154296875, 278.03076171875, 716.6769409179688)] signs of underlying metabolic processes, not voluntary
+---
+[BOX Rect(60.369232177734375, 720.0, 278.03076171875, 728.8615112304688)] personal decisions [21]. We retain Pima Diabetes solely
+---
+[BOX Rect(321.78460693359375, 62.58462905883789, 539.4461669921875, 71.4461669921875)] to reproduce benchmark comparisons established in
+---
+[BOX Rect(321.78460693359375, 74.21536254882812, 539.4461669921875, 83.076904296875)] prior recourse literature [10], [14], emphasizing that
+---
+[BOX Rect(321.78460693359375, 86.39999389648438, 539.4461669921875, 95.26153564453125)] these feature changes must never be interpreted as ther-
+---
+[BOX Rect(321.78460693359375, 98.0307846069336, 407.6307678222656, 107.4461669921875)] apeutic interventions.
+---
+[BOX Rect(297.4153747558594, 137.35385131835938, 539.4461669921875, 146.21539306640625)] We identify three methodological boundaries that frame these
+---
+[BOX Rect(297.4153747558594, 148.98458862304688, 332.8615417480469, 157.84613037109375)] findings:
+---
+[BOX Rect(307.3846130371094, 163.9384765625, 539.4461669921875, 173.90771484375)] 1) Construct Validity: Our effort metric C(x, a) com-
+---
+[BOX Rect(321.78460693359375, 176.67691040039062, 539.4461669921875, 185.5384521484375)] putes normalized coordinate distances, serving as a
+---
+[BOX Rect(321.78460693359375, 188.30770874023438, 539.4461669921875, 197.16925048828125)] mathematical proxy rather than capturing financial fric-
+---
+[BOX Rect(321.78460693359375, 200.49227905273438, 539.4461669921875, 209.35382080078125)] tion, lost time, or emotional strain. Synthetic scripts
+---
+[BOX Rect(321.78460693359375, 212.12307739257812, 539.4461669921875, 220.984619140625)] simulating interactive user preference responses were
+---
+[BOX Rect(321.78460693359375, 224.30770874023438, 466.33843994140625, 233.16925048828125)] excluded from our empirical claims.
+---
+[BOX Rect(307.3846130371094, 235.9384307861328, 539.4461669921875, 245.35382080078125)] 2) Internal Validity: Numerical gradient estimation via
+---
+[BOX Rect(321.78460693359375, 248.12307739257812, 539.4461669921875, 256.984619140625)] finite differences is poorly conditioned on the discon-
+---
+[BOX Rect(321.78460693359375, 260.3077087402344, 539.4461669921875, 269.16925048828125)] tinuous piecewise-constant loss landscapes of tree en-
+---
+[BOX Rect(321.78460693359375, 271.9384460449219, 539.4461669921875, 280.79998779296875)] sembles, putting Wachter-style optimization at a severe
+---
+[BOX Rect(321.78460693359375, 284.1230773925781, 539.4461669921875, 292.984619140625)] numerical disadvantage. In addition, the refit exper-
+---
+[BOX Rect(321.78460693359375, 295.75384521484375, 539.4461669921875, 305.1692199707031)] iment (Table 7) shared training observations across
+---
+[BOX Rect(321.78460693359375, 307.9384460449219, 539.4461669921875, 316.79998779296875)] models, meaning observed usability drops represent
+---
+[BOX Rect(321.78460693359375, 320.1230773925781, 518.4000244140625, 328.984619140625)] lower-bound estimates of real-world degradation.
+---
+[BOX Rect(307.3846130371094, 331.75384521484375, 539.4461669921875, 340.6153869628906)] 3) External Validity: Assumed causal DAGs represent
+---
+[BOX Rect(321.78460693359375, 343.9384460449219, 539.4461669921875, 352.79998779296875)] domain hypotheses rather than experimentally vali-
+---
+[BOX Rect(321.78460693359375, 355.5692443847656, 539.4461669921875, 364.984619140625)] dated mechanisms. Because several edges lack obser-
+---
+[BOX Rect(321.78460693359375, 367.75384521484375, 539.4461669921875, 376.6153869628906)] vational orientation support (Table 9), a plan that suc-
+---
+[BOX Rect(321.78460693359375, 378.83074951171875, 539.4461669921875, 389.9076843261719)] ceeds under TM may still fail if the underlying struc-
+---
+[BOX Rect(321.78460693359375, 391.5692138671875, 450.83074951171875, 400.4307556152344)] tural equations are misspecified.
+---
+[BOX Rect(297.4153747558594, 429.78460693359375, 539.4461669921875, 438.6461486816406)] Across 294 rejected test cases spanning four tabular bench-
+---
+[BOX Rect(297.4153747558594, 441.4153747558594, 539.4461669921875, 450.27691650390625)] marks and two synthetic domains, our evaluation demon-
+---
+[BOX Rect(297.4153747558594, 453.5999755859375, 539.4461669921875, 462.4615173339844)] strates that nominal counterfactual validity is an unreliable
+---
+[BOX Rect(297.4153747558594, 465.23077392578125, 539.4461669921875, 474.6461486816406)] proxy for actionable recourse. On FICO HELOC, point-
+---
+[BOX Rect(297.4153747558594, 477.4153747558594, 539.4461669921875, 486.27691650390625)] based methods claim near-perfect validity while joint us-
+---
+[BOX Rect(297.4153747558594, 489.5999755859375, 539.4461669921875, 498.4615173339844)] ability drops to 18.0%. Searching directly over admissible
+---
+[BOX Rect(297.4153747558594, 501.23077392578125, 539.4461669921875, 510.0923156738281)] actions within a structural causal model, CAC achieves 100%
+---
+[BOX Rect(297.4153747558594, 513.4154052734375, 503.4461364746094, 522.2769165039062)] usability across all benchmarks at the primary seed.
+---
+=== PAGE 13: 0 cyan highlight boxes ===

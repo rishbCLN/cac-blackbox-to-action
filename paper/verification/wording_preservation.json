@@ -1,10 +1,10 @@
 {
-  "checked_at_utc": "2026-10-19T16:10:52.293752+00:00",
+  "checked_at_utc": "2026-10-22T04:36:21.968979+00:00",
   "passed": true,
   "lock_file": "paper/verification/plain_language_lock.json",
   "caption_wording_editable": true,
   "baseline_main_sha256": "94f2f3c344e3845acbbfc6ee24d1299fde2147d8f2cd89a213bd00d1ce410536",
-  "revised_main_sha256": "538609eaadc49482ae9674ec62d0dad5e9b5f61c90b7d1b6848603174be57d2c",
+  "revised_main_sha256": "6fa6c974528cd13e7f628d0fec84305084dd7de76ca88f1995c6c0f47c2eb6f8",
   "prose_source_changed": true,
   "preserved_document_groups": [
     "numeric_literals",
@@ -21,5 +21,5 @@
   "similarity_percentage": null,
   "qualification": "No similarity score or plagiarism-free guarantee is claimed. Syntactic preservation checks do not replace semantic or attribution review.",
   "compiled_pdf": "output/pdf/main.pdf",
-  "compiled_pdf_sha256": "66aa04c85c2df40a78888f6fd54318a07f02e50e2449c1214b13450dcce07e56"
+  "compiled_pdf_sha256": "2ca9365311317c2a4fabcf4fbb084256cce7348378a80dace3bd7d41a87f71a5"
 }
